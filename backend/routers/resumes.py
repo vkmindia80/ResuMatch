@@ -1,7 +1,9 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from utils.auth import get_current_user_id
+from utils.ai_resume_generator import AIResumeGenerator
+from utils.ats_scorer import ATSScorer
 from database import get_database
 from datetime import datetime
 import uuid
@@ -19,7 +21,7 @@ class ResumeResponse(BaseModel):
     job_description_id: Optional[str]
     template_id: str
     status: str
-    ats_score: int
+    ats_score: Dict[str, Any]
     created_at: datetime
 
 @router.post("/generate", status_code=status.HTTP_201_CREATED)
@@ -29,7 +31,7 @@ async def generate_resume(
     db = Depends(get_database)
 ):
     """
-    Generate a new resume based on profile and job description
+    Generate AI-optimized resume based on profile and job description
     """
     # Get user profile
     profile = await db.profiles.find_one({"user_id": user_id})
@@ -49,24 +51,50 @@ async def generate_resume(
     
     resume_id = str(uuid.uuid4())
     
-    # Basic resume structure (will be enhanced with AI)
+    # Initialize AI generator
+    ai_generator = AIResumeGenerator()
+    
+    # Generate AI-powered content
+    print("Generating professional summary with AI...")
+    summary = await ai_generator.generate_professional_summary(profile, job_description)
+    
+    print("Optimizing experience bullets with AI...")
+    optimized_experience = await ai_generator.optimize_experience_bullets(
+        profile.get("experience", []),
+        job_description
+    )
+    
+    print("Optimizing skills prioritization...")
+    optimized_skills = await ai_generator.generate_skills_optimization(
+        profile.get("skills", {}),
+        job_description
+    )
+    
+    # Build resume content
+    resume_content = {
+        "header": profile.get("personal_info", {}),
+        "summary": summary,
+        "experience": optimized_experience,
+        "education": profile.get("education", []),
+        "skills": optimized_skills,
+        "projects": profile.get("projects", []),
+        "certifications": profile.get("certifications", [])
+    }
+    
+    # Calculate ATS score
+    print("Calculating ATS score...")
+    ats_scorer = ATSScorer()
+    ats_score = ats_scorer.calculate_ats_score(resume_content, job_description)
+    
     resume_dict = {
         "id": resume_id,
         "user_id": user_id,
-        "profile_id": profile["id"],
+        "profile_id": profile.get("id"),
         "job_description_id": resume_data.job_description_id,
         "template_id": resume_data.template_id,
         "status": "draft",
-        "content": {
-            "header": profile.get("personal_info", {}),
-            "summary": generate_summary(profile, job_description),
-            "experience": profile.get("experience", []),
-            "education": profile.get("education", []),
-            "skills": profile.get("skills", {}),
-            "projects": profile.get("projects", []),
-            "certifications": profile.get("certifications", [])
-        },
-        "ats_score": calculate_basic_ats_score(profile, job_description),
+        "content": resume_content,
+        "ats_score": ats_score,
         "created_at": datetime.utcnow(),
         "updated_at": datetime.utcnow()
     }
