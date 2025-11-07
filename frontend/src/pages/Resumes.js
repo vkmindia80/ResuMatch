@@ -141,10 +141,20 @@ const Resumes = () => {
       if (content.skills) {
         resumeText += `SKILLS\n`;
         if (content.skills.technical && content.skills.technical.length > 0) {
-          resumeText += `Technical: ${content.skills.technical.join(', ')}\n`;
+          const technicalSkills = content.skills.technical.map(skill => 
+            typeof skill === 'object' ? skill.name || skill.skill || '' : skill
+          ).filter(Boolean);
+          if (technicalSkills.length > 0) {
+            resumeText += `Technical: ${technicalSkills.join(', ')}\n`;
+          }
         }
         if (content.skills.soft && content.skills.soft.length > 0) {
-          resumeText += `Soft Skills: ${content.skills.soft.join(', ')}\n`;
+          const softSkills = content.skills.soft.map(skill => 
+            typeof skill === 'object' ? skill.name || skill.skill || '' : skill
+          ).filter(Boolean);
+          if (softSkills.length > 0) {
+            resumeText += `Soft Skills: ${softSkills.join(', ')}\n`;
+          }
         }
       }
       
