@@ -363,3 +363,230 @@ async def parse_resume(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error occurred while parsing the resume: {str(e)}"
         )
+
+
+@router.post("/suggest-achievements")
+async def suggest_achievements(
+    job_title: str,
+    company: str,
+    responsibilities: list[str] = [],
+    technologies: list[str] = [],
+    user_id: str = Depends(get_current_user_id)
+):
+    """
+    Generate AI-powered achievement suggestions for work experience
+    """
+    try:
+        from utils.ai_suggestions import ai_suggestion_engine
+        
+        suggestions = await ai_suggestion_engine.suggest_achievements(
+            job_title=job_title,
+            company=company,
+            responsibilities=responsibilities,
+            technologies=technologies
+        )
+        
+        return {
+            "success": True,
+            "suggestions": suggestions
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate suggestions: {str(e)}"
+        )
+
+
+@router.post("/suggest-skills")
+async def suggest_skills(
+    job_title: str = None,
+    industry: str = None,
+    current_skills: list[str] = [],
+    experience_level: str = "Intermediate",
+    user_id: str = Depends(get_current_user_id)
+):
+    """
+    Generate AI-powered skill suggestions categorized as technical and soft skills
+    """
+    try:
+        from utils.ai_suggestions import ai_suggestion_engine
+        
+        suggestions = await ai_suggestion_engine.suggest_skills(
+            job_title=job_title,
+            industry=industry,
+            current_skills=current_skills,
+            experience_level=experience_level
+        )
+        
+        return {
+            "success": True,
+            "suggestions": suggestions
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate skill suggestions: {str(e)}"
+        )
+
+
+@router.post("/categorize-skills")
+async def categorize_skills(
+    skills: list[str],
+    user_id: str = Depends(get_current_user_id)
+):
+    """
+    Categorize skills into technical and soft skills using AI
+    """
+    try:
+        from utils.ai_suggestions import ai_suggestion_engine
+        
+        categorized = await ai_suggestion_engine.categorize_skills(skills=skills)
+        
+        return {
+            "success": True,
+            "categorized": categorized
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to categorize skills: {str(e)}"
+        )
+
+
+@router.post("/upload-certificate")
+async def upload_certificate(
+    file: UploadFile = File(...),
+    education_id: str = None,
+    user_id: str = Depends(get_current_user_id),
+    db = Depends(get_database)
+):
+    """
+    Upload education certificate
+    Supports PDF, JPG, PNG files
+    """
+    # Validate file type
+    allowed_extensions = ['pdf', 'jpg', 'jpeg', 'png']
+    file_extension = file.filename.lower().split('.')[-1]
+    
+    if file_extension not in allowed_extensions:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"File type not supported. Allowed types: {', '.join(allowed_extensions)}"
+        )
+    
+    # Validate file size (max 10MB)
+    file_content = await file.read()
+    if len(file_content) > 10 * 1024 * 1024:  # 10MB
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="File size too large. Maximum size is 10MB."
+        )
+    
+    try:
+        from utils.storage_manager import storage_manager
+        
+        # Determine content type
+        content_type_map = {
+            'pdf': 'application/pdf',
+            'jpg': 'image/jpeg',
+            'jpeg': 'image/jpeg',
+            'png': 'image/png'
+        }
+        content_type = content_type_map.get(file_extension, 'application/octet-stream')
+        
+        # Upload file
+        storage_info = await storage_manager.upload_file(
+            file_content=file_content,
+            filename=file.filename,
+            folder="certificates",
+            content_type=content_type
+        )
+        
+        # If education_id is provided, update the education record
+        if education_id:
+            profile = await db.profiles.find_one({"user_id": user_id})
+            if profile:
+                # Update specific education entry
+                education_list = profile.get("education", [])
+                for edu in education_list:
+                    if edu.get("id") == education_id:
+                        edu["certificate_url"] = storage_info["url"]
+                        edu["certificate_storage_info"] = storage_info
+                        break
+                
+                await db.profiles.update_one(
+                    {"user_id": user_id},
+                    {"$set": {"education": education_list, "updated_at": datetime.utcnow()}}
+                )
+        
+        return {
+            "success": True,
+            "message": "Certificate uploaded successfully",
+            "storage_info": storage_info
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to upload certificate: {str(e)}"
+        )
+
+
+@router.delete("/delete-certificate/{education_id}")
+async def delete_certificate(
+    education_id: str,
+    user_id: str = Depends(get_current_user_id),
+    db = Depends(get_database)
+):
+    """
+    Delete education certificate
+    """
+    try:
+        from utils.storage_manager import storage_manager
+        
+        profile = await db.profiles.find_one({"user_id": user_id})
+        if not profile:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Profile not found"
+            )
+        
+        # Find education entry
+        education_list = profile.get("education", [])
+        education_entry = None
+        for edu in education_list:
+            if edu.get("id") == education_id:
+                education_entry = edu
+                break
+        
+        if not education_entry:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Education entry not found"
+            )
+        
+        # Delete from storage if exists
+        if education_entry.get("certificate_storage_info"):
+            await storage_manager.delete_file(education_entry["certificate_storage_info"])
+        
+        # Update database
+        education_entry["certificate_url"] = None
+        education_entry["certificate_storage_info"] = None
+        
+        await db.profiles.update_one(
+            {"user_id": user_id},
+            {"$set": {"education": education_list, "updated_at": datetime.utcnow()}}
+        )
+        
+        return {
+            "success": True,
+            "message": "Certificate deleted successfully"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to delete certificate: {str(e)}"
+        )
