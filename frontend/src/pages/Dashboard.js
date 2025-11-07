@@ -11,7 +11,8 @@ const Dashboard = () => {
     completeness: 0,
     resumes: 0,
     jobs: 0,
-    questions: 0
+    questions: 0,
+    coverLetters: 0
   });
   const [loading, setLoading] = useState(true);
 
