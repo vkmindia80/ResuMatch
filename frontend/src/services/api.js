@@ -138,4 +138,11 @@ export const matchScoreAPI = {
   getScore: (jobId) => api.get(`/api/jobs/${jobId}/match-score`),
 };
 
+// Admin API
+export const adminAPI = {
+  getStorageSettings: () => api.get('/api/admin/storage-settings'),
+  updateStorageSettings: (data) => api.put('/api/admin/storage-settings', data),
+  getStorageConfig: () => api.get('/api/admin/storage-config'),
+};
+
 export default api;
