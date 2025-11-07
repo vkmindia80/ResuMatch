@@ -83,9 +83,10 @@ class TestInterviews:
         )
         assert response.status_code == 200
         data = response.json()
-        assert isinstance(data, list)
+        assert "items" in data
+        assert isinstance(data["items"], list)
         # All returned questions should be for the specified job
-        for question in data:
+        for question in data["items"]:
             assert question["job_description_id"] == test_job["id"]
     
     @pytest.mark.asyncio
