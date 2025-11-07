@@ -260,6 +260,125 @@ const JobDescriptions = () => {
           <p className="text-sm">Click "Add Job" to start analyzing job postings</p>
         </div>
       )}
+
+      {/* Match Score Modal */}
+      {showMatchScore && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6">
+            <div className="flex justify-between items-start mb-6">
+              <h2 className="text-2xl font-bold text-secondary-900">Job Match Score</h2>
+              <button
+                onClick={() => setShowMatchScore(false)}
+                className="text-secondary-400 hover:text-secondary-600"
+              >
+                ✕
+              </button>
+            </div>
+
+            {loadingMatchScore ? (
+              <div className="text-center py-12">
+                <div className="inline-block w-12 h-12 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
+                <p className="mt-4 text-secondary-600">Calculating match score...</p>
+              </div>
+            ) : matchScoreData ? (
+              <div className="space-y-6">
+                {/* Overall Score */}
+                <div className="text-center pb-6 border-b">
+                  <div className={`inline-flex items-center justify-center w-32 h-32 rounded-full text-4xl font-bold ${getMatchColor(matchScoreData.overall_score)}`}>
+                    {matchScoreData.overall_score}%
+                  </div>
+                  <p className="text-lg font-semibold text-secondary-900 mt-4">{matchScoreData.match_level}</p>
+                  <p className="text-sm text-secondary-600">Confidence: {matchScoreData.confidence}</p>
+                </div>
+
+                {/* Score Breakdown */}
+                <div>
+                  <h3 className="text-lg font-semibold text-secondary-900 mb-4">Score Breakdown</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {Object.entries(matchScoreData.breakdown).map(([category, data]) => (
+                      <div key={category} className="card">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="font-medium text-secondary-900 capitalize">{category}</span>
+                          <span className={`px-3 py-1 rounded-full text-sm font-bold ${getMatchColor(data.score)}`}>
+                            {data.score}%
+                          </span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div
+                            className={`h-2 rounded-full ${data.score >= 80 ? 'bg-green-600' : data.score >= 60 ? 'bg-yellow-600' : 'bg-red-600'}`}
+                            style={{ width: `${data.score}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Skills Gap */}
+                {matchScoreData.skills_gap && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-secondary-900 mb-4">Skills Gap Analysis</h3>
+                    {matchScoreData.skills_gap.critical_missing_skills?.length > 0 && (
+                      <div className="card mb-4">
+                        <h4 className="font-medium text-red-700 mb-2">Critical Missing Skills</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {matchScoreData.skills_gap.critical_missing_skills.map((skill, idx) => (
+                            <span key={idx} className="px-3 py-1 bg-red-100 text-red-700 text-sm rounded-full">
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {matchScoreData.skills_gap.nice_to_have_missing_skills?.length > 0 && (
+                      <div className="card">
+                        <h4 className="font-medium text-yellow-700 mb-2">Nice-to-Have Skills</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {matchScoreData.skills_gap.nice_to_have_missing_skills.map((skill, idx) => (
+                            <span key={idx} className="px-3 py-1 bg-yellow-100 text-yellow-700 text-sm rounded-full">
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Recommendations */}
+                {matchScoreData.recommendations && matchScoreData.recommendations.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-secondary-900 mb-4">Recommendations</h3>
+                    <div className="space-y-3">
+                      {matchScoreData.recommendations.map((rec, idx) => (
+                        <div key={idx} className="card border-l-4 border-primary-600">
+                          <div className="flex items-start gap-3">
+                            <TrendingUp className="text-primary-600 flex-shrink-0 mt-1" size={20} />
+                            <div>
+                              <h4 className="font-medium text-secondary-900 mb-1">{rec.title}</h4>
+                              <p className="text-sm text-secondary-700 mb-2">{rec.description}</p>
+                              <p className="text-sm text-primary-600">{rec.action}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : null}
+
+            <div className="flex justify-end mt-6">
+              <button
+                onClick={() => setShowMatchScore(false)}
+                className="btn-primary"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
