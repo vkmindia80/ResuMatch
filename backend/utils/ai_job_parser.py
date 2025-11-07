@@ -5,7 +5,7 @@ Uses OpenAI via Emergent LLM Key to intelligently parse job descriptions
 import os
 import json
 from typing import Dict, List, Optional
-from emergentintegrations import OpenAI
+from emergentintegrations.llm.openai import LlmChat
 
 class AIJobParser:
     def __init__(self):
@@ -13,7 +13,7 @@ class AIJobParser:
         api_key = os.getenv('EMERGENT_LLM_KEY')
         if not api_key:
             raise ValueError("EMERGENT_LLM_KEY not found in environment variables")
-        self.client = OpenAI(api_key=api_key)
+        self.client = LlmChat(api_key=api_key, model="gpt-4o-mini")
     
     async def parse_job_description(self, job_data: dict) -> dict:
         """
