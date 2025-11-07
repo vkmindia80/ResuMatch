@@ -92,7 +92,7 @@ class ATSOptimizer:
                 current_score = new_score
                 
                 # If we've exceeded target, we're done!
-                if new_overall >= self.target_score:
+                if new_overall >= target_score:
                     print(f"\n🎉 Perfect! Target exceeded: {new_overall}%")
                     return current_content, current_score, iteration
             else:
