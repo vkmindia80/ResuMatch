@@ -253,17 +253,17 @@ Profile {
 - ✅ Job level detection (entry/mid/senior)
 - ✅ Industry classification
 
-**API Endpoints**
+**API Endpoints** - ✅ Core endpoints implemented
 ```
-POST   /api/jobs/parse
-POST   /api/jobs/upload-pdf
-POST   /api/jobs/scrape-url
-GET    /api/jobs
-GET    /api/jobs/:id
-PUT    /api/jobs/:id
-DELETE /api/jobs/:id
-POST   /api/jobs/:id/analyze
-GET    /api/jobs/:id/match-score
+✅ POST   /api/jobs/ (create job with AI parsing)
+✅ GET    /api/jobs/ (get all jobs)
+✅ GET    /api/jobs/:id (get specific job)
+✅ PUT    /api/jobs/:id (update job)
+✅ DELETE /api/jobs/:id (delete job)
+⏸️ POST   /api/jobs/upload-pdf (not separately implemented, included in create)
+⏸️ POST   /api/jobs/scrape-url (not implemented)
+⏸️ POST   /api/jobs/:id/analyze (not separately implemented, done on creation)
+⏸️ GET    /api/jobs/:id/match-score (not yet implemented)
 ```
 
 **Database Schema**
