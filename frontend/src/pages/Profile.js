@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { profileAPI } from '../services/api';
-import { Save, Plus, Trash2, User, Briefcase, GraduationCap, Award, Code } from 'lucide-react';
+import { Save, Plus, Trash2, User, Briefcase, GraduationCap, Award, Code, Upload, FileText, CheckCircle, XCircle } from 'lucide-react';
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -8,6 +8,10 @@ const Profile = () => {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [activeTab, setActiveTab] = useState('personal');
+  const [uploading, setUploading] = useState(false);
+  const [uploadMessage, setUploadMessage] = useState('');
+  const [uploadStatus, setUploadStatus] = useState(''); // 'success' or 'error'
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     fetchProfile();
