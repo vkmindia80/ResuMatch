@@ -189,11 +189,18 @@ async def generate_resume(
     print("Starting iterative ATS optimization for perfect score...")
     optimizer = ATSOptimizer()
     
+    # If re-optimizing, pass source score as minimum target
+    min_target = None
+    if is_reoptimization and source_resume:
+        source_ats = source_resume.get("ats_score", {})
+        min_target = source_ats.get("overall_score", 0)
+    
     try:
         optimized_content, final_ats_score, iterations = await optimizer.optimize_resume_iteratively(
             resume_content,
             initial_ats_score,
-            job_description
+            job_description,
+            min_target_score=min_target
         )
         
         print(f"✅ Optimization complete! Final score: {final_ats_score.get('overall_score', 0)}% (after {iterations} iterations)")
