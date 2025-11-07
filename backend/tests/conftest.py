@@ -17,41 +17,39 @@ from utils.auth import get_password_hash, create_access_token
 TEST_MONGO_URL = os.getenv("TEST_MONGO_URL", "mongodb://localhost:27017/resumatch_test")
 
 
-@pytest.fixture(scope="session")
-def event_loop():
-    """Create event loop for async tests"""
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
-
-
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 async def test_db():
     """Create test database connection"""
     client = AsyncIOMotorClient(TEST_MONGO_URL)
     db = client.get_database()
     
     # Create indexes
-    await db.users.create_index("email", unique=True)
-    await db.profiles.create_index("user_id", unique=True)
+    try:
+        await db.users.create_index("email", unique=True)
+    except:
+        pass  # Index may already exist
+    try:
+        await db.profiles.create_index("user_id", unique=True)
+    except:
+        pass  # Index may already exist
+    
+    # Clean all collections before test
+    await db.users.delete_many({})
+    await db.profiles.delete_many({})
+    await db.job_descriptions.delete_many({})
+    await db.resumes.delete_many({})
+    await db.interview_questions.delete_many({})
     
     yield db
     
-    # Cleanup: Drop test database
-    await client.drop_database(db.name)
+    # Cleanup after test
+    await db.users.delete_many({})
+    await db.profiles.delete_many({})
+    await db.job_descriptions.delete_many({})
+    await db.resumes.delete_many({})
+    await db.interview_questions.delete_many({})
+    
     client.close()
-
-
-@pytest.fixture(autouse=True)
-async def clean_db(test_db):
-    """Clean database before each test"""
-    # Clean all collections
-    await test_db.users.delete_many({})
-    await test_db.profiles.delete_many({})
-    await test_db.job_descriptions.delete_many({})
-    await test_db.resumes.delete_many({})
-    await test_db.interview_questions.delete_many({})
-    yield
 
 
 @pytest.fixture
