@@ -116,10 +116,35 @@ async def generate_resume(
         "certifications": profile.get("certifications", [])
     }
     
-    # Calculate ATS score
-    print("Calculating ATS score...")
+    # Calculate initial ATS score
+    print("Calculating initial ATS score...")
     ats_scorer = ATSScorer()
-    ats_score = ats_scorer.calculate_ats_score(resume_content, job_description)
+    initial_ats_score = ats_scorer.calculate_ats_score(resume_content, job_description)
+    
+    print(f"Initial ATS score: {initial_ats_score.get('overall_score', 0)}%")
+    
+    # Run iterative optimization to achieve 95%+ score
+    print("Starting iterative ATS optimization for perfect score...")
+    optimizer = ATSOptimizer()
+    
+    try:
+        optimized_content, final_ats_score, iterations = await optimizer.optimize_resume_iteratively(
+            resume_content,
+            initial_ats_score,
+            job_description
+        )
+        
+        print(f"✅ Optimization complete! Final score: {final_ats_score.get('overall_score', 0)}% (after {iterations} iterations)")
+        
+        # Use optimized content and score
+        resume_content = optimized_content
+        ats_score = final_ats_score
+        
+    except Exception as e:
+        print(f"⚠️ Optimization error: {e}")
+        print("Falling back to initial content...")
+        # Fall back to initial content if optimization fails
+        ats_score = initial_ats_score
     
     resume_dict = {
         "id": resume_id,
