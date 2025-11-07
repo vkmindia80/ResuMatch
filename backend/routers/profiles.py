@@ -71,36 +71,48 @@ async def update_profile(
             detail="Profile not found"
         )
     
-    # Build update dict
-    update_data = profile_update.model_dump(exclude_unset=True)
-    if not update_data:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="No data to update"
+    try:
+        # Build update dict
+        update_data = profile_update.model_dump(exclude_unset=True)
+        if not update_data:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="No data to update"
+            )
+        
+        update_data["updated_at"] = datetime.utcnow()
+        
+        # Update profile
+        await db.profiles.update_one(
+            {"user_id": user_id},
+            {"$set": update_data}
         )
-    
-    update_data["updated_at"] = datetime.utcnow()
-    
-    # Update profile
-    await db.profiles.update_one(
-        {"user_id": user_id},
-        {"$set": update_data}
-    )
-    
-    # Get updated profile and recalculate score
-    updated_profile = await db.profiles.find_one({"user_id": user_id})
-    profile_obj = Profile(**updated_profile)
-    new_score = calculate_completeness_score(profile_obj)
-    
-    await db.profiles.update_one(
-        {"user_id": user_id},
-        {"$set": {"completeness_score": new_score}}
-    )
-    
-    updated_profile = await db.profiles.find_one({"user_id": user_id})
-    updated_profile.pop("_id", None)
-    
-    return updated_profile
+        
+        # Get updated profile and recalculate score
+        updated_profile = await db.profiles.find_one({"user_id": user_id})
+        profile_obj = Profile(**updated_profile)
+        new_score = calculate_completeness_score(profile_obj)
+        
+        await db.profiles.update_one(
+            {"user_id": user_id},
+            {"$set": {"completeness_score": new_score}}
+        )
+        
+        updated_profile = await db.profiles.find_one({"user_id": user_id})
+        updated_profile.pop("_id", None)
+        
+        return updated_profile
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        print(f"Error updating profile: {str(e)}")
+        print(traceback.format_exc())
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to update profile: {str(e)}"
+        )
 
 @router.get("/completeness")
 async def get_profile_completeness(user_id: str = Depends(get_current_user_id), db = Depends(get_database)):
