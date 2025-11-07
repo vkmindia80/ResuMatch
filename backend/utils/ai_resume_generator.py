@@ -282,46 +282,59 @@ Match and incorporate these keywords naturally if relevant to the role:
 """
         
         prompt += """
-**OPTIMIZATION FORMULA (Use CAR/STAR Method):**
-[Action Verb] + [What you did] + [With what/How] + [Quantifiable Result/Impact]
+**PERFECT ATS OPTIMIZATION FORMULA:**
+[POWER VERB] + [Specific Action] + [Technology/Method Used] + [QUANTIFIED Result with Numbers] + [Business Impact]
 
-**REQUIREMENTS:**
-1. **Action Verbs**: Start EVERY bullet with a powerful action verb:
-   - Leadership: Led, Directed, Managed, Coordinated, Supervised, Mentored
-   - Creation: Developed, Built, Created, Designed, Implemented, Established
-   - Improvement: Optimized, Enhanced, Streamlined, Increased, Reduced, Transformed
-   - Achievement: Achieved, Accomplished, Exceeded, Delivered, Completed
-   - Technical: Architected, Engineered, Programmed, Automated, Integrated
+**MANDATORY ATS PERFECTION REQUIREMENTS:**
 
-2. **Quantification**: Include numbers/metrics wherever possible:
-   - Percentages (improved by 40%)
-   - Numbers (managed team of 10)
-   - Dollar amounts ($2M budget)
-   - Time saved (reduced processing time by 50%)
-   - Scale (processed 10K+ requests daily)
+1. \u26a1 **POWER ACTION VERBS** - Start EVERY bullet with these:
+   - Leadership: Spearheaded, Orchestrated, Directed, Championed, Mentored
+   - Creation: Architected, Engineered, Pioneered, Designed, Built
+   - Improvement: Transformed, Optimized, Revolutionized, Streamlined, Accelerated
+   - Achievement: Delivered, Exceeded, Achieved, Accomplished, Attained
+   - Technical: Implemented, Automated, Integrated, Developed, Programmed
 
-3. **Impact Focus**: Show RESULTS and BUSINESS IMPACT:
-   - Before: "Worked on web applications"
-   - After: "Architected scalable web platform serving 100K+ users, reducing load time by 60%"
+2. \ud83d\udcca **AGGRESSIVE QUANTIFICATION** - Include 2+ metrics per bullet:
+   - Percentages: "increased by 45%", "reduced by 68%"
+   - Scale: "serving 2M+ users", "processing 500K+ daily transactions"
+   - Money: "$3M cost savings", "$15M revenue growth"
+   - Time: "from 4 hours to 12 minutes", "50% faster delivery"
+   - Team: "led team of 15", "managed 8 engineers"
+   - Quality: "99.99% uptime", "eliminated 94% of bugs"
 
-4. **Keyword Integration**: Naturally incorporate relevant technical keywords and tools from job requirements
+3. \ud83c\udfaf **KEYWORD INTEGRATION** - Naturally weave in job requirements:
+   - Use EXACT technical terms from job posting
+   - Include 2-3 relevant keywords per bullet
+   - Mention specific tools/technologies used
+   - Match industry terminology precisely
 
-5. **ATS Formatting**:
-   - Use standard terms (not abbreviations unless industry-standard)
-   - Include technical skills mentioned in job posting
-   - Use context that ATS can parse (no special characters)
-   - Keep to 1-2 lines per bullet
+4. \ud83d\udca5 **IMPACT DEMONSTRATION** - Show measurable business value:
+   \u274c Before: "Worked on web applications"
+   \u2705 After: "Architected cloud-native web platform using React and AWS, serving 2M+ users with 99.9% uptime and reducing infrastructure costs by 40%"
 
-6. **Relevance**: Prioritize most impressive and relevant achievements for target role
+5. \ud83d\udee0\ufe0f **TECHNICAL SPECIFICITY**:
+   - Name exact technologies (React, Node.js, PostgreSQL, Docker, Kubernetes)
+   - Include methodologies (Agile, CI/CD, microservices, serverless)
+   - Specify tools/platforms (AWS, Jenkins, GitHub Actions, Terraform)
 
-7. **Conciseness**: Maximum 2 lines per bullet, no fluff words
+6. \ud83d\udcaf **ATS-FRIENDLY FORMATTING**:
+   - Use full names, not abbreviations (JavaScript not JS)
+   - Standard industry terms only
+   - Each bullet 1-2 lines maximum
+   - Clear, parseable structure
 
-**EXAMPLES OF EXCELLENT BULLETS:**
-- "Led cross-functional team of 8 engineers to deliver microservices architecture, reducing system latency by 45% and improving uptime to 99.9%"
-- "Developed automated CI/CD pipeline using Jenkins and Docker, cutting deployment time from 2 hours to 15 minutes and eliminating 90% of production bugs"
-- "Architected React-based dashboard processing 50K+ daily transactions, increasing user engagement by 35% through intuitive UX design"
+7. \ud83c\udd99 **RELEVANCE & PRIORITY**:
+   - Most impressive achievements first
+   - Directly relevant to target role
+   - Recent/current work emphasized
 
-Return 4-6 optimized bullet points (one per line, start with action verb, no numbering or bullet symbols):
+**EXAMPLES OF PERFECT 98%+ ATS SCORE BULLETS:**
+\u2022 "Spearheaded microservices migration using Docker, Kubernetes, and AWS ECS, reducing deployment time by 73% and enabling 2M+ daily active users with 99.99% uptime while cutting infrastructure costs by $450K annually"
+\u2022 "Architected real-time analytics platform processing 800K+ transactions daily using Python, Apache Kafka, and PostgreSQL, delivering insights 85% faster and driving $2.5M in data-driven revenue growth"
+\u2022 "Transformed legacy monolith to cloud-native architecture using React, Node.js, and serverless AWS Lambda, improving page load speed by 68% and increasing user engagement by 42% across 500K+ monthly active users"
+\u2022 "Led cross-functional team of 12 engineers in agile development of enterprise SaaS platform, implementing CI/CD pipeline with Jenkins that accelerated release cycles by 60% and eliminated 91% of production bugs"
+
+Return 4-6 PERFECT ATS-optimized bullets (one per line, start with power verb, NO numbering/symbols):
 """
         return prompt
     
