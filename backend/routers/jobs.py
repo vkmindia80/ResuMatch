@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, status, Depends
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
 from utils.auth import get_current_user_id
 from utils.ai_job_parser import AIJobParser
@@ -10,11 +10,11 @@ import uuid
 router = APIRouter()
 
 class JobDescriptionCreate(BaseModel):
-    title: str
-    company: str
-    location: Optional[str] = None
-    job_type: Optional[str] = None
-    description: str
+    title: str = Field(..., min_length=1, max_length=500, description="Job title")
+    company: str = Field(..., min_length=1, max_length=200, description="Company name")
+    location: Optional[str] = Field(None, max_length=200, description="Job location")
+    job_type: Optional[str] = Field(None, max_length=100, description="Job type")
+    description: str = Field(..., min_length=10, max_length=50000, description="Job description")
 
 class JobDescriptionResponse(BaseModel):
     id: str
