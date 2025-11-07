@@ -97,15 +97,20 @@ async def generate_resume(
     # Generate or extract initial content based on mode
     if is_reoptimization:
         # Use existing resume content as starting point
-        print("📋 Using existing resume content as base...")
+        print("📋 Using existing resume content as base for re-optimization...")
         resume_content = source_resume.get("content", {})
+        source_ats = source_resume.get("ats_score", {})
+        source_score = source_ats.get("overall_score", 0)
+        
+        print(f"   Source Resume ATS Score: {source_score}%")
+        print(f"   Target: Beat or match {source_score}% with better job alignment")
         
         # We'll re-optimize this content with the new job description
         summary = resume_content.get("summary", "")
         optimized_experience = resume_content.get("experience", [])
         optimized_skills = resume_content.get("skills", {})
         
-        print(f"Base content loaded. Will optimize for job: {job_description.get('title') if job_description else 'General'}")
+        print(f"   Will optimize for: {job_description.get('title') if job_description else 'General'}")
         
     else:
         # Generate fresh content from profile
