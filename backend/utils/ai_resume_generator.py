@@ -173,40 +173,65 @@ class AIResumeGenerator:
         
         # Get top technical skills
         tech_skills = []
-        for skill in skills.get("technical", [])[:5]:
+        for skill in skills.get("technical", [])[:8]:
             if isinstance(skill, dict):
                 tech_skills.append(skill.get("name", ""))
             else:
                 tech_skills.append(str(skill))
         
+        # Extract key achievements from experience
+        key_achievements = []
+        for exp in experience[:3]:
+            for resp in exp.get('responsibilities', [])[:2]:
+                if any(metric in resp.lower() for metric in ['%', 'increase', 'improve', 'reduce', 'led', 'managed']):
+                    key_achievements.append(resp[:100])
+        
         prompt = f"""
-Create a compelling professional summary for a resume.
+Create a compelling, ATS-optimized professional summary for a resume.
 
 **Profile Information:**
 - Current Title: {title}
 - Years of Experience: {years_of_exp}+
 - Key Technical Skills: {', '.join(tech_skills)}
+- Key Achievements: {'; '.join(key_achievements[:2]) if key_achievements else 'Various professional accomplishments'}
 """
         
         if job_description:
+            parsed_data = job_description.get('parsed_data', {})
+            required_skills = parsed_data.get('required_skills', [])[:8]
+            technical_skills = parsed_data.get('technical_skills', [])[:8]
+            
             prompt += f"""
-**Target Role:**
+**Target Role (CRITICAL - Optimize for ATS matching):**
 - Position: {job_description.get('title', 'N/A')}
 - Company: {job_description.get('company', 'N/A')}
-- Key Requirements: {', '.join(job_description.get('parsed_data', {}).get('required_skills', [])[:5])}
+- Required Skills: {', '.join(required_skills)}
+- Technical Requirements: {', '.join(technical_skills)}
+- Job Type: {job_description.get('job_type', 'N/A')}
+
+**ATS OPTIMIZATION PRIORITY:**
+- MUST include relevant keywords from required skills
+- MUST use exact terminology from job description where applicable
+- MUST highlight matching technical skills prominently
 """
         
         prompt += """
 **Requirements:**
-1. Write a 3-4 sentence professional summary
-2. Highlight relevant experience and achievements
-3. Include key technical skills naturally
-4. Use action-oriented language
-5. Make it ATS-friendly with relevant keywords
-6. Do NOT use first person pronouns (I, me, my)
-7. Focus on impact and value proposition
+1. Write 3-4 powerful sentences (75-100 words total)
+2. Start with years of experience and current title
+3. Include SPECIFIC technical skills that match the job (use exact keywords)
+4. Mention quantifiable achievements or impact (if available)
+5. Use industry-standard terminology for ATS parsing
+6. Include relevant keywords naturally without keyword stuffing
+7. Do NOT use first person pronouns (I, me, my)
+8. Focus on value proposition and results
+9. Use active, confident language
+10. Ensure every word adds value
 
-Write the professional summary now (3-4 sentences only, no title):
+**Example Structure:**
+"[Title] with [X]+ years of experience in [domain/industry] specializing in [key skills]. Proven expertise in [technical skills matching job] with a track record of [achievement]. Skilled in [more matching skills] with experience in [relevant areas]. [Optional: certification or specialization]."
+
+Write the professional summary now (3-4 sentences, no title, optimize for ATS):
 """
         return prompt
     
