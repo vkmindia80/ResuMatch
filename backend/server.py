@@ -72,7 +72,8 @@ app.include_router(resumes.router, prefix="/api/resumes", tags=["Resumes"])
 app.include_router(interviews.router, prefix="/api/interviews", tags=["Interview Prep"])
 
 @app.get("/")
-async def root():
+@limiter.limit("20/minute")
+async def root(request: Request):
     return {
         "message": "Welcome to ResuMatch AI API",
         "version": "1.0.0",
@@ -80,9 +81,11 @@ async def root():
     }
 
 @app.get("/api/health")
-async def health_check():
+@limiter.limit("60/minute")
+async def health_check(request: Request):
     db = get_database()
     return {
         "status": "healthy",
-        "database": "connected" if db is not None else "disconnected"
+        "database": "connected" if db is not None else "disconnected",
+        "version": "1.0.0"
     }
