@@ -51,6 +51,8 @@ async def register(request: Request, user_data: UserCreate, db = Depends(get_dat
     
     await db.users.insert_one(user_dict)
     
+    log_info(f"New user registered: {user_data.email}", user_id=user_id)
+    
     return UserResponse(
         id=user_id,
         email=user_data.email,
@@ -61,7 +63,8 @@ async def register(request: Request, user_data: UserCreate, db = Depends(get_dat
     )
 
 @router.post("/login", response_model=Token)
-async def login(user_data: UserLogin, db = Depends(get_database)):
+@limiter.limit("10/minute")  # Limit login attempts
+async def login(request: Request, user_data: UserLogin, db = Depends(get_database)):
     """
     Login user and return JWT tokens
     """
