@@ -133,8 +133,6 @@ async def get_current_user(user_id: str = Depends(get_current_user_id), db = Dep
     """
     Get current user information
     """
-    from utils.auth import get_current_user_id
-    
     user = await db.users.find_one({"id": user_id})
     if not user:
         raise HTTPException(
