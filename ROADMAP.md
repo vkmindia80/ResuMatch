@@ -1370,7 +1370,7 @@ Once services are running, you have 4 options:
 
 ---
 
-### 🎨 **OPTION 3: Add Phase 2 Features**
+#### **OPTION C: Add Phase 2 Features**
 
 **Why:** Launch with more features to differentiate from competitors.
 
