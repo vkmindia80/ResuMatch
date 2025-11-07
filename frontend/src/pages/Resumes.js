@@ -24,10 +24,13 @@ const Resumes = () => {
         resumeAPI.getTemplates()
       ]);
       setResumes(resumesRes.data);
-      setJobs(jobsRes.data);
+      // Backend returns paginated response for jobs: { items: [...], total: X, skip: Y, limit: Z }
+      const jobsData = jobsRes.data.items || jobsRes.data || [];
+      setJobs(jobsData);
       setTemplates(templatesRes.data);
     } catch (error) {
       console.error('Error fetching data:', error);
+      setJobs([]); // Set empty array on error
     } finally {
       setLoading(false);
     }
