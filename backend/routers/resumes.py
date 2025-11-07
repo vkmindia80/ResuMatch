@@ -70,6 +70,40 @@ async def generate_resume(
         job_description
     )
     
+    # Normalize skills format to ensure frontend compatibility
+    def normalize_skills_list(skills_list):
+        """Convert skill objects to simple strings for frontend compatibility"""
+        if not skills_list:
+            return []
+        normalized = []
+        for skill in skills_list:
+            if isinstance(skill, dict):
+                # Extract name from object
+                skill_name = skill.get("name") or skill.get("skill") or ""
+                if skill_name:
+                    normalized.append(skill_name)
+            elif isinstance(skill, str):
+                normalized.append(skill)
+        return normalized
+    
+    # Normalize technical and soft skills to string arrays
+    if optimized_skills:
+        if "technical" in optimized_skills:
+            optimized_skills["technical"] = normalize_skills_list(optimized_skills["technical"])
+        if "soft" in optimized_skills:
+            optimized_skills["soft"] = normalize_skills_list(optimized_skills["soft"])
+        if "tools" in optimized_skills:
+            optimized_skills["tools"] = normalize_skills_list(optimized_skills["tools"])
+        if "languages" in optimized_skills:
+            # Keep languages as objects but ensure they have proper format
+            langs = []
+            for lang in optimized_skills.get("languages", []):
+                if isinstance(lang, dict):
+                    langs.append(lang)
+                elif isinstance(lang, str):
+                    langs.append({"name": lang, "fluency": "proficient"})
+            optimized_skills["languages"] = langs
+    
     # Build resume content
     resume_content = {
         "header": profile.get("personal_info", {}),
