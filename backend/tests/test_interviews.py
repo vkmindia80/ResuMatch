@@ -98,9 +98,10 @@ class TestInterviews:
         )
         assert response.status_code == 200
         data = response.json()
-        assert isinstance(data, list)
+        assert "items" in data
+        assert isinstance(data["items"], list)
         # All returned questions should be of the specified category
-        for question in data:
+        for question in data["items"]:
             if question.get("category"):
                 assert question["category"] == "behavioral"
     
