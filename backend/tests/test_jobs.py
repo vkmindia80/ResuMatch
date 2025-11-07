@@ -25,12 +25,15 @@ class TestJobDescriptions:
     
     @pytest.mark.asyncio
     async def test_get_all_jobs(self, client: AsyncClient, auth_headers, test_job):
-        """Test getting all job descriptions"""
+        """Test getting all job descriptions with pagination"""
         response = await client.get("/api/jobs/", headers=auth_headers)
         assert response.status_code == 200
         data = response.json()
-        assert isinstance(data, list)
-        assert len(data) >= 1
+        assert "items" in data
+        assert "total" in data
+        assert isinstance(data["items"], list)
+        assert len(data["items"]) >= 1
+        assert data["total"] >= 1
     
     @pytest.mark.asyncio
     async def test_get_job_by_id(self, client: AsyncClient, auth_headers, test_job):
