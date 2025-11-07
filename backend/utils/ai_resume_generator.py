@@ -124,23 +124,16 @@ class AIResumeGenerator:
             
             prompt = self._build_skills_optimization_prompt(profile_skills, job_description)
             
-            response = self.client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[
-                    {
-                        "role": "system",
-                        "content": "You are an expert resume optimizer. Prioritize and organize skills to match job requirements while maintaining honesty. Return valid JSON only."
-                    },
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
-                ],
+            system_message = "You are an expert resume optimizer. Prioritize and organize skills to match job requirements while maintaining honesty. Return valid JSON only."
+            
+            response = self.client.chat(
+                messages=[prompt],
+                system_message=system_message,
                 temperature=0.3,
                 max_tokens=800
             )
             
-            content = response.choices[0].message.content.strip()
+            content = response.strip()
             
             # Extract JSON
             if "```json" in content:
