@@ -90,9 +90,10 @@ class AIResumeGenerator:
                     system_message=system_message
                 ).with_model("openai", "gpt-4o-mini").with_params(temperature=0.7, max_tokens=500)
                 
-                # Send message
+                # Send message (async)
                 user_msg = UserMessage(text=prompt)
-                content = client.send_message(user_msg).strip()
+                response = await client.send_message(user_msg)
+                content = response.strip()
                 
                 # Parse optimized bullets
                 optimized_bullets = [
