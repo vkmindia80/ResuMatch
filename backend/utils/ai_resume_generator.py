@@ -329,43 +329,76 @@ Return 4-6 optimized bullet points (one per line, start with action verb, no num
             else:
                 tech_skills.append(str(skill))
         
+        soft_skills = profile_skills.get('soft', [])
+        tools = profile_skills.get('tools', [])
+        languages = profile_skills.get('languages', [])
+        
         parsed_data = job_description.get('parsed_data', {})
+        required_skills = parsed_data.get('required_skills', [])
+        technical_skills = parsed_data.get('technical_skills', [])
+        tools_tech = parsed_data.get('tools_and_technologies', [])
         
         prompt = f"""
-Optimize and prioritize skills for a resume based on job requirements.
+Optimize and prioritize skills for maximum ATS score and recruiter impact.
 
-**User's Skills:**
+**USER'S CURRENT SKILLS:**
 - Technical: {', '.join(tech_skills)}
-- Soft Skills: {', '.join(profile_skills.get('soft', []))}
-- Tools: {', '.join(profile_skills.get('tools', []))}
+- Soft Skills: {', '.join(soft_skills)}
+- Tools: {', '.join(tools)}
+- Languages: {', '.join([lang.get('name') if isinstance(lang, dict) else lang for lang in languages])}
 
-**Job Requirements:**
-- Required Skills: {', '.join(parsed_data.get('required_skills', []))}
-- Technical Skills: {', '.join(parsed_data.get('technical_skills', []))}
-- Tools: {', '.join(parsed_data.get('tools_and_technologies', []))}
+**JOB REQUIREMENTS (CRITICAL - Prioritize matching skills):**
+- Required Skills: {', '.join(required_skills)}
+- Technical Skills: {', '.join(technical_skills)}
+- Tools & Technologies: {', '.join(tools_tech)}
 
-**Task:**
-1. Prioritize user's skills that match job requirements at the top
-2. Keep the same skills the user has (don't add skills they don't have)
-3. Organize into categories: technical, soft, languages, tools
-4. Remove duplicates
-5. Ensure relevance to the target role
+**OPTIMIZATION STRATEGY:**
 
-Return the optimized skills in this JSON format:
+1. **PRIORITY MATCHING**: 
+   - Identify user skills that EXACTLY match job requirements
+   - Place matching skills at the TOP of each category
+   - Use EXACT terminology from job posting (e.g., if job says "React.js", use "React.js" not "React")
+
+2. **CATEGORIZATION**:
+   - Technical: Programming languages, frameworks, methodologies
+   - Soft: Leadership, communication, problem-solving, etc.
+   - Tools: Software, platforms, applications
+   - Languages: Spoken languages (if user has any)
+
+3. **HONEST REPRESENTATION**:
+   - DO NOT add skills the user doesn't have
+   - Only reorder and recategorize existing skills
+   - Keep all valuable skills even if not in job description
+
+4. **ATS OPTIMIZATION**:
+   - Use industry-standard naming (e.g., "JavaScript" not "JS")
+   - Avoid abbreviations unless they're the standard (e.g., "SQL" is okay)
+   - Group similar skills logically
+
+5. **RELEVANCE RANKING**:
+   - Most relevant/required skills first
+   - Advanced/expert skills second
+   - Supporting/nice-to-have skills last
+
+**OUTPUT FORMAT** (Return as valid JSON, string arrays only - NO objects with name/level):
 {{
-  "technical": [
-    {{"name": "skill_name", "level": "advanced"}},
-    ...
-  ],
-  "soft": ["skill1", "skill2", ...],
-  "languages": [
-    {{"name": "language_name", "fluency": "fluent"}},
-    ...
-  ],
-  "tools": ["tool1", "tool2", ...]
+  "technical": ["Skill1", "Skill2", "Skill3", ...],
+  "soft": ["Skill1", "Skill2", "Skill3", ...],
+  "tools": ["Tool1", "Tool2", "Tool3", ...],
+  "languages": ["Language1", "Language2", ...]
 }}
 
-Return JSON only:
+**EXAMPLE:**
+If user has: Python, JavaScript, Leadership
+If job requires: Python, Team Management, AWS
+Output:
+{{
+  "technical": ["Python", "JavaScript"],
+  "soft": ["Leadership"],
+  "tools": ["AWS"]
+}}
+
+Return optimized skills as JSON only (NO markdown, NO explanations):
 """
         return prompt
     
