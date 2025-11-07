@@ -76,6 +76,17 @@ export const profileAPI = {
       },
     });
   },
+  suggestAchievements: (data) => api.post('/api/profiles/suggest-achievements', null, { params: data }),
+  suggestSkills: (data) => api.post('/api/profiles/suggest-skills', null, { params: data }),
+  categorizeSkills: (skills) => api.post('/api/profiles/categorize-skills', null, { params: { skills } }),
+  uploadCertificate: (formData) => {
+    return api.post('/api/profiles/upload-certificate', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+  deleteCertificate: (educationId) => api.delete(`/api/profiles/delete-certificate/${educationId}`),
 };
 
 // Job Description API
