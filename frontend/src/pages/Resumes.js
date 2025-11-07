@@ -469,12 +469,14 @@ const Resumes = () => {
                   </div>
                 </div>
               )}
-            </div>
+              </div>
+            )}
 
             <div className="flex justify-end space-x-3 mt-6 pt-4 border-t">
               <button
                 onClick={() => handleDownload(previewResume)}
                 className="btn-primary flex items-center space-x-2"
+                disabled={!previewResume.content}
               >
                 <Download size={18} />
                 <span>Download</span>
