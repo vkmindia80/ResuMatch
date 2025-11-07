@@ -30,13 +30,16 @@ const InterviewPrep = () => {
         jobAPI.getJobs(),
         interviewAPI.getCategories()
       ]);
-      setQuestions(questionsRes.data);
+      // Backend returns paginated response for questions: { items: [...], total: X, skip: Y, limit: Z }
+      const questionsData = questionsRes.data.items || questionsRes.data || [];
+      setQuestions(questionsData);
       // Backend returns paginated response for jobs: { items: [...], total: X, skip: Y, limit: Z }
       const jobsData = jobsRes.data.items || jobsRes.data || [];
       setJobs(jobsData);
       setCategories(categoriesRes.data);
     } catch (error) {
       console.error('Error fetching data:', error);
+      setQuestions([]); // Set empty array on error
       setJobs([]); // Set empty array on error
     } finally {
       setLoading(false);
