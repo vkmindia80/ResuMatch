@@ -71,12 +71,28 @@ const Resumes = () => {
   };
 
   const handlePreview = (resume) => {
+    console.log('Preview clicked for resume:', resume);
+    if (!resume || !resume.content) {
+      alert('Resume content is not available. Please try again.');
+      return;
+    }
     setPreviewResume(resume);
     setShowPreview(true);
   };
 
   const handleDownload = (resume) => {
     try {
+      console.log('Download clicked for resume:', resume);
+      
+      // Validate resume and content
+      if (!resume) {
+        throw new Error('Resume data is missing');
+      }
+      
+      if (!resume.content) {
+        throw new Error('Resume content is not available');
+      }
+      
       // Create a simple text version of the resume
       const content = resume.content;
       let resumeText = '';
@@ -132,6 +148,11 @@ const Resumes = () => {
         }
       }
       
+      // Ensure we have some content to download
+      if (!resumeText.trim()) {
+        throw new Error('Resume content is empty');
+      }
+      
       // Create and download file
       const blob = new Blob([resumeText], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
@@ -144,7 +165,7 @@ const Resumes = () => {
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Error downloading resume:', error);
-      alert('Error downloading resume. Please try again.');
+      alert(`Error downloading resume: ${error.message}`);
     }
   };
 
