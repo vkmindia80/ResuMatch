@@ -114,6 +114,67 @@ async def get_job_description(
     job.pop("_id", None)
     return job
 
+@router.put("/{job_id}")
+async def update_job_description(
+    job_id: str,
+    job: JobDescriptionCreate,
+    user_id: str = Depends(get_current_user_id),
+    db = Depends(get_database)
+):
+    """
+    Update a job description
+    """
+    # Check if job exists
+    existing_job = await db.job_descriptions.find_one({"id": job_id, "user_id": user_id})
+    if not existing_job:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Job description not found"
+        )
+    
+    # Re-parse job with updated data if description changed
+    parser = AIJobParser()
+    job_data_dict = {
+        "title": job.title,
+        "company": job.company,
+        "location": job.location,
+        "job_type": job.job_type,
+        "description": job.description
+    }
+    
+    parse_result = await parser.parse_job_description(job_data_dict)
+    parsed_data = parse_result.get("data", {})
+    
+    # Extract keywords
+    keywords = []
+    keywords.extend(parsed_data.get("technical_skills", []))
+    keywords.extend(parsed_data.get("tools_and_technologies", []))
+    keywords.extend(parsed_data.get("required_skills", []))
+    keywords = list(set(keywords))[:30]
+    
+    # Update job
+    update_data = {
+        "title": job.title,
+        "company": job.company,
+        "location": job.location,
+        "job_type": job.job_type,
+        "description": job.description,
+        "parsed_data": parsed_data,
+        "parsed_keywords": keywords,
+        "updated_at": datetime.utcnow()
+    }
+    
+    await db.job_descriptions.update_one(
+        {"id": job_id, "user_id": user_id},
+        {"$set": update_data}
+    )
+    
+    # Return updated job
+    updated_job = await db.job_descriptions.find_one({"id": job_id, "user_id": user_id})
+    updated_job.pop("_id", None)
+    
+    return updated_job
+
 @router.delete("/{job_id}")
 async def delete_job_description(
     job_id: str,
