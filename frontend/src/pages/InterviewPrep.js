@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { interviewAPI, jobAPI } from '../services/api';
-import { Plus, MessageSquare, ChevronDown, ChevronUp, Download, FileText, FileDown } from 'lucide-react';
+import { Plus, MessageSquare, ChevronDown, ChevronUp, FileText, FileDown } from 'lucide-react';
 import jsPDF from 'jspdf';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx';
 import { saveAs } from 'file-saver';
