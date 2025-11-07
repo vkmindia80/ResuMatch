@@ -1,6 +1,7 @@
 """
 Enhanced ATS Scorer with Advanced Algorithms
 Provides more accurate ATS scoring with semantic matching and detailed analysis
+Version 2.0 - Improved keyword matching and semantic analysis
 """
 import re
 from typing import Dict, List, Tuple, Set
@@ -39,6 +40,27 @@ class EnhancedATSScorer:
         'skills', 'technical skills', 'core competencies',
         'projects', 'certifications', 'achievements'
     ]
+    
+    # Technology synonyms and variations for better matching
+    TECH_SYNONYMS = {
+        'javascript': ['js', 'ecmascript', 'javascript'],
+        'typescript': ['ts', 'typescript'],
+        'react': ['react', 'react.js', 'reactjs'],
+        'node': ['node', 'node.js', 'nodejs'],
+        'python': ['python', 'py', 'python3'],
+        'java': ['java', 'jdk', 'jre'],
+        'aws': ['amazon web services', 'aws', 'amazon cloud'],
+        'gcp': ['google cloud', 'gcp', 'google cloud platform'],
+        'azure': ['microsoft azure', 'azure', 'azure cloud'],
+        'kubernetes': ['k8s', 'kubernetes', 'kube'],
+        'docker': ['docker', 'containerization'],
+        'ci/cd': ['ci/cd', 'continuous integration', 'continuous deployment', 'jenkins', 'github actions'],
+        'sql': ['sql', 'mysql', 'postgresql', 'postgres', 'database'],
+        'mongodb': ['mongodb', 'mongo', 'nosql'],
+        'api': ['api', 'rest api', 'restful api', 'web services'],
+        'machine learning': ['ml', 'machine learning', 'ai', 'artificial intelligence'],
+        'agile': ['agile', 'scrum', 'kanban', 'sprint'],
+    }
     
     def calculate_ats_score(
         self,
@@ -97,77 +119,137 @@ class EnhancedATSScorer:
             'grade': self._get_grade(overall)
         }
     
+    def _normalize_keyword(self, keyword: str) -> Set[str]:
+        """
+        Normalize keyword to include synonyms and variations
+        """
+        keyword_lower = keyword.lower().strip()
+        variations = {keyword_lower}
+        
+        # Check for known synonyms
+        for key, synonyms in self.TECH_SYNONYMS.items():
+            if keyword_lower in synonyms or keyword_lower == key:
+                variations.update(synonyms)
+        
+        # Add common variations
+        # Remove special characters for matching
+        clean_keyword = re.sub(r'[^a-z0-9\s]', '', keyword_lower)
+        variations.add(clean_keyword)
+        
+        # Add version without spaces
+        variations.add(keyword_lower.replace(' ', ''))
+        variations.add(keyword_lower.replace('.', ''))
+        
+        return variations
+    
     def _score_keyword_match(self, resume: dict, job_desc: dict = None) -> int:
         """
-        Enhanced keyword matching with semantic understanding
+        Enhanced keyword matching with semantic understanding and synonym support
         """
         if not job_desc:
             return 15  # Base score without job description
         
         parsed_data = job_desc.get('parsed_data', {})
         
-        # Extract job keywords
-        job_keywords = set()
+        # Extract job keywords with priority weighting
         required_skills = parsed_data.get('required_skills', [])
         technical_skills = parsed_data.get('technical_skills', [])
         tools = parsed_data.get('tools_and_technologies', [])
         preferred_skills = parsed_data.get('preferred_skills', [])
         
-        # Prioritize required skills
-        for skill in required_skills:
-            job_keywords.add(skill.lower().strip())
-        for skill in technical_skills:
-            job_keywords.add(skill.lower().strip())
-        for tool in tools:
-            job_keywords.add(tool.lower().strip())
+        # Build weighted keyword sets
+        critical_keywords = set()  # Must-have keywords (weight: 3x)
+        important_keywords = set()  # Important keywords (weight: 2x)
+        nice_to_have = set()  # Preferred keywords (weight: 1x)
         
-        if not job_keywords:
+        for skill in required_skills[:15]:  # Top 15 required
+            critical_keywords.add(skill.lower().strip())
+        
+        for skill in technical_skills[:15]:  # Top 15 technical
+            important_keywords.add(skill.lower().strip())
+        
+        for tool in tools[:10]:  # Top 10 tools
+            important_keywords.add(tool.lower().strip())
+        
+        for skill in preferred_skills[:10]:  # Top 10 preferred
+            nice_to_have.add(skill.lower().strip())
+        
+        all_job_keywords = critical_keywords | important_keywords | nice_to_have
+        
+        if not all_job_keywords:
             return 15
         
-        # Extract resume keywords
+        # Extract resume text and keywords
         resume_text = self._extract_all_text(resume).lower()
-        resume_keywords = set()
+        resume_keywords = self._extract_resume_keywords(resume)
+        
+        # Calculate matches with semantic awareness
+        critical_matches = 0
+        important_matches = 0
+        preferred_matches = 0
+        
+        # Check critical keywords with variations
+        for keyword in critical_keywords:
+            variations = self._normalize_keyword(keyword)
+            if any(var in resume_text for var in variations) or any(var in resume_keywords for var in variations):
+                critical_matches += 1
+        
+        # Check important keywords
+        for keyword in important_keywords:
+            variations = self._normalize_keyword(keyword)
+            if any(var in resume_text for var in variations) or any(var in resume_keywords for var in variations):
+                important_matches += 1
+        
+        # Check preferred keywords
+        for keyword in nice_to_have:
+            variations = self._normalize_keyword(keyword)
+            if any(var in resume_text for var in variations) or any(var in resume_keywords for var in variations):
+                preferred_matches += 1
+        
+        # Calculate weighted score
+        critical_rate = critical_matches / len(critical_keywords) if critical_keywords else 1.0
+        important_rate = important_matches / len(important_keywords) if important_keywords else 1.0
+        preferred_rate = preferred_matches / len(nice_to_have) if nice_to_have else 1.0
+        
+        # Weighted scoring (critical keywords are most important)
+        weighted_score = (
+            critical_rate * 15 +      # Critical: 15 points max
+            important_rate * 10 +     # Important: 10 points max
+            preferred_rate * 5        # Preferred: 5 points max
+        )
+        
+        return min(30, int(weighted_score))
+    
+    def _extract_resume_keywords(self, resume: dict) -> Set[str]:
+        """
+        Extract all keywords from resume for matching
+        """
+        keywords = set()
         
         # From skills section
         skills = resume.get('skills', {})
         for skill in skills.get('technical', []):
             skill_name = skill if isinstance(skill, str) else skill.get('name', '')
             if skill_name:
-                resume_keywords.add(skill_name.lower().strip())
+                keywords.add(skill_name.lower().strip())
         
         for tool in skills.get('tools', []):
-            resume_keywords.add(tool.lower().strip())
+            keywords.add(tool.lower().strip())
+        
+        for soft in skills.get('soft', []):
+            keywords.add(soft.lower().strip())
         
         # From experience
         for exp in resume.get('experience', []):
             for tech in exp.get('technologies', []):
-                resume_keywords.add(tech.lower().strip())
+                keywords.add(tech.lower().strip())
         
-        # Calculate matches
-        exact_matches = job_keywords & resume_keywords
+        # From certifications
+        for cert in resume.get('certifications', []):
+            name = cert.get('name', '') if isinstance(cert, dict) else cert
+            keywords.add(name.lower().strip())
         
-        # Also check for partial matches in resume text
-        text_matches = set()
-        for keyword in job_keywords:
-            if keyword in resume_text:
-                text_matches.add(keyword)
-        
-        all_matches = exact_matches | text_matches
-        
-        # Calculate score
-        match_rate = len(all_matches) / len(job_keywords) if job_keywords else 0
-        
-        # Score out of 30
-        score = int(match_rate * 30)
-        
-        # Bonus for matching required skills specifically
-        required_matches = sum(1 for skill in required_skills if skill.lower() in resume_text)
-        required_rate = required_matches / len(required_skills) if required_skills else 0
-        
-        # Add bonus (up to 5 points) for high required skill match
-        bonus = min(5, int(required_rate * 5))
-        
-        return min(30, score + bonus)
+        return keywords
     
     def _score_format_compatibility(self, resume: dict) -> int:
         """
