@@ -80,6 +80,18 @@ async def update_profile(
                 detail="No data to update"
             )
         
+        # Convert date objects to ISO format strings for MongoDB
+        def convert_dates_to_strings(data):
+            """Recursively convert date objects to ISO strings"""
+            if isinstance(data, dict):
+                return {k: convert_dates_to_strings(v) for k, v in data.items()}
+            elif isinstance(data, list):
+                return [convert_dates_to_strings(item) for item in data]
+            elif isinstance(data, date):
+                return data.isoformat()
+            return data
+        
+        update_data = convert_dates_to_strings(update_data)
         update_data["updated_at"] = datetime.utcnow()
         
         # Update profile
