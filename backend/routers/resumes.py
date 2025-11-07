@@ -170,34 +170,3 @@ async def get_templates():
         {"id": "template_5", "name": "Minimalist", "description": "Simple and focused"}
     ]
     return templates
-
-def generate_summary(profile: dict, job_description: Optional[dict]) -> str:
-    """
-    Generate a basic professional summary (will be enhanced with AI)
-    """
-    personal_info = profile.get("personal_info", {})
-    title = personal_info.get("title", "Professional")
-    experience_count = len(profile.get("experience", []))
-    
-    summary = f"{title} with {experience_count}+ years of experience."
-    return summary
-
-def calculate_basic_ats_score(profile: dict, job_description: Optional[dict]) -> int:
-    """
-    Calculate basic ATS score (will be enhanced with AI)
-    """
-    score = 50  # Base score
-    
-    # Add points for complete sections
-    if profile.get("experience"):
-        score += 15
-    if profile.get("education"):
-        score += 10
-    if profile.get("skills"):
-        score += 15
-    if profile.get("certifications"):
-        score += 5
-    if profile.get("projects"):
-        score += 5
-    
-    return min(score, 100)
