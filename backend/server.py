@@ -44,6 +44,9 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
+# Add compression middleware (compress responses > 1KB)
+app.add_middleware(GZipMiddleware, minimum_size=1000)
+
 # Add security middleware (order matters!)
 app.middleware("http")(validate_content_length)
 app.middleware("http")(request_logging_middleware)
