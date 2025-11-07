@@ -69,6 +69,13 @@ export const profileAPI = {
   createProfile: (data) => api.post('/api/profiles/me', data),
   updateProfile: (data) => api.put('/api/profiles/me', data),
   getCompleteness: () => api.get('/api/profiles/completeness'),
+  parseResume: (formData) => {
+    return api.post('/api/profiles/parse-resume', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
 };
 
 // Job Description API
