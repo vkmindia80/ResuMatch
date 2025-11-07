@@ -282,11 +282,19 @@ const Resumes = () => {
               )}
 
               <div className="flex space-x-2">
-                <button className="flex-1 btn-secondary text-sm py-2">
+                <button 
+                  onClick={() => handlePreview(resume)}
+                  className="flex-1 btn-secondary text-sm py-2"
+                  data-testid={`preview-resume-${resume.id}`}
+                >
                   <Eye size={16} className="inline mr-1" />
                   Preview
                 </button>
-                <button className="flex-1 btn-primary text-sm py-2">
+                <button 
+                  onClick={() => handleDownload(resume)}
+                  className="flex-1 btn-primary text-sm py-2"
+                  data-testid={`download-resume-${resume.id}`}
+                >
                   <Download size={16} className="inline mr-1" />
                   Download
                 </button>
