@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Mail, Lock, AlertCircle } from 'lucide-react';
+import { Mail, Lock, AlertCircle, Play } from 'lucide-react';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -10,6 +10,10 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  // Demo credentials
+  const DEMO_EMAIL = 'demo@resumatch.com';
+  const DEMO_PASSWORD = 'Demo@123';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,6 +29,12 @@ const Login = () => {
     }
     
     setLoading(false);
+  };
+
+  const useDemoCredentials = () => {
+    setEmail(DEMO_EMAIL);
+    setPassword(DEMO_PASSWORD);
+    setError('');
   };
 
   return (
