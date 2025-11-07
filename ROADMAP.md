@@ -438,16 +438,16 @@ Resume {
 - **A**ction: Steps taken
 - **R**esult: Outcome and impact
 
-**API Endpoints**
+**API Endpoints** - ✅ Core endpoints implemented
 ```
-POST   /api/interviews/generate-questions
-GET    /api/interviews/questions
-GET    /api/interviews/questions/:id
-POST   /api/interviews/questions/:id/answer
-PUT    /api/interviews/questions/:id/answer
-GET    /api/interviews/categories
-POST   /api/interviews/practice-session
-GET    /api/interviews/practice-history
+✅ POST   /api/interviews/generate-questions (AI-powered question generation)
+✅ GET    /api/interviews/questions (get all questions)
+✅ GET    /api/interviews/questions/:id (get specific question)
+⏸️ POST   /api/interviews/questions/:id/answer (not separately implemented)
+⏸️ PUT    /api/interviews/questions/:id/answer (answer editing done on frontend)
+✅ GET    /api/interviews/categories (get question categories)
+⏸️ POST   /api/interviews/practice-session (not yet implemented)
+⏸️ GET    /api/interviews/practice-history (not yet implemented)
 ```
 
 **Database Schema**
