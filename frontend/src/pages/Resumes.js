@@ -13,6 +13,10 @@ const Resumes = () => {
   const [generating, setGenerating] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [previewResume, setPreviewResume] = useState(null);
+  
+  // New state for generation mode
+  const [generationMode, setGenerationMode] = useState('profile'); // 'profile' or 'optimize'
+  const [selectedSourceResume, setSelectedSourceResume] = useState('');
 
   useEffect(() => {
     fetchData();
