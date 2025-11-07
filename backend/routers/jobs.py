@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from utils.auth import get_current_user_id
+from utils.ai_job_parser import AIJobParser
 from database import get_database
 from datetime import datetime
 import uuid
@@ -23,6 +24,7 @@ class JobDescriptionResponse(BaseModel):
     location: Optional[str]
     job_type: Optional[str]
     description: str
+    parsed_data: Dict[str, Any] = {}
     parsed_keywords: List[str] = []
     created_at: datetime
 
@@ -33,12 +35,30 @@ async def create_job_description(
     db = Depends(get_database)
 ):
     """
-    Create a new job description
+    Create a new job description with AI-powered parsing
     """
     job_id = str(uuid.uuid4())
     
-    # Basic keyword extraction (will enhance with AI later)
-    keywords = extract_keywords(job.description)
+    # AI-powered job parsing
+    parser = AIJobParser()
+    job_data_dict = {
+        "title": job.title,
+        "company": job.company,
+        "location": job.location,
+        "job_type": job.job_type,
+        "description": job.description
+    }
+    
+    parse_result = await parser.parse_job_description(job_data_dict)
+    parsed_data = parse_result.get("data", {})
+    
+    # Extract keywords from parsed data
+    keywords = []
+    keywords.extend(parsed_data.get("technical_skills", []))
+    keywords.extend(parsed_data.get("tools_and_technologies", []))
+    keywords.extend(parsed_data.get("required_skills", []))
+    # Remove duplicates and limit
+    keywords = list(set(keywords))[:30]
     
     job_dict = {
         "id": job_id,
@@ -48,6 +68,7 @@ async def create_job_description(
         "location": job.location,
         "job_type": job.job_type,
         "description": job.description,
+        "parsed_data": parsed_data,
         "parsed_keywords": keywords,
         "created_at": datetime.utcnow(),
         "updated_at": datetime.utcnow()
