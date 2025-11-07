@@ -46,18 +46,43 @@ const Resumes = () => {
 
   const handleGenerate = async (e) => {
     e.preventDefault();
+    
+    // Validation for optimize mode
+    if (generationMode === 'optimize') {
+      if (!selectedSourceResume) {
+        alert('Please select a resume to optimize');
+        return;
+      }
+      if (!selectedJob) {
+        alert('Please select a job description to optimize for');
+        return;
+      }
+    }
+    
     setGenerating(true);
     try {
-      await resumeAPI.generateResume({
+      const payload = {
         job_description_id: selectedJob || null,
         template_id: selectedTemplate
-      });
+      };
+      
+      // Add source_resume_id if in optimize mode
+      if (generationMode === 'optimize') {
+        payload.source_resume_id = selectedSourceResume;
+      }
+      
+      await resumeAPI.generateResume(payload);
       await fetchData();
       setShowForm(false);
       setSelectedJob('');
+      setSelectedSourceResume('');
+      setGenerationMode('profile');
     } catch (error) {
       console.error('Error generating resume:', error);
-      alert('Error generating resume. Please ensure your profile is complete.');
+      const errorMsg = generationMode === 'optimize' 
+        ? 'Error optimizing resume. Please try again.'
+        : 'Error generating resume. Please ensure your profile is complete.';
+      alert(errorMsg);
     } finally {
       setGenerating(false);
     }
