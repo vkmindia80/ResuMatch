@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from pydantic import BaseModel
 from typing import List, Optional
 from utils.auth import get_current_user_id
+from utils.ai_interview_generator import AIInterviewGenerator
 from database import get_database
 from datetime import datetime
 import uuid
@@ -26,7 +27,7 @@ async def generate_interview_questions(
     db = Depends(get_database)
 ):
     """
-    Generate interview questions based on job description and user profile
+    Generate AI-powered interview questions with STAR-format answers
     """
     # Get job description
     job = await db.job_descriptions.find_one({
@@ -47,14 +48,28 @@ async def generate_interview_questions(
             detail="Profile not found"
         )
     
-    # Generate basic questions (will be enhanced with AI)
-    questions = generate_basic_questions(job, profile, request.count)
+    # Generate AI-powered questions
+    print(f"Generating {request.count} AI-powered interview questions...")
+    ai_generator = AIInterviewGenerator()
+    questions = await ai_generator.generate_interview_questions(job, profile, request.count)
     
-    # Save questions to database
+    if not questions:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to generate interview questions. Please try again."
+        )
+    
+    # Add IDs and save questions to database
     for question in questions:
+        question["id"] = str(uuid.uuid4())
         question["user_id"] = user_id
         question["job_description_id"] = request.job_description_id
         question["created_at"] = datetime.utcnow()
+        question["is_favorite"] = False
+        question["practice_count"] = 0
+        question["user_custom_answer"] = None
+        question["last_practiced"] = None
+        
         await db.interview_questions.insert_one(question)
         question.pop("_id", None)
     
