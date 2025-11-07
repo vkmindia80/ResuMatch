@@ -112,11 +112,7 @@ const CoverLetters = () => {
         yPos += 10;
       }
       
-      // Salutation
-      doc.text('Dear Hiring Manager,', margin, yPos);
-      yPos += 15;
-      
-      // Opening
+      // Opening (already includes greeting like "Dear Hiring Manager,")
       if (content.opening) {
         const cleanOpening = content.opening.replace(/\\n/g, '\n');
         const openingLines = doc.splitTextToSize(cleanOpening, maxWidth);
@@ -138,7 +134,7 @@ const CoverLetters = () => {
         });
       }
       
-      // Closing
+      // Closing (already includes signature like "Sincerely, John Doe")
       if (content.closing) {
         if (yPos > 240) {
           doc.addPage();
@@ -149,11 +145,6 @@ const CoverLetters = () => {
         doc.text(closingLines, margin, yPos);
         yPos += closingLines.length * 7 + 15;
       }
-      
-      // Signature
-      doc.text('Sincerely,', margin, yPos);
-      yPos += 7;
-      doc.text(letter.content.signature || letter.content.header?.full_name || '[Your Name]', margin, yPos);
       
       // Save PDF
       doc.save(`cover-letter-${job?.company || 'document'}.pdf`);
