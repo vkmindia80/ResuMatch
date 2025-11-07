@@ -6,13 +6,18 @@ const InterviewPrep = () => {
   const [questions, setQuestions] = useState([]);
   const [jobs, setJobs] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [analytics, setAnalytics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [showAnalytics, setShowAnalytics] = useState(false);
   const [selectedJob, setSelectedJob] = useState('');
   const [questionCount, setQuestionCount] = useState(25);
   const [generating, setGenerating] = useState(false);
   const [expandedQuestion, setExpandedQuestion] = useState(null);
   const [filterCategory, setFilterCategory] = useState('');
+  const [isPracticing, setIsPracticing] = useState(false);
+  const [practiceStartTime, setPracticeStartTime] = useState(null);
+  const [practicedQuestions, setPracticedQuestions] = useState([]);
 
   useEffect(() => {
     fetchData();
