@@ -186,19 +186,23 @@ async def parse_resume(
                     except:
                         return None
         
-        # Transform education dates
+        # Transform education dates (keep as strings for MongoDB)
         for edu in parsed_data.get("education", []):
-            if "start_date" in edu:
-                edu["start_date"] = parse_date_string(edu["start_date"])
-            if "end_date" in edu:
-                edu["end_date"] = parse_date_string(edu["end_date"])
+            if "start_date" in edu and edu["start_date"]:
+                date_obj = parse_date_string(edu["start_date"])
+                edu["start_date"] = date_obj.isoformat() if date_obj else None
+            if "end_date" in edu and edu["end_date"]:
+                date_obj = parse_date_string(edu["end_date"])
+                edu["end_date"] = date_obj.isoformat() if date_obj else None
         
-        # Transform experience dates
+        # Transform experience dates (keep as strings for MongoDB)
         for exp in parsed_data.get("experience", []):
-            if "start_date" in exp:
-                exp["start_date"] = parse_date_string(exp["start_date"])
-            if "end_date" in exp:
-                exp["end_date"] = parse_date_string(exp["end_date"])
+            if "start_date" in exp and exp["start_date"]:
+                date_obj = parse_date_string(exp["start_date"])
+                exp["start_date"] = date_obj.isoformat() if date_obj else None
+            if "end_date" in exp and exp["end_date"]:
+                date_obj = parse_date_string(exp["end_date"])
+                exp["end_date"] = date_obj.isoformat() if date_obj else None
         
         # Transform skills to proper format
         skills_data = parsed_data.get("skills", {})
