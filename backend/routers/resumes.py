@@ -212,6 +212,8 @@ async def generate_resume(
         "status": "draft",
         "content": resume_content,
         "ats_score": ats_score,
+        "source_resume_id": resume_data.source_resume_id if is_reoptimization else None,
+        "is_reoptimized": is_reoptimization,
         "created_at": datetime.utcnow(),
         "updated_at": datetime.utcnow()
     }
