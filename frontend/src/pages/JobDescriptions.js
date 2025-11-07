@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { jobAPI } from '../services/api';
-import { Plus, Trash2, Briefcase, MapPin, Building } from 'lucide-react';
+import { jobAPI, matchScoreAPI } from '../services/api';
+import { Plus, Trash2, Briefcase, MapPin, Building, Target, TrendingUp } from 'lucide-react';
 
 const JobDescriptions = () => {
   const [jobs, setJobs] = useState([]);
