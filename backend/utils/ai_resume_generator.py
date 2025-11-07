@@ -75,23 +75,16 @@ class AIResumeGenerator:
                 
                 prompt = self._build_experience_optimization_prompt(exp, job_description)
                 
-                response = self.client.chat.completions.create(
-                    model="gpt-4o-mini",
-                    messages=[
-                        {
-                            "role": "system",
-                            "content": "You are an expert resume writer. Transform experience descriptions into powerful, ATS-optimized bullet points using action verbs, quantifiable achievements, and impact statements."
-                        },
-                        {
-                            "role": "user",
-                            "content": prompt
-                        }
-                    ],
+                system_message = "You are an expert resume writer. Transform experience descriptions into powerful, ATS-optimized bullet points using action verbs, quantifiable achievements, and impact statements."
+                
+                response = self.client.chat(
+                    messages=[prompt],
+                    system_message=system_message,
                     temperature=0.7,
                     max_tokens=500
                 )
                 
-                content = response.choices[0].message.content.strip()
+                content = response.strip()
                 
                 # Parse optimized bullets
                 optimized_bullets = [
