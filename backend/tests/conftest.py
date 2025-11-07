@@ -170,3 +170,64 @@ async def test_job(test_db, test_user):
     }
     await test_db.job_descriptions.insert_one(job_data)
     return job_data
+
+
+
+@pytest.fixture
+async def test_resume(test_db, test_user, test_profile):
+    """Create a test resume"""
+    resume_data = {
+        "id": str(uuid.uuid4()),
+        "user_id": test_user["id"],
+        "profile_id": test_profile["id"],
+        "job_description_id": None,
+        "template_id": "template_1",
+        "status": "draft",
+        "content": {
+            "header": test_profile["personal_info"],
+            "summary": "Experienced software engineer...",
+            "experience": test_profile["experience"],
+            "education": test_profile["education"],
+            "skills": test_profile["skills"],
+            "projects": [],
+            "certifications": []
+        },
+        "ats_score": {
+            "overall_score": 85,
+            "keyword_match": 90,
+            "format_compatibility": 95,
+            "impact_statements": 80,
+            "suggestions": []
+        },
+        "created_at": datetime.utcnow(),
+        "updated_at": datetime.utcnow()
+    }
+    await test_db.resumes.insert_one(resume_data)
+    return resume_data
+
+
+@pytest.fixture
+async def test_interview_question(test_db, test_user, test_job):
+    """Create a test interview question"""
+    question_data = {
+        "id": str(uuid.uuid4()),
+        "user_id": test_user["id"],
+        "job_description_id": test_job["id"],
+        "question": "Tell me about a time when you had to work under pressure.",
+        "category": "behavioral",
+        "difficulty": "medium",
+        "ai_generated_answer": {
+            "situation": "At my previous job...",
+            "task": "I was responsible for...",
+            "action": "I took the following steps...",
+            "result": "We successfully delivered...",
+            "full_answer": "At my previous job, I was responsible for... I took the following steps... We successfully delivered..."
+        },
+        "user_custom_answer": None,
+        "practice_count": 0,
+        "is_favorite": False,
+        "last_practiced": None,
+        "created_at": datetime.utcnow()
+    }
+    await test_db.interview_questions.insert_one(question_data)
+    return question_data
