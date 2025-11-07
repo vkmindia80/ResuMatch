@@ -90,18 +90,22 @@ class AIInterviewGenerator:
     ) -> List[dict]:
         """Generate questions for a specific category"""
         try:
+            from emergentintegrations.llm.chat import UserMessage
+            
             prompt = self._build_question_prompt(category, count, job_description, profile)
             
             system_message = "You are an expert interview coach. Generate realistic, role-specific interview questions with STAR-format answers based on the candidate's actual experience. Return valid JSON only."
             
-            response = self.client.chat(
-                messages=[prompt],
-                system_message=system_message,
-                temperature=0.8,
-                max_tokens=2500
-            )
+            # Create chat client
+            client = LlmChat(
+                api_key=self.api_key,
+                session_id=f"interview_{category}_{hash(str(job_description.get('id', 'unknown')))}",
+                system_message=system_message
+            ).with_model("openai", "gpt-4o-mini").with_params(temperature=0.8, max_tokens=2500)
             
-            content = response.strip()
+            # Send message
+            user_msg = UserMessage(text=prompt)
+            content = client.send_message(user_msg).strip()
             
             # Extract JSON
             if "```json" in content:
