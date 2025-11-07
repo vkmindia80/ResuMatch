@@ -47,13 +47,32 @@ async def connect_to_mongo():
     db_client = AsyncIOMotorClient(mongo_url)
     db = db_client.get_database()
     
-    # Create indexes
+    # Create indexes for performance
+    # Users
     await db.users.create_index("email", unique=True)
     await db.users.create_index("created_at")
+    await db.users.create_index([("email", 1), ("google_id", 1)])
+    
+    # Profiles
     await db.profiles.create_index("user_id", unique=True)
+    await db.profiles.create_index("completeness_score")
+    
+    # Job Descriptions
     await db.job_descriptions.create_index("user_id")
+    await db.job_descriptions.create_index([("user_id", 1), ("created_at", -1)])
+    await db.job_descriptions.create_index("id")
+    
+    # Resumes
     await db.resumes.create_index("user_id")
+    await db.resumes.create_index([("user_id", 1), ("created_at", -1)])
+    await db.resumes.create_index("id")
+    await db.resumes.create_index([("user_id", 1), ("job_description_id", 1)])
+    
+    # Interview Questions
     await db.interview_questions.create_index("user_id")
+    await db.interview_questions.create_index([("user_id", 1), ("created_at", -1)])
+    await db.interview_questions.create_index([("user_id", 1), ("job_description_id", 1)])
+    await db.interview_questions.create_index([("user_id", 1), ("category", 1)])
     
     print("✅ Connected to MongoDB")
     print(f"✅ Database: {db.name}")
