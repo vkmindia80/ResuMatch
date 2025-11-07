@@ -347,21 +347,21 @@ const CoverLetters = () => {
                 <p className="mb-4">Dear Hiring Manager,</p>
                 
                 {viewingLetter.content.opening && (
-                  <p className="mb-4">{viewingLetter.content.opening}</p>
+                  <p className="mb-4">{viewingLetter.content.opening.replace(/\\n/g, '\n')}</p>
                 )}
                 
                 {viewingLetter.content.body && Array.isArray(viewingLetter.content.body) && (
                   viewingLetter.content.body.map((paragraph, idx) => (
-                    <p key={idx} className="mb-4">{paragraph}</p>
+                    <p key={idx} className="mb-4">{paragraph.replace(/\\n/g, '\n')}</p>
                   ))
                 )}
                 
                 {viewingLetter.content.closing && (
-                  <p className="mb-4">{viewingLetter.content.closing}</p>
+                  <p className="mb-4">{viewingLetter.content.closing.replace(/\\n/g, '\n')}</p>
                 )}
                 
                 <p className="mb-2">Sincerely,</p>
-                <p>[Your Name]</p>
+                <p>{viewingLetter.content.signature || viewingLetter.content.header?.full_name || '[Your Name]'}</p>
               </div>
             </div>
 
