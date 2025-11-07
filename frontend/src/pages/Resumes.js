@@ -11,6 +11,8 @@ const Resumes = () => {
   const [selectedTemplate, setSelectedTemplate] = useState('template_1');
   const [templates, setTemplates] = useState([]);
   const [generating, setGenerating] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewResume, setPreviewResume] = useState(null);
 
   useEffect(() => {
     fetchData();
