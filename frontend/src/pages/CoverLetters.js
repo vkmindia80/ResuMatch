@@ -118,7 +118,8 @@ const CoverLetters = () => {
       
       // Opening
       if (content.opening) {
-        const openingLines = doc.splitTextToSize(content.opening, maxWidth);
+        const cleanOpening = content.opening.replace(/\\n/g, '\n');
+        const openingLines = doc.splitTextToSize(cleanOpening, maxWidth);
         doc.text(openingLines, margin, yPos);
         yPos += openingLines.length * 7 + 10;
       }
@@ -130,7 +131,8 @@ const CoverLetters = () => {
             doc.addPage();
             yPos = 20;
           }
-          const lines = doc.splitTextToSize(paragraph, maxWidth);
+          const cleanParagraph = paragraph.replace(/\\n/g, '\n');
+          const lines = doc.splitTextToSize(cleanParagraph, maxWidth);
           doc.text(lines, margin, yPos);
           yPos += lines.length * 7 + 10;
         });
@@ -142,7 +144,8 @@ const CoverLetters = () => {
           doc.addPage();
           yPos = 20;
         }
-        const closingLines = doc.splitTextToSize(content.closing, maxWidth);
+        const cleanClosing = content.closing.replace(/\\n/g, '\n');
+        const closingLines = doc.splitTextToSize(cleanClosing, maxWidth);
         doc.text(closingLines, margin, yPos);
         yPos += closingLines.length * 7 + 15;
       }
