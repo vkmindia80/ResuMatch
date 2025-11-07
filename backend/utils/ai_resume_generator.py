@@ -33,23 +33,16 @@ class AIResumeGenerator:
         try:
             prompt = self._build_summary_prompt(profile, job_description)
             
-            response = self.client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[
-                    {
-                        "role": "system",
-                        "content": "You are an expert resume writer. Create compelling, ATS-optimized professional summaries that highlight key achievements and skills."
-                    },
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
-                ],
+            system_message = "You are an expert resume writer. Create compelling, ATS-optimized professional summaries that highlight key achievements and skills."
+            
+            response = self.client.chat(
+                messages=[prompt],
+                system_message=system_message,
                 temperature=0.7,
                 max_tokens=300
             )
             
-            summary = response.choices[0].message.content.strip()
+            summary = response.strip()
             return summary
             
         except Exception as e:
