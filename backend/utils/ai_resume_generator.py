@@ -242,36 +242,77 @@ Write the professional summary now (3-4 sentences, no title, optimize for ATS):
     ) -> str:
         """Build prompt for experience optimization"""
         prompt = f"""
-Optimize the following work experience into powerful, ATS-optimized bullet points.
+Transform work experience into powerful, ATS-optimized bullet points that will score high with both ATS systems and recruiters.
 
 **Position:**
 - Company: {exp.get('company', 'N/A')}
 - Title: {exp.get('title', 'N/A')}
-- Duration: {exp.get('start_date', 'N/A')} to {exp.get('end_date', 'Present')}
+- Duration: {exp.get('start_date', 'N/A')} to {'Present' if exp.get('is_current') else exp.get('end_date', 'N/A')}
+- Location: {exp.get('location', 'N/A')}
 
-**Current Responsibilities:**
+**Current Responsibilities/Achievements:**
 """
-        for resp in exp.get('responsibilities', []):
-            prompt += f"- {resp}\n"
+        for i, resp in enumerate(exp.get('responsibilities', []), 1):
+            prompt += f"{i}. {resp}\n"
         
         if job_description:
             parsed_data = job_description.get('parsed_data', {})
-            required_skills = parsed_data.get('required_skills', [])[:5]
-            if required_skills:
-                prompt += f"\n**Target Job Requirements:** {', '.join(required_skills)}\n"
+            required_skills = parsed_data.get('required_skills', [])[:8]
+            technical_skills = parsed_data.get('technical_skills', [])[:8]
+            tools = parsed_data.get('tools_and_technologies', [])[:8]
+            
+            prompt += f"""
+**TARGET JOB REQUIREMENTS (CRITICAL for ATS matching):**
+- Required Skills: {', '.join(required_skills)}
+- Technical Skills: {', '.join(technical_skills)}
+- Tools/Technologies: {', '.join(tools)}
+
+**KEYWORD MATCHING PRIORITY:**
+Match and incorporate these keywords naturally if relevant to the role:
+{', '.join(required_skills[:15] + technical_skills[:15])}
+"""
         
         prompt += """
-**Optimization Requirements:**
-1. Start each bullet with a strong action verb (Led, Developed, Implemented, etc.)
-2. Quantify achievements where possible (percentages, numbers, metrics)
-3. Show impact and results (improved, increased, reduced, etc.)
-4. Include relevant technical skills naturally
-5. Keep bullets concise (1-2 lines max)
-6. Make them ATS-friendly
-7. Prioritize most impressive achievements
-8. Match keywords from target job if provided
+**OPTIMIZATION FORMULA (Use CAR/STAR Method):**
+[Action Verb] + [What you did] + [With what/How] + [Quantifiable Result/Impact]
 
-Return 3-5 optimized bullet points (one per line, no numbering):
+**REQUIREMENTS:**
+1. **Action Verbs**: Start EVERY bullet with a powerful action verb:
+   - Leadership: Led, Directed, Managed, Coordinated, Supervised, Mentored
+   - Creation: Developed, Built, Created, Designed, Implemented, Established
+   - Improvement: Optimized, Enhanced, Streamlined, Increased, Reduced, Transformed
+   - Achievement: Achieved, Accomplished, Exceeded, Delivered, Completed
+   - Technical: Architected, Engineered, Programmed, Automated, Integrated
+
+2. **Quantification**: Include numbers/metrics wherever possible:
+   - Percentages (improved by 40%)
+   - Numbers (managed team of 10)
+   - Dollar amounts ($2M budget)
+   - Time saved (reduced processing time by 50%)
+   - Scale (processed 10K+ requests daily)
+
+3. **Impact Focus**: Show RESULTS and BUSINESS IMPACT:
+   - Before: "Worked on web applications"
+   - After: "Architected scalable web platform serving 100K+ users, reducing load time by 60%"
+
+4. **Keyword Integration**: Naturally incorporate relevant technical keywords and tools from job requirements
+
+5. **ATS Formatting**:
+   - Use standard terms (not abbreviations unless industry-standard)
+   - Include technical skills mentioned in job posting
+   - Use context that ATS can parse (no special characters)
+   - Keep to 1-2 lines per bullet
+
+6. **Relevance**: Prioritize most impressive and relevant achievements for target role
+
+7. **Conciseness**: Maximum 2 lines per bullet, no fluff words
+
+**EXAMPLES OF EXCELLENT BULLETS:**
+- "Led cross-functional team of 8 engineers to deliver microservices architecture, reducing system latency by 45% and improving uptime to 99.9%"
+- "Developed automated CI/CD pipeline using Jenkins and Docker, cutting deployment time from 2 hours to 15 minutes and eliminating 90% of production bugs"
+- "Architected React-based dashboard processing 50K+ daily transactions, increasing user engagement by 35% through intuitive UX design"
+
+Return 4-6 optimized bullet points (one per line, start with action verb, no numbering or bullet symbols):
 """
         return prompt
     
