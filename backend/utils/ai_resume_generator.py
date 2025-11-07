@@ -129,18 +129,22 @@ class AIResumeGenerator:
             if not job_description:
                 return profile_skills
             
+            from emergentintegrations.llm.chat import UserMessage
+            
             prompt = self._build_skills_optimization_prompt(profile_skills, job_description)
             
             system_message = "You are an expert resume optimizer. Prioritize and organize skills to match job requirements while maintaining honesty. Return valid JSON only."
             
-            response = self.client.chat(
-                messages=[prompt],
-                system_message=system_message,
-                temperature=0.3,
-                max_tokens=800
-            )
+            # Create chat client
+            client = LlmChat(
+                api_key=self.api_key,
+                session_id=f"skills_opt_{hash(str(job_description.get('id', 'unknown')))}",
+                system_message=system_message
+            ).with_model("openai", "gpt-4o-mini").with_params(temperature=0.3, max_tokens=800)
             
-            content = response.strip()
+            # Send message
+            user_msg = UserMessage(text=prompt)
+            content = client.send_message(user_msg).strip()
             
             # Extract JSON
             if "```json" in content:
