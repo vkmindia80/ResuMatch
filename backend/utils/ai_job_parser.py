@@ -29,14 +29,20 @@ class AIJobParser:
             prompt = self._build_parsing_prompt(job_data)
             
             # Call OpenAI API via emergentintegrations
+            from emergentintegrations.llm.chat import UserMessage
+            
             system_message = "You are an expert job description analyzer. Extract structured information from job postings accurately and comprehensively. Always return valid JSON."
             
-            response = self.client.chat(
-                messages=[prompt],
-                system_message=system_message,
-                temperature=0.3,
-                max_tokens=2000
-            )
+            # Create chat client
+            client = LlmChat(
+                api_key=self.api_key,
+                session_id=f"job_parse_{hash(job_data.get('title', 'unknown'))}",
+                system_message=system_message
+            ).with_model("openai", "gpt-4o-mini").with_params(temperature=0.3, max_tokens=2000)
+            
+            # Send message
+            user_msg = UserMessage(text=prompt)
+            response = client.send_message(user_msg)
             
             # Parse response
             content = response.strip()
