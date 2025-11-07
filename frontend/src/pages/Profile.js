@@ -58,20 +58,70 @@ const Profile = () => {
     }
   };
 
+  // Helper function to clean data before sending
+  const cleanProfileData = (data) => {
+    const cleaned = JSON.parse(JSON.stringify(data)); // Deep clone
+    
+    // Clean education
+    if (cleaned.education) {
+      cleaned.education = cleaned.education.map(edu => ({
+        ...edu,
+        field: edu.field || '',
+        start_date: edu.start_date || null,
+        end_date: edu.end_date || null,
+        gpa: edu.gpa ? parseFloat(edu.gpa) : null,
+        achievements: Array.isArray(edu.achievements) ? edu.achievements.filter(a => a && a.trim()) : []
+      }));
+    }
+    
+    // Clean experience
+    if (cleaned.experience) {
+      cleaned.experience = cleaned.experience.map(exp => ({
+        ...exp,
+        start_date: exp.start_date || null,
+        end_date: exp.end_date || null,
+        location: exp.location || null,
+        responsibilities: Array.isArray(exp.responsibilities) ? exp.responsibilities.filter(r => r && r.trim()) : [],
+        achievements: Array.isArray(exp.achievements) ? exp.achievements.filter(a => a && a.trim()) : [],
+        technologies: Array.isArray(exp.technologies) ? exp.technologies.filter(t => t && t.trim()) : []
+      }));
+    }
+    
+    // Clean skills - ensure technical skills have proper structure
+    if (cleaned.skills) {
+      if (cleaned.skills.technical) {
+        cleaned.skills.technical = cleaned.skills.technical
+          .filter(skill => skill && (typeof skill === 'string' ? skill.trim() : skill.name && skill.name.trim()))
+          .map(skill => {
+            if (typeof skill === 'string') {
+              return { name: skill, level: null };
+            }
+            return { name: skill.name, level: skill.level || null };
+          });
+      }
+      
+      if (cleaned.skills.soft) {
+        cleaned.skills.soft = cleaned.skills.soft.filter(skill => skill && skill.trim());
+      }
+    }
+    
+    return cleaned;
+  };
+
   const handleSaveProfile = async () => {
     setSaving(true);
     setMessage('');
     try {
       if (profile.id) {
         // Prepare update data - only send fields that should be updated
-        const updateData = {
+        const updateData = cleanProfileData({
           personal_info: profile.personal_info,
           education: profile.education,
           experience: profile.experience,
           skills: profile.skills,
           projects: profile.projects || [],
           certifications: profile.certifications || []
-        };
+        });
         
         await profileAPI.updateProfile(updateData);
         setMessage('Profile updated successfully!');
