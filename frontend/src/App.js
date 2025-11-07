@@ -9,6 +9,7 @@ import Profile from './pages/Profile';
 import JobDescriptions from './pages/JobDescriptions';
 import Resumes from './pages/Resumes';
 import InterviewPrep from './pages/InterviewPrep';
+import CoverLetters from './pages/CoverLetters';
 import Navbar from './components/Navbar';
 import Loading from './components/Loading';
 import './App.css';
@@ -33,6 +34,7 @@ function App() {
           <Route path="/profile" element={isAuthenticated ? <Profile /> : <Navigate to="/login" />} />
           <Route path="/jobs" element={isAuthenticated ? <JobDescriptions /> : <Navigate to="/login" />} />
           <Route path="/resumes" element={isAuthenticated ? <Resumes /> : <Navigate to="/login" />} />
+          <Route path="/cover-letters" element={isAuthenticated ? <CoverLetters /> : <Navigate to="/login" />} />
           <Route path="/interview-prep" element={isAuthenticated ? <InterviewPrep /> : <Navigate to="/login" />} />
         </Routes>
       </div>
