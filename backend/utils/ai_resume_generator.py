@@ -361,7 +361,7 @@ Return 4-6 PERFECT ATS-optimized bullets (one per line, start with power verb, N
         tools_tech = parsed_data.get('tools_and_technologies', [])
         
         prompt = f"""
-Optimize and prioritize skills for maximum ATS score and recruiter impact.
+OPTIMIZE SKILLS FOR PERFECT ATS MATCH (TARGET: 95%+ KEYWORD SCORE)
 
 **USER'S CURRENT SKILLS:**
 - Technical: {', '.join(tech_skills)}
@@ -369,58 +369,67 @@ Optimize and prioritize skills for maximum ATS score and recruiter impact.
 - Tools: {', '.join(tools)}
 - Languages: {', '.join([lang.get('name') if isinstance(lang, dict) else lang for lang in languages])}
 
-**JOB REQUIREMENTS (CRITICAL - Prioritize matching skills):**
-- Required Skills: {', '.join(required_skills)}
-- Technical Skills: {', '.join(technical_skills)}
-- Tools & Technologies: {', '.join(tools_tech)}
+**TARGET JOB REQUIREMENTS - CRITICAL FOR ATS:**
+- \ud83d\udd25 MUST-HAVE Required Skills: {', '.join(required_skills)}
+- \u26a1 CRITICAL Technical Skills: {', '.join(technical_skills)}
+- \ud83d\udee0\ufe0f Key Tools & Technologies: {', '.join(tools_tech)}
 
-**OPTIMIZATION STRATEGY:**
+**ATS PERFECTION STRATEGY:**
 
-1. **PRIORITY MATCHING**: 
-   - Identify user skills that EXACTLY match job requirements
-   - Place matching skills at the TOP of each category
-   - Use EXACT terminology from job posting (e.g., if job says "React.js", use "React.js" not "React")
+1. \ud83c\udfaf **EXACT KEYWORD MATCHING** (HIGHEST PRIORITY):
+   - Identify user skills that match job requirements
+   - Use EXACT terminology from job posting (if job says "React.js" use "React.js", not "React" or "ReactJS")
+   - Place ALL matching skills at the TOP of each category
+   - Match priority: Required Skills > Technical Skills > Tools > Preferred
 
-2. **CATEGORIZATION**:
-   - Technical: Programming languages, frameworks, methodologies
-   - Soft: Leadership, communication, problem-solving, etc.
-   - Tools: Software, platforms, applications
-   - Languages: Spoken languages (if user has any)
+2. \ud83d\udcca **STRATEGIC SKILL PLACEMENT**:
+   - Top 5-8 skills MUST be job-matching keywords
+   - Include variations if user has them (e.g., both "JavaScript" and "Node.js")
+   - Prioritize in-demand skills mentioned multiple times in job posting
+   - Group related technologies together
 
-3. **HONEST REPRESENTATION**:
-   - DO NOT add skills the user doesn't have
-   - Only reorder and recategorize existing skills
-   - Keep all valuable skills even if not in job description
+3. \ud83d\udee0\ufe0f **SMART CATEGORIZATION**:
+   - **Technical**: Languages (Python, JavaScript), Frameworks (React, Django), Methodologies (Agile, CI/CD)
+   - **Soft**: Leadership, Communication, Problem-solving, Team collaboration
+   - **Tools**: Platforms (AWS, Docker, Jenkins), Software (Git, JIRA, VS Code)
+   - **Languages**: Spoken languages only
 
-4. **ATS OPTIMIZATION**:
-   - Use industry-standard naming (e.g., "JavaScript" not "JS")
-   - Avoid abbreviations unless they're the standard (e.g., "SQL" is okay)
-   - Group similar skills logically
+4. \u2705 **ATS-FRIENDLY FORMATTING**:
+   - Use FULL industry-standard names (e.g., "JavaScript" not "JS")
+   - Standard abbreviations OK: SQL, AWS, CI/CD, REST API
+   - NO special characters or proprietary names
+   - Consistent naming across all skills
 
-5. **RELEVANCE RANKING**:
-   - Most relevant/required skills first
-   - Advanced/expert skills second
-   - Supporting/nice-to-have skills last
+5. \ud83d\udcaf **HONEST OPTIMIZATION**:
+   - ONLY reorder and recategorize existing user skills
+   - DO NOT add skills user doesn't have
+   - Keep all valuable skills (don't remove non-matching ones)
+   - Maintain skill integrity and accuracy
 
-**OUTPUT FORMAT** (Return as valid JSON, string arrays only - NO objects with name/level):
+6. \ud83c\udd99 **RELEVANCE RANKING WITHIN CATEGORIES**:
+   - Position 1-5: Job-matching required/critical skills
+   - Position 6-10: Job-matching preferred/nice-to-have skills
+   - Position 11+: Other valuable user skills
+
+**OUTPUT FORMAT** (Return as valid JSON with string arrays ONLY - NO objects with name/level):
 {{
-  "technical": ["Skill1", "Skill2", "Skill3", ...],
-  "soft": ["Skill1", "Skill2", "Skill3", ...],
-  "tools": ["Tool1", "Tool2", "Tool3", ...],
-  "languages": ["Language1", "Language2", ...]
+  "technical": ["ExactMatchSkill1", "ExactMatchSkill2", "MatchingSkill3", "OtherSkill4", ...],
+  "soft": ["MatchingSoftSkill1", "Skill2", "Skill3", ...],
+  "tools": ["MatchingTool1", "MatchingTool2", "Tool3", ...],
+  "languages": ["Language1", "Language2"]
 }}
 
 **EXAMPLE:**
-If user has: Python, JavaScript, Leadership
-If job requires: Python, Team Management, AWS
-Output:
+User has: Python, JavaScript, React, Leadership, AWS, Docker
+Job requires: Python, React, AWS, CI/CD, Team Leadership, Docker
+Optimized output:
 {{
-  "technical": ["Python", "JavaScript"],
-  "soft": ["Leadership"],
-  "tools": ["AWS"]
+  "technical": ["Python", "React", "JavaScript", "CI/CD"],
+  "soft": ["Team Leadership", "Leadership"],
+  "tools": ["AWS", "Docker"]
 }}
 
-Return optimized skills as JSON only (NO markdown, NO explanations):
+Return optimized skills as VALID JSON only (NO markdown, NO explanations, NO ```):
 """
         return prompt
     
