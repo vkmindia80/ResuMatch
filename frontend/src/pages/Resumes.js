@@ -23,13 +23,15 @@ const Resumes = () => {
         jobAPI.getJobs(),
         resumeAPI.getTemplates()
       ]);
-      setResumes(resumesRes.data);
-      // Backend returns paginated response for jobs: { items: [...], total: X, skip: Y, limit: Z }
+      // Backend returns paginated response for both resumes and jobs: { items: [...], total: X, skip: Y, limit: Z }
+      const resumesData = resumesRes.data.items || resumesRes.data || [];
       const jobsData = jobsRes.data.items || jobsRes.data || [];
+      setResumes(resumesData);
       setJobs(jobsData);
       setTemplates(templatesRes.data);
     } catch (error) {
       console.error('Error fetching data:', error);
+      setResumes([]); // Set empty array on error
       setJobs([]); // Set empty array on error
     } finally {
       setLoading(false);
