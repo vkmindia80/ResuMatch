@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { interviewAPI, jobAPI } from '../services/api';
-import { Plus, MessageSquare, ChevronDown, ChevronUp } from 'lucide-react';
+import { interviewAPI, jobAPI, practiceSessionAPI } from '../services/api';
+import { Plus, MessageSquare, ChevronDown, ChevronUp, Clock, BarChart2, Play } from 'lucide-react';
 
 const InterviewPrep = () => {
   const [questions, setQuestions] = useState([]);
