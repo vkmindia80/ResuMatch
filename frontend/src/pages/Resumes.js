@@ -186,16 +186,16 @@ const Resumes = () => {
                 </button>
               </div>
 
-              {resume.ats_score && (
+              {resume.ats_score && typeof resume.ats_score === 'object' && resume.ats_score.overall_score && (
                 <div className="mb-4">
                   <div className="flex justify-between text-sm mb-1">
                     <span className="text-secondary-600">ATS Score</span>
-                    <span className="font-semibold text-secondary-900">{resume.ats_score}%</span>
+                    <span className="font-semibold text-secondary-900">{resume.ats_score.overall_score}%</span>
                   </div>
                   <div className="w-full bg-secondary-200 rounded-full h-2">
                     <div
                       className="bg-primary-600 h-2 rounded-full transition-all"
-                      style={{ width: `${resume.ats_score}%` }}
+                      style={{ width: `${resume.ats_score.overall_score}%` }}
                     />
                   </div>
                 </div>
