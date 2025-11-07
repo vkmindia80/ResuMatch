@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Request
 from models.user import UserCreate, UserLogin, Token, UserResponse, UserInDB, SubscriptionTier
 from utils.auth import (
     get_password_hash,
@@ -10,6 +10,8 @@ from utils.auth import (
 )
 from datetime import datetime
 import uuid
+from middleware.rate_limit import limiter
+from utils.logging_config import log_info, log_warning
 
 router = APIRouter()
 
@@ -17,7 +19,8 @@ router = APIRouter()
 from database import get_database
 
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-async def register(user_data: UserCreate, db = Depends(get_database)):
+@limiter.limit("5/minute")  # Strict limit for registration
+async def register(request: Request, user_data: UserCreate, db = Depends(get_database)):
     """
     Register a new user
     """
