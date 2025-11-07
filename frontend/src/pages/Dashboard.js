@@ -22,18 +22,20 @@ const Dashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const [completeness, resumes, jobs, questions] = await Promise.all([
+      const [completeness, resumes, jobs, questions, coverLetters] = await Promise.all([
         profileAPI.getCompleteness(),
         resumeAPI.getResumes(),
         jobAPI.getJobs(),
-        interviewAPI.getQuestions()
+        interviewAPI.getQuestions(),
+        coverLetterAPI.getAll()
       ]);
 
       setStats({
         completeness: completeness.data.score,
-        resumes: resumes.data.length,
-        jobs: jobs.data.length,
-        questions: questions.data.length
+        resumes: resumes.data.items?.length || resumes.data.length || 0,
+        jobs: jobs.data.items?.length || jobs.data.length || 0,
+        questions: questions.data.items?.length || questions.data.length || 0,
+        coverLetters: coverLetters.data.items?.length || coverLetters.data.length || 0
       });
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
