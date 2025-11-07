@@ -351,18 +351,18 @@ ATSScore {
 }
 ```
 
-**API Endpoints**
+**API Endpoints** - ✅ Core endpoints implemented
 ```
-POST   /api/resumes/generate
-GET    /api/resumes
-GET    /api/resumes/:id
-PUT    /api/resumes/:id
-DELETE /api/resumes/:id
-POST   /api/resumes/:id/optimize
-GET    /api/resumes/:id/ats-score
-POST   /api/resumes/:id/export/pdf
-POST   /api/resumes/:id/export/docx
-GET    /api/resumes/templates
+✅ POST   /api/resumes/generate (AI-powered resume generation)
+✅ GET    /api/resumes/ (get all resumes)
+✅ GET    /api/resumes/:id (get specific resume)
+✅ PUT    /api/resumes/:id (update resume)
+✅ DELETE /api/resumes/:id (delete resume)
+⏸️ POST   /api/resumes/:id/optimize (optimization done during generation)
+✅ GET    /api/resumes/:id/ats-score (ATS score included in resume)
+✅ GET    /api/resumes/templates/list (get available templates)
+⏸️ POST   /api/resumes/:id/export/pdf (PDF export done on frontend)
+⏸️ POST   /api/resumes/:id/export/docx (not implemented)
 ```
 
 **Database Schema**
