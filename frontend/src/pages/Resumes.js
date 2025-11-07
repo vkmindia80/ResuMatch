@@ -299,7 +299,7 @@ const Resumes = () => {
                   <option value="">-- Select a resume --</option>
                   {resumes.map((resume) => (
                     <option key={resume.id} value={resume.id}>
-                      Resume from {new Date(resume.created_at).toLocaleDateString()} 
+                      {resume.name || `Resume from ${new Date(resume.created_at).toLocaleDateString()}`}
                       {resume.ats_score?.overall_score && ` (${resume.ats_score.overall_score}% ATS)`}
                     </option>
                   ))}
