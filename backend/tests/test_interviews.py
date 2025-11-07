@@ -64,12 +64,15 @@ class TestInterviews:
     
     @pytest.mark.asyncio
     async def test_get_all_questions(self, client: AsyncClient, auth_headers, test_interview_question):
-        """Test getting all interview questions for user"""
+        """Test getting all interview questions for user with pagination"""
         response = await client.get("/api/interviews/questions", headers=auth_headers)
         assert response.status_code == 200
         data = response.json()
-        assert isinstance(data, list)
-        assert len(data) >= 1
+        assert "items" in data
+        assert "total" in data
+        assert isinstance(data["items"], list)
+        assert len(data["items"]) >= 1
+        assert data["total"] >= 1
     
     @pytest.mark.asyncio
     async def test_get_questions_by_job(self, client: AsyncClient, auth_headers, test_interview_question, test_job):
