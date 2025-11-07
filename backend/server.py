@@ -65,7 +65,7 @@ app.add_middleware(
 security = HTTPBearer()
 
 # Import routers
-from routers import auth, users, profiles, jobs, resumes, interviews
+from routers import auth, users, profiles, jobs, resumes, interviews, cover_letters, practice_sessions
 
 # Register routers
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
@@ -74,6 +74,8 @@ app.include_router(profiles.router, prefix="/api/profiles", tags=["Profiles"])
 app.include_router(jobs.router, prefix="/api/jobs", tags=["Job Descriptions"])
 app.include_router(resumes.router, prefix="/api/resumes", tags=["Resumes"])
 app.include_router(interviews.router, prefix="/api/interviews", tags=["Interview Prep"])
+app.include_router(cover_letters.router, prefix="/api/cover-letters", tags=["Cover Letters"])
+app.include_router(practice_sessions.router, prefix="/api/practice-sessions", tags=["Practice Sessions"])
 
 @app.get("/")
 @limiter.limit("20/minute")
