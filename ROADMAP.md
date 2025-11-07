@@ -1396,7 +1396,7 @@ Once services are running, you have 4 options:
 
 ---
 
-### 🔧 **OPTION 4: Continue Polishing**
+#### **OPTION D: Continue Polishing**
 
 **Optional Enhancements:**
 1. DOCX Export (2 days)
