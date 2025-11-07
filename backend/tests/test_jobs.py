@@ -53,12 +53,16 @@ class TestJobDescriptions:
         """Test updating job description"""
         update_data = {
             "title": "Senior Software Engineer",
-            "location": "San Francisco, CA"
+            "company": test_job["company"],
+            "location": "San Francisco, CA",
+            "job_type": test_job["job_type"],
+            "description": test_job["description"]
         }
         response = await client.put(f"/api/jobs/{test_job['id']}", json=update_data, headers=auth_headers)
         assert response.status_code == 200
         data = response.json()
-        assert data["title"] == update_data["title"]
+        assert data["title"] == "Senior Software Engineer"
+        assert data["location"] == "San Francisco, CA"
     
     @pytest.mark.asyncio
     async def test_delete_job(self, client: AsyncClient, auth_headers, test_job):
