@@ -53,7 +53,15 @@
 5. Test in production
 6. Launch! 🎉
 
-### Week 2 Tasks (10 days)
+---
+
+## 📧 OPTION 2: Add Email Service First
+
+**Goal:** Enable password reset before launch  
+**Timeline:** 3-4 days  
+**Effort:** Medium
+
+### Action Items:
 
 #### Days 1-2: Complete Backend Testing ⚠️ CRITICAL
 **Goal: Reach 70%+ test coverage**
