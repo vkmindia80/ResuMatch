@@ -303,14 +303,34 @@ const Resumes = () => {
                 <div className="mb-4">
                   <div className="flex justify-between text-sm mb-1">
                     <span className="text-secondary-600">ATS Score</span>
-                    <span className="font-semibold text-secondary-900">{resume.ats_score.overall_score}%</span>
+                    <div className="flex items-center space-x-2">
+                      <span className="font-semibold text-secondary-900">{resume.ats_score.overall_score}%</span>
+                      {resume.ats_score.grade && (
+                        <span className={`text-xs font-bold px-2 py-0.5 rounded ${
+                          resume.ats_score.overall_score >= 95 ? 'bg-green-100 text-green-800' :
+                          resume.ats_score.overall_score >= 85 ? 'bg-blue-100 text-blue-800' :
+                          resume.ats_score.overall_score >= 75 ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-orange-100 text-orange-800'
+                        }`}>
+                          {resume.ats_score.grade}
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <div className="w-full bg-secondary-200 rounded-full h-2">
                     <div
-                      className="bg-primary-600 h-2 rounded-full transition-all"
+                      className={`h-2 rounded-full transition-all ${
+                        resume.ats_score.overall_score >= 95 ? 'bg-green-600' :
+                        resume.ats_score.overall_score >= 85 ? 'bg-blue-600' :
+                        resume.ats_score.overall_score >= 75 ? 'bg-yellow-600' :
+                        'bg-orange-600'
+                      }`}
                       style={{ width: `${resume.ats_score.overall_score}%` }}
                     />
                   </div>
+                  {resume.ats_score.overall_score >= 95 && (
+                    <p className="text-xs text-green-600 mt-1 font-medium">🎉 Perfect ATS Score!</p>
+                  )}
                 </div>
               )}
 
