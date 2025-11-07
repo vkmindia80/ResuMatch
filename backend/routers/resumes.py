@@ -94,24 +94,39 @@ async def generate_resume(
     
     resume_id = str(uuid.uuid4())
     
-    # Initialize AI generator
-    ai_generator = AIResumeGenerator()
-    
-    # Generate AI-powered content
-    print("Generating professional summary with AI...")
-    summary = await ai_generator.generate_professional_summary(profile, job_description)
-    
-    print("Optimizing experience bullets with AI...")
-    optimized_experience = await ai_generator.optimize_experience_bullets(
-        profile.get("experience", []),
-        job_description
-    )
-    
-    print("Optimizing skills prioritization...")
-    optimized_skills = await ai_generator.generate_skills_optimization(
-        profile.get("skills", {}),
-        job_description
-    )
+    # Generate or extract initial content based on mode
+    if is_reoptimization:
+        # Use existing resume content as starting point
+        print("📋 Using existing resume content as base...")
+        resume_content = source_resume.get("content", {})
+        
+        # We'll re-optimize this content with the new job description
+        summary = resume_content.get("summary", "")
+        optimized_experience = resume_content.get("experience", [])
+        optimized_skills = resume_content.get("skills", {})
+        
+        print(f"Base content loaded. Will optimize for job: {job_description.get('title') if job_description else 'General'}")
+        
+    else:
+        # Generate fresh content from profile
+        # Initialize AI generator
+        ai_generator = AIResumeGenerator()
+        
+        # Generate AI-powered content
+        print("Generating professional summary with AI...")
+        summary = await ai_generator.generate_professional_summary(profile, job_description)
+        
+        print("Optimizing experience bullets with AI...")
+        optimized_experience = await ai_generator.optimize_experience_bullets(
+            profile.get("experience", []),
+            job_description
+        )
+        
+        print("Optimizing skills prioritization...")
+        optimized_skills = await ai_generator.generate_skills_optimization(
+            profile.get("skills", {}),
+            job_description
+        )
     
     # Normalize skills format to ensure frontend compatibility
     def normalize_skills_list(skills_list):
