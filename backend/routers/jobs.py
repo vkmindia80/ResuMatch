@@ -3,6 +3,7 @@ from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
 from utils.auth import get_current_user_id
 from utils.ai_job_parser import AIJobParser
+from utils.job_match_scorer import JobMatchScorer
 from database import get_database
 from datetime import datetime
 import uuid
