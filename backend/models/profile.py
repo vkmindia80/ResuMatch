@@ -30,7 +30,7 @@ class Experience(BaseModel):
     company: str
     title: str
     employment_type: str = "Full-time"
-    start_date: date
+    start_date: Optional[date] = None
     end_date: Optional[date] = None
     is_current: bool = False
     location: Optional[str] = None
