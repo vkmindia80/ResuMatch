@@ -74,6 +74,18 @@ async def connect_to_mongo():
     await db.interview_questions.create_index([("user_id", 1), ("job_description_id", 1)])
     await db.interview_questions.create_index([("user_id", 1), ("category", 1)])
     
+    # Cover Letters
+    await db.cover_letters.create_index("user_id")
+    await db.cover_letters.create_index([("user_id", 1), ("created_at", -1)])
+    await db.cover_letters.create_index([("user_id", 1), ("job_description_id", 1)])
+    await db.cover_letters.create_index("id")
+    
+    # Practice Sessions
+    await db.practice_sessions.create_index("user_id")
+    await db.practice_sessions.create_index([("user_id", 1), ("created_at", -1)])
+    await db.practice_sessions.create_index([("user_id", 1), ("job_description_id", 1)])
+    await db.practice_sessions.create_index("id")
+    
     print("✅ Connected to MongoDB")
     print(f"✅ Database: {db.name}")
     
