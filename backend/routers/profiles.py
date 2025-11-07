@@ -188,12 +188,31 @@ async def parse_resume(
         
         # Transform education dates (keep as strings for MongoDB)
         for edu in parsed_data.get("education", []):
-            if "start_date" in edu and edu["start_date"]:
-                date_obj = parse_date_string(edu["start_date"])
-                edu["start_date"] = date_obj.isoformat() if date_obj else None
-            if "end_date" in edu and edu["end_date"]:
-                date_obj = parse_date_string(edu["end_date"])
-                edu["end_date"] = date_obj.isoformat() if date_obj else None
+            if "start_date" in edu:
+                if edu["start_date"] and edu["start_date"] != "":
+                    date_obj = parse_date_string(edu["start_date"])
+                    edu["start_date"] = date_obj.isoformat() if date_obj else None
+                else:
+                    edu["start_date"] = None
+            if "end_date" in edu:
+                if edu["end_date"] and edu["end_date"] != "":
+                    date_obj = parse_date_string(edu["end_date"])
+                    edu["end_date"] = date_obj.isoformat() if date_obj else None
+                else:
+                    edu["end_date"] = None
+            # Handle GPA format (e.g., "3.8/4.0" -> 3.8)
+            if "gpa" in edu and edu["gpa"]:
+                gpa_str = str(edu["gpa"])
+                if "/" in gpa_str:
+                    try:
+                        edu["gpa"] = float(gpa_str.split("/")[0])
+                    except:
+                        edu["gpa"] = None
+                else:
+                    try:
+                        edu["gpa"] = float(gpa_str)
+                    except:
+                        edu["gpa"] = None
         
         # Transform experience dates (keep as strings for MongoDB)
         for exp in parsed_data.get("experience", []):
