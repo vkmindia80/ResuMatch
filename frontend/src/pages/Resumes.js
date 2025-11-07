@@ -274,7 +274,7 @@ const Resumes = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-secondary-900">
-                      Resume {new Date(resume.created_at).toLocaleDateString()}
+                      Resume {new Date(resume.created_at).toLocaleString()}
                     </h3>
                     <p className="text-sm text-secondary-600">Template: {resume.template_id}</p>
                   </div>
