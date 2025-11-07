@@ -409,13 +409,16 @@ const Resumes = () => {
                       {exp.location && (
                         <p className="text-sm text-secondary-600 mb-2">{exp.location}</p>
                       )}
-                      {exp.responsibilities && exp.responsibilities.length > 0 && (
-                        <ul className="list-disc list-inside text-secondary-700 space-y-1">
-                          {exp.responsibilities.slice(0, 5).map((resp, ridx) => (
-                            <li key={ridx} className="text-sm">{resp}</li>
-                          ))}
-                        </ul>
-                      )}
+                      {(() => {
+                        const bullets = exp.optimized_responsibilities || exp.responsibilities || [];
+                        return bullets.length > 0 && (
+                          <ul className="list-disc list-inside text-secondary-700 space-y-1">
+                            {bullets.slice(0, 5).map((resp, ridx) => (
+                              <li key={ridx} className="text-sm">{resp}</li>
+                            ))}
+                          </ul>
+                        );
+                      })()}
                     </div>
                   ))}
                 </div>
