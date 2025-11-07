@@ -37,6 +37,7 @@ function App() {
           <Route path="/resumes" element={isAuthenticated ? <Resumes /> : <Navigate to="/login" />} />
           <Route path="/cover-letters" element={isAuthenticated ? <CoverLetters /> : <Navigate to="/login" />} />
           <Route path="/interview-prep" element={isAuthenticated ? <InterviewPrep /> : <Navigate to="/login" />} />
+          <Route path="/admin/settings" element={isAuthenticated ? <AdminSettings /> : <Navigate to="/login" />} />
         </Routes>
       </div>
     </Router>
