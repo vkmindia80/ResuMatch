@@ -61,7 +61,7 @@ curl -X POST http://localhost:8001/api/auth/login \
 Expected: Returns JWT access and refresh tokens
 
 ### Frontend Test
-1. Visit: https://git-roadmap-2.preview.emergentagent.com/login
+1. Visit: https://edu-skills-parser.preview.emergentagent.com/login
 2. Click "Use Demo Credentials" button
 3. Verify email field shows: demo@resumatch.com
 4. Verify password field shows: Demo@123 (dots)
