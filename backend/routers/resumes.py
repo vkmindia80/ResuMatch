@@ -14,6 +14,7 @@ router = APIRouter()
 class ResumeCreate(BaseModel):
     job_description_id: Optional[str] = None
     template_id: str = "template_1"
+    source_resume_id: Optional[str] = None  # If provided, optimize existing resume instead of generating from profile
 
 class ResumeResponse(BaseModel):
     id: str
