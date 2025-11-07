@@ -164,6 +164,88 @@ async def parse_resume(
         
         parsed_data = result["data"]
         
+        # Transform parsed data to match Profile model format
+        # Convert date strings to date objects and handle nested structures
+        from datetime import datetime
+        
+        def parse_date_string(date_str):
+            """Parse date string in various formats"""
+            if not date_str or date_str == "":
+                return None
+            try:
+                # Try YYYY-MM-DD format
+                return datetime.strptime(date_str, "%Y-%m-%d").date()
+            except:
+                try:
+                    # Try YYYY-MM format
+                    return datetime.strptime(date_str + "-01", "%Y-%m-%d").date()
+                except:
+                    try:
+                        # Try YYYY format
+                        return datetime.strptime(date_str + "-01-01", "%Y-%m-%d").date()
+                    except:
+                        return None
+        
+        # Transform education dates
+        for edu in parsed_data.get("education", []):
+            if "start_date" in edu:
+                edu["start_date"] = parse_date_string(edu["start_date"])
+            if "end_date" in edu:
+                edu["end_date"] = parse_date_string(edu["end_date"])
+        
+        # Transform experience dates
+        for exp in parsed_data.get("experience", []):
+            if "start_date" in exp:
+                exp["start_date"] = parse_date_string(exp["start_date"])
+            if "end_date" in exp:
+                exp["end_date"] = parse_date_string(exp["end_date"])
+        
+        # Transform skills to proper format
+        skills_data = parsed_data.get("skills", {})
+        transformed_skills = {
+            "technical": [],
+            "soft": skills_data.get("soft", []),
+            "languages": [],
+            "tools": skills_data.get("tools", [])
+        }
+        
+        # Convert technical skills to Skill objects
+        for skill in skills_data.get("technical", []):
+            if isinstance(skill, str):
+                transformed_skills["technical"].append({"name": skill, "level": None})
+            else:
+                transformed_skills["technical"].append(skill)
+        
+        # Convert languages to Language objects
+        for lang in skills_data.get("languages", []):
+            if isinstance(lang, str):
+                # Try to extract fluency level from string like "English (Native)"
+                if "(" in lang and ")" in lang:
+                    name = lang.split("(")[0].strip()
+                    fluency = lang.split("(")[1].replace(")", "").strip()
+                else:
+                    name = lang
+                    fluency = "Unknown"
+                transformed_skills["languages"].append({"name": name, "fluency": fluency})
+            else:
+                transformed_skills["languages"].append(lang)
+        
+        parsed_data["skills"] = transformed_skills
+        
+        # Transform projects dates
+        for proj in parsed_data.get("projects", []):
+            if "start_date" in proj:
+                proj["start_date"] = parse_date_string(proj["start_date"])
+            if "end_date" in proj:
+                proj["end_date"] = parse_date_string(proj["end_date"])
+        
+        # Transform certifications dates
+        for cert in parsed_data.get("certifications", []):
+            if "issue_date" in cert:
+                cert["issue_date"] = parse_date_string(cert["issue_date"])
+            if "expiry_date" in cert:
+                cert["expiry_date"] = parse_date_string(cert["expiry_date"])
+        
         # Check if profile exists
         existing_profile = await db.profiles.find_one({"user_id": user_id})
         
