@@ -435,7 +435,9 @@ const Resumes = () => {
                     <div className="mb-2">
                       <span className="font-medium text-secondary-800">Technical: </span>
                       <span className="text-secondary-700">
-                        {previewResume.content.skills.technical.join(', ')}
+                        {previewResume.content.skills.technical.map(skill => 
+                          typeof skill === 'object' ? skill.name || skill.skill || '' : skill
+                        ).filter(Boolean).join(', ')}
                       </span>
                     </div>
                   )}
@@ -443,7 +445,9 @@ const Resumes = () => {
                     <div>
                       <span className="font-medium text-secondary-800">Soft Skills: </span>
                       <span className="text-secondary-700">
-                        {previewResume.content.skills.soft.join(', ')}
+                        {previewResume.content.skills.soft.map(skill => 
+                          typeof skill === 'object' ? skill.name || skill.skill || '' : skill
+                        ).filter(Boolean).join(', ')}
                       </span>
                     </div>
                   )}
