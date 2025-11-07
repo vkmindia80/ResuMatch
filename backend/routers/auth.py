@@ -12,8 +12,8 @@ import uuid
 
 router = APIRouter()
 
-# This will be injected from server.py
-from server import get_database
+# Import database dependency
+from database import get_database
 
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def register(user_data: UserCreate, db = Depends(get_database)):
