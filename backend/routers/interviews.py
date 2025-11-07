@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from pydantic import BaseModel
 from typing import List, Optional
 from utils.auth import get_current_user_id
-from server import get_database
+from database import get_database
 from datetime import datetime
 import uuid
 
