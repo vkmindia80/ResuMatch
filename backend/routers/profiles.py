@@ -1,7 +1,8 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, UploadFile, File
 from models.profile import Profile, ProfileUpdate, PersonalInfo
 from utils.auth import get_current_user_id
 from utils.profile_analyzer import calculate_completeness_score, get_missing_sections
+from utils.resume_parser import ResumeParser
 from database import get_database
 from datetime import datetime
 import uuid
