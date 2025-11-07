@@ -4,6 +4,7 @@ from typing import Optional, List, Dict, Any
 from utils.auth import get_current_user_id
 from utils.ai_resume_generator import AIResumeGenerator
 from utils.ats_scorer import ATSScorer
+from utils.ats_optimizer import ATSOptimizer
 from database import get_database
 from datetime import datetime
 import uuid
