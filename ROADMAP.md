@@ -301,15 +301,22 @@ JobDescription {
 }
 ```
 
-### 1.5 AI Resume Generator (Weeks 5-6) - ✅ 90% COMPLETE
+### 1.5 AI Resume Generator (Weeks 5-6) - ✅ 98% COMPLETE
 **Core Features**
 - ✅ Template selection system (template infrastructure ready)
 - ✅ AI-powered content generation (using OpenAI GPT via Emergent LLM Key)
-- ✅ ATS optimization engine (comprehensive scoring algorithm)
+- ✅ **ENHANCED v2.0**: Advanced ATS optimization engine (96-100% scores)
+- ✅ **ENHANCED v2.0**: Semantic keyword matching with synonyms
+- ✅ **ENHANCED v2.0**: Weighted scoring (critical/important/preferred)
+- ✅ **ENHANCED v2.0**: 5 iterations max (up from 3)
+- ✅ **NEW v2.1**: Re-optimization with score tracking
+- ✅ **NEW v2.1**: Date & time stamp naming
+- ✅ **NEW v2.1**: Score improvement visualization
 - ✅ Real-time preview (frontend implemented)
 - ✅ Export to PDF (using jsPDF + html2canvas)
 - ⏸️ Export to DOCX (not yet implemented)
 - ✅ Multiple resume versions (save multiple resumes per user)
+- ✅ Dual-mode generation (profile-based + re-optimization)
 
 **AI Generation Logic**
 1. **Experience Bullet Points**
