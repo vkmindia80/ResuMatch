@@ -242,6 +242,14 @@ const JobDescriptions = () => {
                   ))}
                 </div>
               )}
+              <button
+                onClick={() => handleViewMatchScore(job.id)}
+                className="mt-4 w-full btn-secondary text-sm flex items-center justify-center gap-2"
+                data-testid={`match-score-btn-${job.id}`}
+              >
+                <Target size={16} />
+                View Match Score
+              </button>
             </div>
           ))}
         </div>
