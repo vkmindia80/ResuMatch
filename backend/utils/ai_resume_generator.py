@@ -163,7 +163,7 @@ class AIResumeGenerator:
             return profile_skills
     
     def _build_summary_prompt(self, profile: dict, job_description: Optional[dict]) -> str:
-        """Build prompt for professional summary generation"""
+        """Build prompt for professional summary generation - Enhanced v2.0"""
         personal_info = profile.get("personal_info", {})
         experience = profile.get("experience", [])
         skills = profile.get("skills", {})
@@ -173,65 +173,74 @@ class AIResumeGenerator:
         
         # Get top technical skills
         tech_skills = []
-        for skill in skills.get("technical", [])[:8]:
+        for skill in skills.get("technical", [])[:12]:  # Increased from 8 to 12
             if isinstance(skill, dict):
                 tech_skills.append(skill.get("name", ""))
             else:
                 tech_skills.append(str(skill))
         
-        # Extract key achievements from experience
+        # Extract key achievements with metrics
         key_achievements = []
         for exp in experience[:3]:
             for resp in exp.get('responsibilities', [])[:2]:
-                if any(metric in resp.lower() for metric in ['%', 'increase', 'improve', 'reduce', 'led', 'managed']):
-                    key_achievements.append(resp[:100])
+                if any(metric in resp.lower() for metric in ['%', 'increase', 'improve', 'reduce', 'led', 'managed', '$', 'grew']):
+                    key_achievements.append(resp[:120])
         
         prompt = f"""
-Create a compelling, ATS-optimized professional summary for a resume.
+CREATE A PERFECT ATS-OPTIMIZED PROFESSIONAL SUMMARY (TARGET: 95%+ ATS SCORE)
 
 **Profile Information:**
 - Current Title: {title}
 - Years of Experience: {years_of_exp}+
-- Key Technical Skills: {', '.join(tech_skills)}
-- Key Achievements: {'; '.join(key_achievements[:2]) if key_achievements else 'Various professional accomplishments'}
+- Top Technical Skills: {', '.join(tech_skills)}
+- Quantified Achievements: {'; '.join(key_achievements[:3]) if key_achievements else 'Professional accomplishments across various domains'}
 """
         
         if job_description:
             parsed_data = job_description.get('parsed_data', {})
-            required_skills = parsed_data.get('required_skills', [])[:8]
-            technical_skills = parsed_data.get('technical_skills', [])[:8]
+            required_skills = parsed_data.get('required_skills', [])[:15]  # Increased from 8
+            technical_skills = parsed_data.get('technical_skills', [])[:15]  # Increased from 8
+            tools = parsed_data.get('tools_and_technologies', [])[:10]
             
             prompt += f"""
-**Target Role (CRITICAL - Optimize for ATS matching):**
+**TARGET ROLE - CRITICAL FOR ATS OPTIMIZATION:**
 - Position: {job_description.get('title', 'N/A')}
 - Company: {job_description.get('company', 'N/A')}
-- Required Skills: {', '.join(required_skills)}
-- Technical Requirements: {', '.join(technical_skills)}
-- Job Type: {job_description.get('job_type', 'N/A')}
+- MUST-HAVE Required Skills: {', '.join(required_skills)}
+- CRITICAL Technical Skills: {', '.join(technical_skills)}
+- Key Tools/Technologies: {', '.join(tools)}
+- Experience Level: {parsed_data.get('job_level', 'N/A')}
 
-**ATS OPTIMIZATION PRIORITY:**
-- MUST include relevant keywords from required skills
-- MUST use exact terminology from job description where applicable
-- MUST highlight matching technical skills prominently
+**ATS KEYWORD INTEGRATION (HIGHEST PRIORITY):**
+\u26a1 MUST include 10-12 EXACT keywords from required & technical skills
+\u26a1 MUST use EXACT terminology from job description (not synonyms)
+\u26a1 MUST integrate keywords NATURALLY (no keyword stuffing)
+\u26a1 MUST highlight matching technical skills PROMINENTLY
 """
         
         prompt += """
-**Requirements:**
-1. Write 3-4 powerful sentences (75-100 words total)
-2. Start with years of experience and current title
-3. Include SPECIFIC technical skills that match the job (use exact keywords)
-4. Mention quantifiable achievements or impact (if available)
-5. Use industry-standard terminology for ATS parsing
-6. Include relevant keywords naturally without keyword stuffing
-7. Do NOT use first person pronouns (I, me, my)
-8. Focus on value proposition and results
-9. Use active, confident language
-10. Ensure every word adds value
+**MANDATORY ATS PERFECTION REQUIREMENTS:**
+1. \ud83d\udccc LENGTH: Exactly 3-4 powerful sentences (90-120 words)
+2. \ud83d\udd11 KEYWORDS: Include 10-12 EXACT keywords from job requirements
+3. \u26a1 OPENING: Start with "[Experience Level + Title] with [X]+ years"
+4. \ud83d\udcca METRICS: Include 1-2 quantifiable achievements with specific numbers
+5. \ud83d\udee0\ufe0f TECHNICAL: List 8-10 relevant technologies/tools naturally
+6. \ud83c\udfaf ATS-FRIENDLY: Use industry-standard terminology, no abbreviations unless standard
+7. \ud83d\udca5 IMPACT-FOCUSED: Emphasize results, value delivery, and business impact
+8. \ud83d\udcbc CONFIDENT: Active voice, strong language, no weak words
+9. \ud83d\udeab NO PRONOUNS: Third person only (no "I", "me", "my")
+10. \ud83d\udcaf PRECISION: Every word adds value - zero fluff
 
-**Example Structure:**
-"[Title] with [X]+ years of experience in [domain/industry] specializing in [key skills]. Proven expertise in [technical skills matching job] with a track record of [achievement]. Skilled in [more matching skills] with experience in [relevant areas]. [Optional: certification or specialization]."
+**PERFECT SUMMARY STRUCTURE:**
+Sentence 1: [Title] with [X]+ years in [domain] specializing in [3-4 critical keywords]
+Sentence 2: Proven expertise in [4-5 technical skills] with track record of [quantified achievement]
+Sentence 3: Skilled in [3-4 more matching skills/tools] with experience in [relevant areas]
+Sentence 4 (optional): [Certification/specialization] with focus on [specific expertise area]
 
-Write the professional summary now (3-4 sentences, no title, optimize for ATS):
+**EXAMPLE OF 98% ATS SCORE SUMMARY:**
+"Senior Software Engineer with 7+ years of experience building scalable web applications using React, Node.js, Python, and AWS cloud infrastructure. Proven expertise in microservices architecture, CI/CD automation, and agile methodologies, consistently delivering projects that reduced system latency by 65% and increased deployment efficiency by 80%. Skilled in Docker, Kubernetes, PostgreSQL, MongoDB, and RESTful API development with hands-on experience leading cross-functional teams of 10+ engineers. AWS Certified Solutions Architect specializing in serverless computing, infrastructure-as-code, and DevOps best practices."
+
+Write the perfect professional summary now (3-4 sentences, 90-120 words, keyword-rich, ATS-optimized):
 """
         return prompt
     
