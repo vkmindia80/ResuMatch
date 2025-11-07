@@ -63,106 +63,20 @@
 
 ### Action Items:
 
-#### Days 1-2: Complete Backend Testing ⚠️ CRITICAL
-**Goal: Reach 70%+ test coverage**
-
+#### Day 1: Set up Email Service
 ```bash
-# What to do:
-cd /app/backend
+# 1. Sign up for SendGrid (free tier: 100 emails/day)
+# Go to: https://sendgrid.com/
 
-# 1. Fix the 2 failing tests
-python -m pytest tests/test_jobs.py::TestJobDescriptions::test_update_job -v
-python -m pytest tests/test_profiles.py::TestProfiles::test_update_profile -v
-# Fix the PUT endpoint issues in these tests
+# 2. Get API key from SendGrid dashboard
 
-# 2. Add resume tests (create new file)
-# File: /app/backend/tests/test_resumes.py
-# Add 5-7 tests for resume generation, listing, deletion
-
-# 3. Add interview tests (create new file)  
-# File: /app/backend/tests/test_interviews.py
-# Add 5-7 tests for question generation, listing
-
-# 4. Check coverage
-python -m pytest tests/ --cov --cov-report=html
-# Open: /app/backend/htmlcov/index.html to see coverage report
+# 3. Add to environment variables
+# /app/backend/.env
+SENDGRID_API_KEY=your_api_key_here
+SENDGRID_FROM_EMAIL=noreply@resumatch.com
 ```
 
-**Expected Result:** 30+ tests, 70%+ coverage ✅
-
----
-
-#### Days 3-5: Frontend Testing 🔥 HIGH PRIORITY
-**Goal: Set up Jest and test critical components**
-
-```bash
-# What to do:
-cd /app/frontend
-
-# 1. Install testing libraries (if not present)
-yarn add --dev @testing-library/react @testing-library/jest-dom @testing-library/user-event jest-environment-jsdom
-
-# 2. Create test files
-# - src/pages/Login.test.js
-# - src/pages/Register.test.js
-# - src/pages/Dashboard.test.js
-# - src/pages/Profile.test.js
-# - src/services/api.test.js
-
-# 3. Run tests
-yarn test
-
-# 4. Check coverage
-yarn test --coverage
-```
-
-**Files to Create:**
-- `/app/frontend/src/setupTests.js` - Test configuration
-- `/app/frontend/src/pages/__tests__/` - Test directory
-- `/app/frontend/jest.config.js` - Jest configuration
-
-**Expected Result:** 15-20 frontend tests, 60%+ coverage ✅
-
----
-
-#### Days 6-7: Performance Optimization 🚀
-**Goal: Add pagination and optimize performance**
-
-**Backend Tasks:**
-```python
-# Add pagination to list endpoints
-
-# File: /app/backend/routers/jobs.py
-@router.get("/")
-async def get_jobs(
-    skip: int = 0,
-    limit: int = 10,  # Add pagination
-    user_id: str = Depends(get_current_user_id),
-    db = Depends(get_database)
-):
-    jobs = await db.job_descriptions.find({"user_id": user_id}).skip(skip).limit(limit).to_list(length=limit)
-    return jobs
-
-# Do same for:
-# - /api/resumes/ 
-# - /api/interviews/questions
-# - /api/profiles/ (if listing profiles)
-```
-
-**Add Compression:**
-```python
-# File: /app/backend/server.py
-from fastapi.middleware.gzip import GZipMiddleware
-
-app.add_middleware(GZipMiddleware, minimum_size=1000)
-```
-
-**Expected Result:** Faster API responses, paginated lists ✅
-
----
-
-#### Days 8-10: Password Reset Flow (Optional)
-**Only if you have email service**
+#### Day 2-3: Implement Password Reset
 
 **Email Service Options:**
 1. **SendGrid** (Recommended) - Free tier: 100 emails/day
