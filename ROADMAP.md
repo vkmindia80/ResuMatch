@@ -158,14 +158,16 @@ User {
    - Expiry date (if applicable)
    - Credential ID
 
-**API Endpoints**
+**API Endpoints** - ✅ Core endpoints + bonus features
 ```
-GET    /api/profiles/me
-PUT    /api/profiles/me
-PATCH  /api/profiles/me/section/:section
-GET    /api/profiles/completeness
-POST   /api/profiles/export
-POST   /api/profiles/import
+✅ GET    /api/profiles/me
+✅ POST   /api/profiles/me (create profile)
+✅ PUT    /api/profiles/me (update profile)
+⏸️ PATCH  /api/profiles/me/section/:section (not implemented)
+✅ GET    /api/profiles/completeness
+⏸️ POST   /api/profiles/export (not implemented)
+⏸️ POST   /api/profiles/import (not implemented)
+✅ POST   /api/profiles/parse-resume (BONUS: AI resume parser)
 ```
 
 **Database Schema**
