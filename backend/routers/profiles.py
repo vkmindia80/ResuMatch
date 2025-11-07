@@ -263,21 +263,33 @@ async def parse_resume(
         
         # Transform projects dates (keep as strings for MongoDB)
         for proj in parsed_data.get("projects", []):
-            if "start_date" in proj and proj["start_date"]:
-                date_obj = parse_date_string(proj["start_date"])
-                proj["start_date"] = date_obj.isoformat() if date_obj else None
-            if "end_date" in proj and proj["end_date"]:
-                date_obj = parse_date_string(proj["end_date"])
-                proj["end_date"] = date_obj.isoformat() if date_obj else None
+            if "start_date" in proj:
+                if proj["start_date"] and proj["start_date"] != "":
+                    date_obj = parse_date_string(proj["start_date"])
+                    proj["start_date"] = date_obj.isoformat() if date_obj else None
+                else:
+                    proj["start_date"] = None
+            if "end_date" in proj:
+                if proj["end_date"] and proj["end_date"] != "":
+                    date_obj = parse_date_string(proj["end_date"])
+                    proj["end_date"] = date_obj.isoformat() if date_obj else None
+                else:
+                    proj["end_date"] = None
         
         # Transform certifications dates (keep as strings for MongoDB)
         for cert in parsed_data.get("certifications", []):
-            if "issue_date" in cert and cert["issue_date"]:
-                date_obj = parse_date_string(cert["issue_date"])
-                cert["issue_date"] = date_obj.isoformat() if date_obj else None
-            if "expiry_date" in cert and cert["expiry_date"]:
-                date_obj = parse_date_string(cert["expiry_date"])
-                cert["expiry_date"] = date_obj.isoformat() if date_obj else None
+            if "issue_date" in cert:
+                if cert["issue_date"] and cert["issue_date"] != "":
+                    date_obj = parse_date_string(cert["issue_date"])
+                    cert["issue_date"] = date_obj.isoformat() if date_obj else None
+                else:
+                    cert["issue_date"] = None
+            if "expiry_date" in cert:
+                if cert["expiry_date"] and cert["expiry_date"] != "":
+                    date_obj = parse_date_string(cert["expiry_date"])
+                    cert["expiry_date"] = date_obj.isoformat() if date_obj else None
+                else:
+                    cert["expiry_date"] = None
         
         # Check if profile exists
         existing_profile = await db.profiles.find_one({"user_id": user_id})
