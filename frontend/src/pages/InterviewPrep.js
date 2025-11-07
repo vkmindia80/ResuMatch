@@ -107,6 +107,63 @@ const InterviewPrep = () => {
     });
   };
 
+  const addQuestionToPDF = (doc, question, index, position, margin, lineHeight, pageHeight) => {
+    let yPosition = position;
+    
+    // Check if we need a new page
+    if (yPosition > pageHeight - 60) {
+      doc.addPage();
+      yPosition = 20;
+    }
+
+    // Question number and category
+    doc.setFontSize(11);
+    doc.setFont(undefined, 'bold');
+    doc.text(`Q${index + 1}. [${question.category}] [${question.difficulty}]`, margin, yPosition);
+    yPosition += lineHeight;
+
+    // Question text
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    const questionLines = doc.splitTextToSize(question.question, 170);
+    doc.text(questionLines, margin, yPosition);
+    yPosition += questionLines.length * lineHeight;
+
+    // AI-generated answer
+    if (question.ai_generated_answer) {
+      yPosition += 3;
+      doc.setFont(undefined, 'bold');
+      doc.text('AI-Generated STAR Answer:', margin, yPosition);
+      yPosition += lineHeight;
+      doc.setFont(undefined, 'normal');
+
+      const answer = question.ai_generated_answer;
+      if (answer.situation) {
+        const situationLines = doc.splitTextToSize(`Situation: ${answer.situation}`, 170);
+        doc.text(situationLines, margin, yPosition);
+        yPosition += situationLines.length * lineHeight;
+      }
+      if (answer.task) {
+        const taskLines = doc.splitTextToSize(`Task: ${answer.task}`, 170);
+        doc.text(taskLines, margin, yPosition);
+        yPosition += taskLines.length * lineHeight;
+      }
+      if (answer.action) {
+        const actionLines = doc.splitTextToSize(`Action: ${answer.action}`, 170);
+        doc.text(actionLines, margin, yPosition);
+        yPosition += actionLines.length * lineHeight;
+      }
+      if (answer.result) {
+        const resultLines = doc.splitTextToSize(`Result: ${answer.result}`, 170);
+        doc.text(resultLines, margin, yPosition);
+        yPosition += resultLines.length * lineHeight;
+      }
+    }
+
+    yPosition += 8;
+    return yPosition;
+  };
+
   const exportToPDF = async () => {
     setExporting(true);
     try {
@@ -154,59 +211,9 @@ const InterviewPrep = () => {
         yPosition += 10;
 
         // Questions
-        group.questions.forEach((question, index) => {
-          // Check if we need a new page
-          if (yPosition > pageHeight - 60) {
-            doc.addPage();
-            yPosition = 20;
-          }
-
-          // Question number and category
-          doc.setFontSize(11);
-          doc.setFont(undefined, 'bold');
-          doc.text(`Q${index + 1}. [${question.category}] [${question.difficulty}]`, margin, yPosition);
-          yPosition += lineHeight;
-
-          // Question text
-          doc.setFontSize(10);
-          doc.setFont(undefined, 'normal');
-          const questionLines = doc.splitTextToSize(question.question, 170);
-          doc.text(questionLines, margin, yPosition);
-          yPosition += questionLines.length * lineHeight;
-
-          // AI-generated answer
-          if (question.ai_generated_answer) {
-            yPosition += 3;
-            doc.setFont(undefined, 'bold');
-            doc.text('AI-Generated STAR Answer:', margin, yPosition);
-            yPosition += lineHeight;
-            doc.setFont(undefined, 'normal');
-
-            const answer = question.ai_generated_answer;
-            if (answer.situation) {
-              const situationLines = doc.splitTextToSize(`Situation: ${answer.situation}`, 170);
-              doc.text(situationLines, margin, yPosition);
-              yPosition += situationLines.length * lineHeight;
-            }
-            if (answer.task) {
-              const taskLines = doc.splitTextToSize(`Task: ${answer.task}`, 170);
-              doc.text(taskLines, margin, yPosition);
-              yPosition += taskLines.length * lineHeight;
-            }
-            if (answer.action) {
-              const actionLines = doc.splitTextToSize(`Action: ${answer.action}`, 170);
-              doc.text(actionLines, margin, yPosition);
-              yPosition += actionLines.length * lineHeight;
-            }
-            if (answer.result) {
-              const resultLines = doc.splitTextToSize(`Result: ${answer.result}`, 170);
-              doc.text(resultLines, margin, yPosition);
-              yPosition += resultLines.length * lineHeight;
-            }
-          }
-
-          yPosition += 8;
-        });
+        for (let i = 0; i < group.questions.length; i++) {
+          yPosition = addQuestionToPDF(doc, group.questions[i], i, yPosition, margin, lineHeight, pageHeight);
+        }
 
         yPosition += 5;
       }
