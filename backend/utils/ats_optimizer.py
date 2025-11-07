@@ -67,7 +67,7 @@ class ATSOptimizer:
                 return current_content, current_score, iteration
             
             print(f"\n🔄 Iteration {iteration}/{self.max_iterations}")
-            print(f"   Current: {overall_score}% | Gap to target: {self.target_score - overall_score}%")
+            print(f"   Current: {overall_score}% | Gap to target: {target_score - overall_score}%")
             
             # Analyze and optimize weak areas
             optimized_content = await self._optimize_weak_areas(
