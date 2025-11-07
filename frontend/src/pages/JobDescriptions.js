@@ -25,9 +25,12 @@ const JobDescriptions = () => {
   const fetchJobs = async () => {
     try {
       const response = await jobAPI.getJobs();
-      setJobs(response.data);
+      // Backend returns paginated response: { items: [...], total: X, skip: Y, limit: Z }
+      const jobsData = response.data.items || response.data || [];
+      setJobs(jobsData);
     } catch (error) {
       console.error('Error fetching jobs:', error);
+      setJobs([]); // Set empty array on error to avoid display issues
     } finally {
       setLoading(false);
     }
