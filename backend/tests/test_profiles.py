@@ -43,14 +43,19 @@ class TestProfiles:
     async def test_update_profile(self, client: AsyncClient, auth_headers, test_profile):
         """Test updating profile"""
         update_data = {
-            "full_name": "Updated Name",
-            "phone": "+9876543210"
+            "personal_info": {
+                "full_name": "Updated Name",
+                "email": test_profile["personal_info"]["email"],
+                "phone": "+9876543210",
+                "location": test_profile["personal_info"]["location"],
+                "title": test_profile["personal_info"]["title"]
+            }
         }
         response = await client.put("/api/profiles/me", json=update_data, headers=auth_headers)
         assert response.status_code == 200
         data = response.json()
-        assert data["personal_info"]["full_name"] == update_data["full_name"]
-        assert data["personal_info"]["phone"] == update_data["phone"]
+        assert data["personal_info"]["full_name"] == "Updated Name"
+        assert data["personal_info"]["phone"] == "+9876543210"
     
     @pytest.mark.asyncio
     async def test_get_profile_completeness(self, client: AsyncClient, auth_headers, test_profile):
