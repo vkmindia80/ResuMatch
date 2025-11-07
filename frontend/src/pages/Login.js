@@ -45,6 +45,31 @@ const Login = () => {
           <p className="text-secondary-600">Sign in to continue to ResuMatch AI</p>
         </div>
 
+        {/* Demo Credentials Banner */}
+        <div className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg p-4 shadow-sm" data-testid="demo-credentials-banner">
+          <div className="flex items-start space-x-3">
+            <div className="flex-shrink-0">
+              <Play className="h-6 w-6 text-blue-600 mt-0.5" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-blue-900 mb-2">🎯 Quick Demo Access</h3>
+              <div className="text-sm text-blue-800 space-y-1">
+                <p><span className="font-medium">Email:</span> <code className="bg-blue-100 px-2 py-0.5 rounded text-xs">{DEMO_EMAIL}</code></p>
+                <p><span className="font-medium">Password:</span> <code className="bg-blue-100 px-2 py-0.5 rounded text-xs">{DEMO_PASSWORD}</code></p>
+              </div>
+              <button
+                type="button"
+                onClick={useDemoCredentials}
+                data-testid="use-demo-credentials-button"
+                className="mt-3 w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
+              >
+                <Play size={16} />
+                <span>Use Demo Credentials</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div className="card">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
