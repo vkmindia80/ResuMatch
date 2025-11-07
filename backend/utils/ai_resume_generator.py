@@ -43,9 +43,10 @@ class AIResumeGenerator:
                 system_message=system_message
             ).with_model("openai", "gpt-4o-mini").with_params(temperature=0.7, max_tokens=300)
             
-            # Send message
+            # Send message (async)
             user_msg = UserMessage(text=prompt)
-            summary = client.send_message(user_msg).strip()
+            response = await client.send_message(user_msg)
+            summary = response.strip()
             return summary
             
         except Exception as e:
