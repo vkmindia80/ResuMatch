@@ -67,6 +67,13 @@ const Dashboard = () => {
       color: 'primary'
     },
     {
+      icon: Mail,
+      title: 'Create Cover Letter',
+      description: 'AI-powered personalized letters',
+      action: () => navigate('/cover-letters'),
+      color: 'primary'
+    },
+    {
       icon: MessageSquare,
       title: 'Practice Interviews',
       description: 'Prepare with AI-generated questions',
