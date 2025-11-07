@@ -63,18 +63,43 @@ const Profile = () => {
     setMessage('');
     try {
       if (profile.id) {
-        await profileAPI.updateProfile(profile);
+        // Prepare update data - only send fields that should be updated
+        const updateData = {
+          personal_info: profile.personal_info,
+          education: profile.education,
+          experience: profile.experience,
+          skills: profile.skills,
+          projects: profile.projects || [],
+          certifications: profile.certifications || []
+        };
+        
+        await profileAPI.updateProfile(updateData);
         setMessage('Profile updated successfully!');
+        await fetchProfile(); // Refresh to get latest data
       } else {
         await profileAPI.createProfile(profile.personal_info);
         await fetchProfile();
         setMessage('Profile created successfully!');
       }
     } catch (error) {
-      setMessage('Error saving profile: ' + (error.response?.data?.detail || error.message));
+      console.error('Save error:', error);
+      const errorDetail = error.response?.data?.detail;
+      let errorMessage = 'Error saving profile';
+      
+      if (typeof errorDetail === 'string') {
+        errorMessage += ': ' + errorDetail;
+      } else if (Array.isArray(errorDetail)) {
+        // Validation errors from FastAPI
+        const errors = errorDetail.map(err => `${err.loc.join('.')}: ${err.msg}`).join(', ');
+        errorMessage += ': ' + errors;
+      } else if (error.message) {
+        errorMessage += ': ' + error.message;
+      }
+      
+      setMessage(errorMessage);
     } finally {
       setSaving(false);
-      setTimeout(() => setMessage(''), 3000);
+      setTimeout(() => setMessage(''), 5000);
     }
   };
 
