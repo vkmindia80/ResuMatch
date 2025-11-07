@@ -121,6 +121,81 @@ async def get_interview_questions(
         "has_more": (skip + limit) < total_count
     }
 
+@router.get("/questions-grouped")
+async def get_questions_grouped_by_job(
+    category: Optional[str] = None,
+    user_id: str = Depends(get_current_user_id),
+    db = Depends(get_database)
+):
+    """
+    Get interview questions grouped by job description
+    
+    Returns questions organized by job with metadata:
+    - Jobs sorted by creation date (newest first)
+    - Questions within each job sorted by creation date (newest first)
+    - Optional category filter applied to questions
+    """
+    # Build question query
+    question_query = {"user_id": user_id}
+    if category:
+        question_query["category"] = category
+    
+    # Get all questions for the user (with optional category filter)
+    cursor = db.interview_questions.find(question_query).sort("created_at", -1)
+    all_questions = await cursor.to_list(length=None)
+    
+    # Group questions by job_description_id
+    job_question_map = {}
+    for question in all_questions:
+        question.pop("_id", None)
+        job_id = question.get("job_description_id")
+        if job_id not in job_question_map:
+            job_question_map[job_id] = []
+        job_question_map[job_id].append(question)
+    
+    # Get job details for all jobs that have questions
+    job_ids = list(job_question_map.keys())
+    jobs_cursor = db.job_descriptions.find({"id": {"$in": job_ids}, "user_id": user_id})
+    jobs = await jobs_cursor.to_list(length=None)
+    
+    # Create job map for quick lookup
+    job_map = {}
+    for job in jobs:
+        job.pop("_id", None)
+        job_map[job["id"]] = job
+    
+    # Build grouped response
+    grouped_data = []
+    for job_id, questions in job_question_map.items():
+        job_info = job_map.get(job_id)
+        if not job_info:
+            # Job might have been deleted, skip
+            continue
+        
+        # Sort questions by created_at (newest first) - already sorted from query
+        grouped_data.append({
+            "job": {
+                "id": job_info["id"],
+                "title": job_info["title"],
+                "company": job_info["company"],
+                "location": job_info.get("location"),
+                "job_type": job_info.get("job_type"),
+                "created_at": job_info["created_at"]
+            },
+            "questions": questions,
+            "question_count": len(questions),
+            "generated_dates": list(set([q["created_at"].strftime("%Y-%m-%d %H:%M:%S") for q in questions]))
+        })
+    
+    # Sort grouped data by job creation date (newest first)
+    grouped_data.sort(key=lambda x: x["job"]["created_at"], reverse=True)
+    
+    return {
+        "groups": grouped_data,
+        "total_jobs": len(grouped_data),
+        "total_questions": sum([g["question_count"] for g in grouped_data])
+    }
+
 @router.get("/categories")
 async def get_question_categories():
     """
