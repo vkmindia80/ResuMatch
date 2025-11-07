@@ -347,7 +347,6 @@ const CoverLetters = () => {
 
               <div className="whitespace-pre-wrap">
                 <p className="mb-4">{new Date().toLocaleDateString()}</p>
-                <p className="mb-4">Dear Hiring Manager,</p>
                 
                 {viewingLetter.content.opening && (
                   <p className="mb-4">{viewingLetter.content.opening.replace(/\\n/g, '\n')}</p>
@@ -362,9 +361,6 @@ const CoverLetters = () => {
                 {viewingLetter.content.closing && (
                   <p className="mb-4">{viewingLetter.content.closing.replace(/\\n/g, '\n')}</p>
                 )}
-                
-                <p className="mb-2">Sincerely,</p>
-                <p>{viewingLetter.content.signature || viewingLetter.content.header?.full_name || '[Your Name]'}</p>
               </div>
             </div>
 
