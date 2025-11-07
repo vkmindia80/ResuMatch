@@ -1,9 +1,44 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
+from datetime import datetime
+import uuid
 
 # Global database variables
 db_client = None
 db = None
+
+async def create_demo_user():
+    """Create demo user for testing if it doesn't exist"""
+    try:
+        from utils.auth import get_password_hash
+        
+        demo_email = "demo@resumatch.com"
+        demo_password = "Demo@123"
+        
+        # Check if demo user already exists
+        existing_demo = await db.users.find_one({"email": demo_email})
+        
+        if not existing_demo:
+            # Create demo user
+            demo_user = {
+                "id": str(uuid.uuid4()),
+                "email": demo_email,
+                "full_name": "Demo User",
+                "password_hash": get_password_hash(demo_password),
+                "is_verified": True,
+                "subscription_tier": "free",
+                "google_id": None,
+                "created_at": datetime.utcnow(),
+                "updated_at": datetime.utcnow(),
+                "last_login": None
+            }
+            
+            await db.users.insert_one(demo_user)
+            print(f"✅ Demo user created: {demo_email} / {demo_password}")
+        else:
+            print(f"✅ Demo user already exists: {demo_email}")
+    except Exception as e:
+        print(f"⚠️ Error creating demo user: {e}")
 
 async def connect_to_mongo():
     """Connect to MongoDB"""
@@ -22,6 +57,9 @@ async def connect_to_mongo():
     
     print("✅ Connected to MongoDB")
     print(f"✅ Database: {db.name}")
+    
+    # Create demo user for testing
+    await create_demo_user()
 
 async def close_mongo_connection():
     """Close MongoDB connection"""
