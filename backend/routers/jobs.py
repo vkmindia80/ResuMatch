@@ -81,19 +81,38 @@ async def create_job_description(
 
 @router.get("/")
 async def get_job_descriptions(
+    skip: int = 0,
+    limit: int = 20,
     user_id: str = Depends(get_current_user_id),
     db = Depends(get_database)
 ):
     """
-    Get all job descriptions for current user
+    Get all job descriptions for current user with pagination
+    
+    Parameters:
+    - skip: Number of records to skip (default: 0)
+    - limit: Maximum number of records to return (default: 20, max: 100)
     """
-    cursor = db.job_descriptions.find({"user_id": user_id})
-    jobs = await cursor.to_list(length=100)
+    # Validate and cap limit
+    limit = min(limit, 100)
+    
+    # Get total count
+    total_count = await db.job_descriptions.count_documents({"user_id": user_id})
+    
+    # Get paginated jobs
+    cursor = db.job_descriptions.find({"user_id": user_id}).sort("created_at", -1).skip(skip).limit(limit)
+    jobs = await cursor.to_list(length=limit)
     
     for job in jobs:
         job.pop("_id", None)
     
-    return jobs
+    return {
+        "items": jobs,
+        "total": total_count,
+        "skip": skip,
+        "limit": limit,
+        "has_more": (skip + limit) < total_count
+    }
 
 @router.get("/{job_id}")
 async def get_job_description(
