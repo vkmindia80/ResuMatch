@@ -33,15 +33,56 @@ async def generate_resume(
     db = Depends(get_database)
 ):
     """
-    Generate AI-optimized resume based on profile and job description
+    Generate AI-optimized resume based on:
+    1. Profile + Job Description (default)
+    2. Existing Resume + Job Description (if source_resume_id provided)
+    
+    Both paths go through iterative ATS optimization for 95%+ scores
     """
-    # Get user profile
-    profile = await db.profiles.find_one({"user_id": user_id})
-    if not profile:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Profile not found. Please create a profile first."
-        )
+    
+    # Check if re-optimizing existing resume or generating from profile
+    is_reoptimization = bool(resume_data.source_resume_id)
+    
+    if is_reoptimization:
+        # Mode 1: Re-optimize existing resume for new job
+        print(f"🔄 Re-optimizing existing resume {resume_data.source_resume_id} for new job...")
+        
+        source_resume = await db.resumes.find_one({
+            "id": resume_data.source_resume_id,
+            "user_id": user_id
+        })
+        
+        if not source_resume:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Source resume not found"
+            )
+        
+        # Validate job description is provided for re-optimization
+        if not resume_data.job_description_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Job description is required when re-optimizing an existing resume"
+            )
+        
+        # Get profile for reference
+        profile = await db.profiles.find_one({"user_id": user_id})
+        if not profile:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Profile not found"
+            )
+    else:
+        # Mode 2: Generate from profile (original flow)
+        print("✨ Generating new resume from profile...")
+        
+        # Get user profile
+        profile = await db.profiles.find_one({"user_id": user_id})
+        if not profile:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Profile not found. Please create a profile first."
+            )
     
     # Get job description if provided
     job_description = None
