@@ -237,18 +237,100 @@ const Resumes = () => {
 
       {showForm && (
         <div className="card mb-6">
-          <h2 className="text-xl font-semibold text-secondary-900 mb-4">Generate New Resume</h2>
+          <h2 className="text-xl font-semibold text-secondary-900 mb-4">Generate ATS-Optimized Resume</h2>
+          
+          {/* Generation Mode Toggle */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-secondary-700 mb-3">
+              Choose Generation Method
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setGenerationMode('profile')}
+                className={`p-4 border-2 rounded-lg text-left transition-all ${
+                  generationMode === 'profile'
+                    ? 'border-primary-600 bg-primary-50'
+                    : 'border-secondary-200 hover:border-secondary-300'
+                }`}
+              >
+                <div className="flex items-center mb-2">
+                  <span className="text-2xl mr-2">✨</span>
+                  <h3 className="font-semibold text-secondary-900">Generate from Profile</h3>
+                </div>
+                <p className="text-sm text-secondary-600">
+                  Create a new resume from your profile with AI optimization
+                </p>
+              </button>
+              
+              <button
+                type="button"
+                onClick={() => setGenerationMode('optimize')}
+                className={`p-4 border-2 rounded-lg text-left transition-all ${
+                  generationMode === 'optimize'
+                    ? 'border-primary-600 bg-primary-50'
+                    : 'border-secondary-200 hover:border-secondary-300'
+                }`}
+              >
+                <div className="flex items-center mb-2">
+                  <span className="text-2xl mr-2">🎯</span>
+                  <h3 className="font-semibold text-secondary-900">Optimize Existing Resume</h3>
+                </div>
+                <p className="text-sm text-secondary-600">
+                  Re-optimize an existing resume for a specific job (95%+ ATS score)
+                </p>
+              </button>
+            </div>
+          </div>
+
           <form onSubmit={handleGenerate} className="space-y-4">
+            {/* Source Resume Selection (only in optimize mode) */}
+            {generationMode === 'optimize' && (
+              <div>
+                <label className="block text-sm font-medium text-secondary-700 mb-2">
+                  Select Resume to Optimize <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={selectedSourceResume}
+                  onChange={(e) => setSelectedSourceResume(e.target.value)}
+                  className="input-field"
+                  required={generationMode === 'optimize'}
+                >
+                  <option value="">-- Select a resume --</option>
+                  {resumes.map((resume) => (
+                    <option key={resume.id} value={resume.id}>
+                      Resume from {new Date(resume.created_at).toLocaleDateString()} 
+                      {resume.ats_score?.overall_score && ` (${resume.ats_score.overall_score}% ATS)`}
+                    </option>
+                  ))}
+                </select>
+                {resumes.length === 0 && (
+                  <p className="text-sm text-orange-600 mt-2">
+                    ⚠️ No existing resumes found. Please generate one first using "Generate from Profile".
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Job Description Selection */}
             <div>
               <label className="block text-sm font-medium text-secondary-700 mb-2">
-                Select Job Description (Optional)
+                Select Job Description {generationMode === 'optimize' && <span className="text-red-500">*</span>}
+                {generationMode === 'optimize' && (
+                  <span className="ml-2 text-xs text-primary-600 font-medium">
+                    (Required for optimization)
+                  </span>
+                )}
               </label>
               <select
                 value={selectedJob}
                 onChange={(e) => setSelectedJob(e.target.value)}
                 className="input-field"
+                required={generationMode === 'optimize'}
               >
-                <option value="">-- None (General Resume) --</option>
+                <option value="">
+                  {generationMode === 'optimize' ? '-- Select a job description --' : '-- None (General Resume) --'}
+                </option>
                 {jobs.map((job) => (
                   <option key={job.id} value={job.id}>
                     {job.title} at {job.company}
@@ -257,7 +339,12 @@ const Resumes = () => {
               </select>
               {jobs.length === 0 && (
                 <p className="text-sm text-secondary-600 mt-2">
-                  No job descriptions available. Add one first for a tailored resume.
+                  No job descriptions available. Add one first for {generationMode === 'optimize' ? 'optimization' : 'a tailored resume'}.
+                </p>
+              )}
+              {generationMode === 'optimize' && selectedJob && (
+                <p className="text-sm text-green-600 mt-2">
+                  ✅ Will optimize resume for perfect ATS match with this job
                 </p>
               )}
             </div>
