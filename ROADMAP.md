@@ -348,18 +348,32 @@ JobDescription {
    - Font and styling compliance
    - File format recommendations
 
-**Scoring System**
+**Scoring System (v2.0 Enhanced)**
 ```javascript
 ATSScore {
-  overall_score: int (0-100),
-  keyword_match: int (0-100),
-  format_compatibility: int (0-100),
-  impact_statements: int (0-100),
-  quantification_score: int (0-100),
-  action_verbs_usage: int (0-100),
-  suggestions: [string]
+  overall_score: int (0-100),          // Target: 96-100%
+  keyword_match: int (0-30),           // Weighted: Critical 3x, Important 2x, Preferred 1x
+  format_compatibility: int (0-20),
+  action_verbs_usage: int (0-20),      // Power verbs: Architected, Spearheaded
+  quantification_score: int (0-15),    // 2+ metrics per bullet
+  impact_statements: int (0-15),       // Measurable business impact
+  suggestions: [string],
+  strengths: [string],
+  weaknesses: [string],
+  keyword_density: object,             // Optimal: 2-4%
+  formatting_issues: [string],
+  grade: string                        // A+, A, A-, B+, etc.
 }
 ```
+
+**v2.0 Enhancements:**
+- Semantic matching (React = React.js = ReactJS)
+- Technology synonym support (K8s = Kubernetes)
+- Weighted keyword scoring (prioritizes critical skills)
+- More aggressive thresholds (87% vs 80%)
+- Enhanced AI prompts with better examples
+- 5 iterations max (up from 3)
+- Target score increased to 96%
 
 **API Endpoints** - ✅ Core endpoints implemented
 ```
