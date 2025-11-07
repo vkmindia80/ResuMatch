@@ -1,42 +1,21 @@
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from motor.motor_asyncio import AsyncIOMotorClient
 from contextlib import asynccontextmanager
 import os
 from dotenv import load_dotenv
+from database import connect_to_mongo, close_mongo_connection, get_database
 
 # Load environment variables
 load_dotenv()
 
-# Database instance
-db_client = None
-db = None
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    global db_client, db
-    mongo_url = os.getenv('MONGO_URL', 'mongodb://localhost:27017/resumatch')
-    db_client = AsyncIOMotorClient(mongo_url)
-    db = db_client.get_database()
-    
-    # Create indexes
-    await db.users.create_index("email", unique=True)
-    await db.users.create_index("created_at")
-    await db.profiles.create_index("user_id", unique=True)
-    await db.job_descriptions.create_index("user_id")
-    await db.resumes.create_index("user_id")
-    await db.interview_questions.create_index("user_id")
-    
-    print("✅ Connected to MongoDB")
-    print(f"✅ Database: {db.name}")
-    
+    await connect_to_mongo()
     yield
-    
     # Shutdown
-    db_client.close()
-    print("❌ Disconnected from MongoDB")
+    await close_mongo_connection()
 
 app = FastAPI(
     title="ResuMatch AI API",
