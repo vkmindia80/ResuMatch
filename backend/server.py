@@ -57,11 +57,8 @@ async def root():
 
 @app.get("/api/health")
 async def health_check():
+    db = get_database()
     return {
         "status": "healthy",
-        "database": "connected" if db_client else "disconnected"
+        "database": "connected" if db else "disconnected"
     }
-
-# Dependency to get database
-def get_database():
-    return db
