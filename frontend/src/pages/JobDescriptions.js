@@ -65,6 +65,27 @@ const JobDescriptions = () => {
     }
   };
 
+  const handleViewMatchScore = async (jobId) => {
+    try {
+      setLoadingMatchScore(true);
+      setShowMatchScore(true);
+      const response = await matchScoreAPI.getScore(jobId);
+      setMatchScoreData(response.data);
+    } catch (error) {
+      console.error('Error fetching match score:', error);
+      alert('Failed to calculate match score. Please ensure your profile is complete.');
+      setShowMatchScore(false);
+    } finally {
+      setLoadingMatchScore(false);
+    }
+  };
+
+  const getMatchColor = (score) => {
+    if (score >= 80) return 'text-green-600 bg-green-100';
+    if (score >= 60) return 'text-yellow-600 bg-yellow-100';
+    return 'text-red-600 bg-red-100';
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
