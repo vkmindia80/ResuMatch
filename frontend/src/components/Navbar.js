@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Home, User, FileText, Briefcase, MessageSquare, LogOut } from 'lucide-react';
+import { Home, User, FileText, Briefcase, MessageSquare, LogOut, Mail } from 'lucide-react';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -18,6 +18,7 @@ const Navbar = () => {
     { path: '/profile', icon: User, label: 'Profile' },
     { path: '/jobs', icon: Briefcase, label: 'Jobs' },
     { path: '/resumes', icon: FileText, label: 'Resumes' },
+    { path: '/cover-letters', icon: Mail, label: 'Cover Letters' },
     { path: '/interview-prep', icon: MessageSquare, label: 'Interview Prep' },
   ];
 
