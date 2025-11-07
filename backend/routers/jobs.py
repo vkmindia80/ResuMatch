@@ -212,3 +212,35 @@ async def delete_job_description(
         )
     
     return {"message": "Job description deleted successfully"}
+
+@router.get("/{job_id}/match-score")
+async def get_job_match_score(
+    job_id: str,
+    user_id: str = Depends(get_current_user_id),
+    db = Depends(get_database)
+):
+    """
+    Calculate match score between user profile and job description
+    """
+    # Get job description
+    job = await db.job_descriptions.find_one({"id": job_id, "user_id": user_id})
+    if not job:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Job description not found"
+        )
+    
+    # Get user profile
+    profile = await db.profiles.find_one({"user_id": user_id})
+    if not profile:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Profile not found. Please create a profile first."
+        )
+    
+    # Calculate match score
+    scorer = JobMatchScorer()
+    match_score = scorer.calculate_match_score(profile, job)
+    
+    return match_score
+
