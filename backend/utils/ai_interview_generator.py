@@ -5,7 +5,7 @@ Generates role-specific interview questions with STAR-format answers
 import os
 import json
 from typing import Dict, List
-from emergentintegrations import OpenAI
+from emergentintegrations.llm.openai import LlmChat
 
 class AIInterviewGenerator:
     def __init__(self):
@@ -13,7 +13,7 @@ class AIInterviewGenerator:
         api_key = os.getenv('EMERGENT_LLM_KEY')
         if not api_key:
             raise ValueError("EMERGENT_LLM_KEY not found in environment variables")
-        self.client = OpenAI(api_key=api_key)
+        self.client = LlmChat(api_key=api_key, model="gpt-4o-mini")
     
     async def generate_interview_questions(
         self,
