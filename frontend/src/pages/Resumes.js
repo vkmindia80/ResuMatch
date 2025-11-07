@@ -345,9 +345,15 @@ const Resumes = () => {
               </button>
             </div>
 
-            <div className="space-y-6">
-              {/* Header */}
-              {previewResume.content.header && (
+            {!previewResume.content ? (
+              <div className="text-center py-8 text-secondary-600">
+                <p className="text-lg mb-2">Resume content is not available</p>
+                <p className="text-sm">Please try regenerating this resume</p>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {/* Header */}
+                {previewResume.content.header && (
                 <div className="text-center border-b pb-4">
                   <h1 className="text-3xl font-bold text-secondary-900 mb-2">
                     {previewResume.content.header.full_name}
