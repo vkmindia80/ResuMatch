@@ -102,4 +102,29 @@ export const interviewAPI = {
   getCategories: () => api.get('/api/interviews/categories'),
 };
 
+// Cover Letter API
+export const coverLetterAPI = {
+  generate: (data) => api.post('/api/cover-letters/generate', data),
+  getAll: (params) => api.get('/api/cover-letters/', { params }),
+  getOne: (id) => api.get(`/api/cover-letters/${id}`),
+  update: (id, data) => api.put(`/api/cover-letters/${id}`, data),
+  delete: (id) => api.delete(`/api/cover-letters/${id}`),
+  getTemplates: () => api.get('/api/cover-letters/templates/list'),
+};
+
+// Practice Session API
+export const practiceSessionAPI = {
+  create: (data) => api.post('/api/practice-sessions/', data),
+  getAll: (params) => api.get('/api/practice-sessions/', { params }),
+  getOne: (id) => api.get(`/api/practice-sessions/${id}`),
+  update: (id, data) => api.put(`/api/practice-sessions/${id}`, data),
+  delete: (id) => api.delete(`/api/practice-sessions/${id}`),
+  getAnalytics: (days = 30) => api.get('/api/practice-sessions/analytics/summary', { params: { days } }),
+};
+
+// Job Match Score API
+export const matchScoreAPI = {
+  getScore: (jobId) => api.get(`/api/jobs/${jobId}/match-score`),
+};
+
 export default api;
