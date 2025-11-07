@@ -131,23 +131,3 @@ async def delete_job_description(
         )
     
     return {"message": "Job description deleted successfully"}
-
-def extract_keywords(text: str) -> List[str]:
-    """
-    Basic keyword extraction (will be enhanced with AI)
-    """
-    # Common tech keywords
-    tech_keywords = [
-        "python", "javascript", "java", "react", "node", "angular", "vue",
-        "sql", "mongodb", "aws", "docker", "kubernetes", "git", "agile",
-        "machine learning", "ai", "data science", "api", "rest", "graphql"
-    ]
-    
-    text_lower = text.lower()
-    found_keywords = []
-    
-    for keyword in tech_keywords:
-        if keyword in text_lower:
-            found_keywords.append(keyword)
-    
-    return found_keywords
