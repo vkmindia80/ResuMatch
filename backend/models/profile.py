@@ -17,7 +17,7 @@ class Education(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     institution: str
     degree: str
-    field: str
+    field: Optional[str] = None
     start_date: Optional[date] = None
     end_date: Optional[date] = None
     gpa: Optional[float] = None
