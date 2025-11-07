@@ -492,20 +492,127 @@ const Resumes = () => {
               {/* ATS Score */}
               {previewResume.ats_score && previewResume.ats_score.overall_score && (
                 <div className="border-t pt-4">
-                  <h3 className="text-lg font-semibold text-secondary-900 mb-3">ATS Score</h3>
-                  <div className="flex items-center space-x-4">
-                    <div className="text-4xl font-bold text-primary-600">
-                      {previewResume.ats_score.overall_score}%
+                  <h3 className="text-lg font-semibold text-secondary-900 mb-3">ATS Analysis</h3>
+                  
+                  {/* Overall Score */}
+                  <div className="flex items-center space-x-4 mb-4">
+                    <div className="text-center">
+                      <div className={`text-4xl font-bold ${
+                        previewResume.ats_score.overall_score >= 95 ? 'text-green-600' :
+                        previewResume.ats_score.overall_score >= 85 ? 'text-blue-600' :
+                        previewResume.ats_score.overall_score >= 75 ? 'text-yellow-600' :
+                        'text-orange-600'
+                      }`}>
+                        {previewResume.ats_score.overall_score}%
+                      </div>
+                      {previewResume.ats_score.grade && (
+                        <div className={`text-sm font-bold px-3 py-1 rounded mt-1 inline-block ${
+                          previewResume.ats_score.overall_score >= 95 ? 'bg-green-100 text-green-800' :
+                          previewResume.ats_score.overall_score >= 85 ? 'bg-blue-100 text-blue-800' :
+                          previewResume.ats_score.overall_score >= 75 ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-orange-100 text-orange-800'
+                        }`}>
+                          Grade {previewResume.ats_score.grade}
+                        </div>
+                      )}
                     </div>
                     <div className="flex-1">
                       <div className="w-full bg-secondary-200 rounded-full h-4">
                         <div
-                          className="bg-primary-600 h-4 rounded-full transition-all"
+                          className={`h-4 rounded-full transition-all ${
+                            previewResume.ats_score.overall_score >= 95 ? 'bg-green-600' :
+                            previewResume.ats_score.overall_score >= 85 ? 'bg-blue-600' :
+                            previewResume.ats_score.overall_score >= 75 ? 'bg-yellow-600' :
+                            'bg-orange-600'
+                          }`}
                           style={{ width: `${previewResume.ats_score.overall_score}%` }}
                         />
                       </div>
+                      {previewResume.ats_score.overall_score >= 95 && (
+                        <p className="text-sm text-green-600 mt-2 font-medium">
+                          🎉 Excellent! This resume is perfectly optimized for ATS systems
+                        </p>
+                      )}
                     </div>
                   </div>
+
+                  {/* Component Scores */}
+                  <div className="grid grid-cols-2 gap-3 mb-4">
+                    <div className="bg-secondary-50 p-3 rounded-lg">
+                      <div className="text-xs text-secondary-600 mb-1">Keyword Match</div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-lg font-semibold text-secondary-900">
+                          {previewResume.ats_score.keyword_match || 0}/30
+                        </span>
+                        <span className="text-xs text-secondary-600">
+                          {Math.round((previewResume.ats_score.keyword_match || 0) / 30 * 100)}%
+                        </span>
+                      </div>
+                    </div>
+                    <div className="bg-secondary-50 p-3 rounded-lg">
+                      <div className="text-xs text-secondary-600 mb-1">Action Verbs</div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-lg font-semibold text-secondary-900">
+                          {previewResume.ats_score.action_verbs_usage || 0}/20
+                        </span>
+                        <span className="text-xs text-secondary-600">
+                          {Math.round((previewResume.ats_score.action_verbs_usage || 0) / 20 * 100)}%
+                        </span>
+                      </div>
+                    </div>
+                    <div className="bg-secondary-50 p-3 rounded-lg">
+                      <div className="text-xs text-secondary-600 mb-1">Quantification</div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-lg font-semibold text-secondary-900">
+                          {previewResume.ats_score.quantification_score || 0}/15
+                        </span>
+                        <span className="text-xs text-secondary-600">
+                          {Math.round((previewResume.ats_score.quantification_score || 0) / 15 * 100)}%
+                        </span>
+                      </div>
+                    </div>
+                    <div className="bg-secondary-50 p-3 rounded-lg">
+                      <div className="text-xs text-secondary-600 mb-1">Impact</div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-lg font-semibold text-secondary-900">
+                          {previewResume.ats_score.impact_statements || 0}/15
+                        </span>
+                        <span className="text-xs text-secondary-600">
+                          {Math.round((previewResume.ats_score.impact_statements || 0) / 15 * 100)}%
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Strengths */}
+                  {previewResume.ats_score.strengths && previewResume.ats_score.strengths.length > 0 && (
+                    <div className="mb-3">
+                      <h4 className="text-sm font-semibold text-green-700 mb-2">✅ Strengths</h4>
+                      <ul className="text-xs text-secondary-700 space-y-1">
+                        {previewResume.ats_score.strengths.slice(0, 3).map((strength, idx) => (
+                          <li key={idx} className="flex items-start">
+                            <span className="text-green-600 mr-2">•</span>
+                            <span>{strength}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Suggestions */}
+                  {previewResume.ats_score.suggestions && previewResume.ats_score.suggestions.length > 0 && (
+                    <div>
+                      <h4 className="text-sm font-semibold text-blue-700 mb-2">💡 Optimization Tips</h4>
+                      <ul className="text-xs text-secondary-700 space-y-1">
+                        {previewResume.ats_score.suggestions.slice(0, 3).map((suggestion, idx) => (
+                          <li key={idx} className="flex items-start">
+                            <span className="text-blue-600 mr-2">•</span>
+                            <span>{suggestion}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               )}
               </div>
