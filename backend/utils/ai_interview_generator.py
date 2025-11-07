@@ -93,23 +93,16 @@ class AIInterviewGenerator:
         try:
             prompt = self._build_question_prompt(category, count, job_description, profile)
             
-            response = self.client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[
-                    {
-                        "role": "system",
-                        "content": "You are an expert interview coach. Generate realistic, role-specific interview questions with STAR-format answers based on the candidate's actual experience. Return valid JSON only."
-                    },
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
-                ],
-                temperature=0.8,  # Higher temperature for variety
+            system_message = "You are an expert interview coach. Generate realistic, role-specific interview questions with STAR-format answers based on the candidate's actual experience. Return valid JSON only."
+            
+            response = self.client.chat(
+                messages=[prompt],
+                system_message=system_message,
+                temperature=0.8,
                 max_tokens=2500
             )
             
-            content = response.choices[0].message.content.strip()
+            content = response.strip()
             
             # Extract JSON
             if "```json" in content:
