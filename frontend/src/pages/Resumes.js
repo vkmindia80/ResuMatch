@@ -118,8 +118,10 @@ const Resumes = () => {
         content.experience.forEach(exp => {
           resumeText += `\n${exp.title} - ${exp.company}\n`;
           resumeText += `${exp.location || ''} | ${exp.start_date || ''} - ${exp.is_current ? 'Present' : exp.end_date || ''}\n`;
-          if (exp.responsibilities && exp.responsibilities.length > 0) {
-            exp.responsibilities.forEach(resp => {
+          // Use optimized_responsibilities if available, fallback to responsibilities
+          const bullets = exp.optimized_responsibilities || exp.responsibilities || [];
+          if (bullets.length > 0) {
+            bullets.forEach(resp => {
               resumeText += `• ${resp}\n`;
             });
           }
