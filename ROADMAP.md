@@ -1350,7 +1350,7 @@ Once services are running, you have 4 options:
 
 ---
 
-### 📧 **OPTION 2: Add Email Service First**
+#### **OPTION B: Add Email Service First**
 
 **Why:** Enable password reset before launch for better user experience.
 
