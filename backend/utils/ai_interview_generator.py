@@ -10,10 +10,9 @@ from emergentintegrations.llm.openai import LlmChat
 class AIInterviewGenerator:
     def __init__(self):
         """Initialize AI Interview Generator with Emergent LLM Key"""
-        api_key = os.getenv('EMERGENT_LLM_KEY')
-        if not api_key:
+        self.api_key = os.getenv('EMERGENT_LLM_KEY')
+        if not self.api_key:
             raise ValueError("EMERGENT_LLM_KEY not found in environment variables")
-        self.client = LlmChat(api_key=api_key, model="gpt-4o-mini")
     
     async def generate_interview_questions(
         self,
