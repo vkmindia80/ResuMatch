@@ -29,25 +29,18 @@ class AIJobParser:
             # Build comprehensive prompt
             prompt = self._build_parsing_prompt(job_data)
             
-            # Call OpenAI API
-            response = self.client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[
-                    {
-                        "role": "system",
-                        "content": "You are an expert job description analyzer. Extract structured information from job postings accurately and comprehensively. Always return valid JSON."
-                    },
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
-                ],
-                temperature=0.3,  # Low temperature for consistent extraction
+            # Call OpenAI API via emergentintegrations
+            system_message = "You are an expert job description analyzer. Extract structured information from job postings accurately and comprehensively. Always return valid JSON."
+            
+            response = self.client.chat(
+                messages=[prompt],
+                system_message=system_message,
+                temperature=0.3,
                 max_tokens=2000
             )
             
             # Parse response
-            content = response.choices[0].message.content.strip()
+            content = response.strip()
             
             # Extract JSON from response (handle markdown code blocks)
             if "```json" in content:
