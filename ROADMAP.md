@@ -62,24 +62,26 @@ An AI-powered platform that transforms user profiles into ATS-optimized resumes 
 - ✅ Input validation & sanitization (Pydantic models)
 - ✅ Environment secrets management (.env files, not committed to repo)
 
-### 1.2 User Management & Authentication (Week 2)
+### 1.2 User Management & Authentication (Week 2) - ✅ 75% COMPLETE
 **Features**
-- User registration with email verification
-- Secure login with JWT tokens
-- Password reset flow
-- Google OAuth integration
-- Session management
-- Profile creation wizard
+- ✅ User registration (implemented)
+- ⏸️ Email verification (not yet implemented)
+- ✅ Secure login with JWT tokens (access + refresh tokens)
+- ⏸️ Password reset flow (not yet implemented)
+- ⏸️ Google OAuth integration (backend ready, not fully connected)
+- ✅ Session management (JWT-based)
+- ✅ Demo credentials auto-creation (demo@resumatch.com / Demo@123)
 
-**API Endpoints**
+**API Endpoints** - ✅ Core endpoints implemented
 ```
-POST /api/auth/register
-POST /api/auth/login
-POST /api/auth/logout
-POST /api/auth/refresh-token
-POST /api/auth/forgot-password
-POST /api/auth/reset-password
-GET  /api/auth/google
+✅ POST /api/auth/register
+✅ POST /api/auth/login
+✅ POST /api/auth/logout
+✅ POST /api/auth/refresh (refresh token endpoint)
+⏸️ POST /api/auth/forgot-password (not implemented)
+⏸️ POST /api/auth/reset-password (not implemented)
+⏸️ GET  /api/auth/google (not fully implemented)
+✅ GET  /api/auth/me (get current user)
 ```
 
 **Database Schema**
