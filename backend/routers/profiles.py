@@ -236,19 +236,23 @@ async def parse_resume(
         
         parsed_data["skills"] = transformed_skills
         
-        # Transform projects dates
+        # Transform projects dates (keep as strings for MongoDB)
         for proj in parsed_data.get("projects", []):
-            if "start_date" in proj:
-                proj["start_date"] = parse_date_string(proj["start_date"])
-            if "end_date" in proj:
-                proj["end_date"] = parse_date_string(proj["end_date"])
+            if "start_date" in proj and proj["start_date"]:
+                date_obj = parse_date_string(proj["start_date"])
+                proj["start_date"] = date_obj.isoformat() if date_obj else None
+            if "end_date" in proj and proj["end_date"]:
+                date_obj = parse_date_string(proj["end_date"])
+                proj["end_date"] = date_obj.isoformat() if date_obj else None
         
-        # Transform certifications dates
+        # Transform certifications dates (keep as strings for MongoDB)
         for cert in parsed_data.get("certifications", []):
-            if "issue_date" in cert:
-                cert["issue_date"] = parse_date_string(cert["issue_date"])
-            if "expiry_date" in cert:
-                cert["expiry_date"] = parse_date_string(cert["expiry_date"])
+            if "issue_date" in cert and cert["issue_date"]:
+                date_obj = parse_date_string(cert["issue_date"])
+                cert["issue_date"] = date_obj.isoformat() if date_obj else None
+            if "expiry_date" in cert and cert["expiry_date"]:
+                date_obj = parse_date_string(cert["expiry_date"])
+                cert["expiry_date"] = date_obj.isoformat() if date_obj else None
         
         # Check if profile exists
         existing_profile = await db.profiles.find_one({"user_id": user_id})
