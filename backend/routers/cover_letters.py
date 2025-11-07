@@ -63,6 +63,11 @@ async def generate_cover_letter(
         cover_letter_data.tone
     )
     
+    # Add user's name to signature and header info
+    personal_info = profile.get("personal_info", {})
+    cover_letter_content["signature"] = personal_info.get("full_name", "[Your Name]")
+    cover_letter_content["header"] = personal_info
+    
     cover_letter_dict = {
         "id": cover_letter_id,
         "user_id": user_id,
