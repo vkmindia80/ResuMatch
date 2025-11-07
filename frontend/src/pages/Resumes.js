@@ -416,9 +416,16 @@ const Resumes = () => {
                     <FileText className="text-primary-600" size={24} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-secondary-900">
-                      Resume {new Date(resume.created_at).toLocaleString()}
-                    </h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-semibold text-secondary-900">
+                        Resume {new Date(resume.created_at).toLocaleDateString()}
+                      </h3>
+                      {resume.is_reoptimized && (
+                        <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-medium">
+                          🎯 Re-optimized
+                        </span>
+                      )}
+                    </div>
                     <p className="text-sm text-secondary-600">Template: {resume.template_id}</p>
                   </div>
                 </div>
