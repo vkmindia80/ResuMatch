@@ -150,7 +150,7 @@ const CoverLetters = () => {
       // Signature
       doc.text('Sincerely,', margin, yPos);
       yPos += 7;
-      doc.text('[Your Name]', margin, yPos);
+      doc.text(letter.content.signature || letter.content.header?.full_name || '[Your Name]', margin, yPos);
       
       // Save PDF
       doc.save(`cover-letter-${job?.company || 'document'}.pdf`);
