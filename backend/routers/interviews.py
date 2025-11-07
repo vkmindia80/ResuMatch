@@ -77,27 +77,49 @@ async def generate_interview_questions(
 
 @router.get("/questions")
 async def get_interview_questions(
+    skip: int = 0,
+    limit: int = 50,
     job_description_id: Optional[str] = None,
     category: Optional[str] = None,
     user_id: str = Depends(get_current_user_id),
     db = Depends(get_database)
 ):
     """
-    Get interview questions
+    Get interview questions with pagination
+    
+    Parameters:
+    - skip: Number of records to skip (default: 0)
+    - limit: Maximum number of records to return (default: 50, max: 200)
+    - job_description_id: Filter by job description
+    - category: Filter by question category
     """
+    # Validate and cap limit
+    limit = min(limit, 200)
+    
+    # Build query
     query = {"user_id": user_id}
     if job_description_id:
         query["job_description_id"] = job_description_id
     if category:
         query["category"] = category
     
-    cursor = db.interview_questions.find(query)
-    questions = await cursor.to_list(length=200)
+    # Get total count
+    total_count = await db.interview_questions.count_documents(query)
+    
+    # Get paginated questions
+    cursor = db.interview_questions.find(query).sort("created_at", -1).skip(skip).limit(limit)
+    questions = await cursor.to_list(length=limit)
     
     for question in questions:
         question.pop("_id", None)
     
-    return questions
+    return {
+        "items": questions,
+        "total": total_count,
+        "skip": skip,
+        "limit": limit,
+        "has_more": (skip + limit) < total_count
+    }
 
 @router.get("/categories")
 async def get_question_categories():
