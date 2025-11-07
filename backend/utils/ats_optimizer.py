@@ -33,6 +33,7 @@ class ATSOptimizer:
             initial_content: Initial resume content
             ats_score: Initial ATS score breakdown
             job_description: Optional job description for targeting
+            min_target_score: Minimum score to beat (for re-optimization)
             
         Returns:
             Tuple of (optimized_content, final_ats_score, iterations_used)
@@ -41,9 +42,19 @@ class ATSOptimizer:
         current_score = ats_score
         iteration = 0
         
+        # If re-optimizing, try to beat the original score
+        target_score = self.target_score
+        if min_target_score and min_target_score > 0:
+            # Set target to be higher than source, but not lower than our standard target
+            target_score = max(self.target_score, min_target_score + 1)
+            print(f"\n🎯 Re-Optimization Mode")
+            print(f"Source score: {min_target_score}%")
+            print(f"Must beat or match: {min_target_score}%")
+            print(f"Ideal target: {target_score}%")
+        
         print(f"\n🚀 Starting ATS Optimization v2.0")
         print(f"Initial score: {ats_score.get('overall_score', 0)}%")
-        print(f"Target score: {self.target_score}%")
+        print(f"Target score: {target_score}%")
         print(f"Max iterations: {self.max_iterations}\n")
         
         while iteration < self.max_iterations:
