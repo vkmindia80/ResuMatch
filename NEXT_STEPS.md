@@ -78,45 +78,59 @@ SENDGRID_FROM_EMAIL=noreply@resumatch.com
 
 #### Day 2-3: Implement Password Reset
 
-**Email Service Options:**
-1. **SendGrid** (Recommended) - Free tier: 100 emails/day
-2. **Mailgun** - Free tier: 100 emails/day  
-3. **AWS SES** - Pay as you go
-4. **Gmail SMTP** - Free but limited
+**Backend Endpoints:**
+- Implement `/api/auth/forgot-password`
+- Implement `/api/auth/reset-password`
+- Create email templates
 
-**If you want to do this:**
-1. Sign up for SendGrid free account
-2. Get API key
-3. I'll implement the password reset flow with email
+**Frontend Pages:**
+- Add "Forgot Password" page
+- Add "Reset Password" page
+- Test complete flow
 
-**If not ready:** Skip to Week 3 tasks
+**Expected Result:** Password reset working ✅
 
 ---
 
-### Week 3 Tasks (5-7 days)
+## 🎨 OPTION 3: Add Phase 2 Features
 
-#### Load Testing & Performance
-```bash
-# Install locust
-pip install locust
+**Goal:** Launch with more features  
+**Timeline:** 7-10 days  
+**Effort:** High
 
-# Run load test
-locust -f /app/tests/load_test.py --host=http://localhost:8001
-```
+### Recommended Features:
 
-#### Security Audit
-- Review all authentication flows
-- Test for injection vulnerabilities
-- Check file upload security
-- Review CORS settings
-- Validate rate limiting
+**1. Cover Letter Generator** (3-4 days)
+- AI-powered generation using OpenAI
+- Multiple templates
+- PDF export
+- Personalized based on job + profile
 
-#### Final Polish
-- Add health check dashboard
-- Improve error messages
-- Add tooltips and help text
-- Mobile responsiveness check
-- Browser compatibility testing
+**2. Enhanced Interview Prep** (2-3 days)
+- Practice session history tracking
+- Performance analytics
+- Flashcard improvements
+- Mock interview timer
+
+**3. Job Match Scoring** (2-3 days)
+- Calculate profile vs job compatibility %
+- Visual skills gap analysis
+- Improvement recommendations
+- Match score breakdown
+
+---
+
+## 🔧 OPTION 4: Continue Polishing
+
+**Goal:** Add nice-to-have features  
+**Timeline:** 5-7 days  
+**Effort:** Medium
+
+### Optional Enhancements:
+1. **DOCX Export** (2 days) - Export resumes to Word
+2. **Google OAuth Frontend** (1 day) - "Sign in with Google" button
+3. **Enhanced Analytics** (2-3 days) - Dashboard metrics
+4. **Email Verification** (2 days) - Verify email on registration
 
 ---
 
