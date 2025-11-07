@@ -1,0 +1,246 @@
+{
+  "timestamp": "2025-11-07 12:37:22",
+  "summary": {
+    "total": 24,
+    "passed": 19,
+    "failed": 5,
+    "success_rate": 79.16666666666666,
+    "categories": {
+      "Authentication": {
+        "passed": 5,
+        "failed": 0
+      },
+      "Input Validation": {
+        "passed": 3,
+        "failed": 1
+      },
+      "Rate Limiting": {
+        "passed": 2,
+        "failed": 0
+      },
+      "Security Headers": {
+        "passed": 4,
+        "failed": 0
+      },
+      "CORS": {
+        "passed": 0,
+        "failed": 4
+      },
+      "Error Handling": {
+        "passed": 3,
+        "failed": 0
+      },
+      "File Upload": {
+        "passed": 2,
+        "failed": 0
+      }
+    },
+    "failed_tests": [
+      {
+        "category": "Input Validation",
+        "test": "Extremely long input rejection",
+        "status": "\u274c FAIL",
+        "passed": false,
+        "details": "Status: 201"
+      },
+      {
+        "category": "CORS",
+        "test": "OPTIONS request handling",
+        "status": "\u274c FAIL",
+        "passed": false,
+        "details": "Status: 405"
+      },
+      {
+        "category": "CORS",
+        "test": "Header: Access-Control-Allow-Origin",
+        "status": "\u274c FAIL",
+        "passed": false,
+        "details": "Present: False"
+      },
+      {
+        "category": "CORS",
+        "test": "Header: Access-Control-Allow-Methods",
+        "status": "\u274c FAIL",
+        "passed": false,
+        "details": "Present: False"
+      },
+      {
+        "category": "CORS",
+        "test": "Header: Access-Control-Allow-Headers",
+        "status": "\u274c FAIL",
+        "passed": false,
+        "details": "Present: False"
+      }
+    ]
+  },
+  "detailed_results": [
+    {
+      "category": "Authentication",
+      "test": "Protected endpoint without token",
+      "status": "\u2705 PASS",
+      "passed": true,
+      "details": "Status: 403"
+    },
+    {
+      "category": "Authentication",
+      "test": "Invalid JWT token rejection",
+      "status": "\u2705 PASS",
+      "passed": true,
+      "details": "Status: 401"
+    },
+    {
+      "category": "Authentication",
+      "test": "Valid token access",
+      "status": "\u2705 PASS",
+      "passed": true,
+      "details": "Status: 200"
+    },
+    {
+      "category": "Authentication",
+      "test": "Weak password rejection",
+      "status": "\u2705 PASS",
+      "passed": true,
+      "details": "Status: 422"
+    },
+    {
+      "category": "Authentication",
+      "test": "SQL Injection prevention in login",
+      "status": "\u2705 PASS",
+      "passed": true,
+      "details": "Status: 422"
+    },
+    {
+      "category": "Input Validation",
+      "test": "XSS payload in job title",
+      "status": "\u2705 PASS",
+      "passed": true,
+      "details": "Status: 201"
+    },
+    {
+      "category": "Input Validation",
+      "test": "Extremely long input rejection",
+      "status": "\u274c FAIL",
+      "passed": false,
+      "details": "Status: 201"
+    },
+    {
+      "category": "Input Validation",
+      "test": "NoSQL injection prevention",
+      "status": "\u2705 PASS",
+      "passed": true,
+      "details": "Status: 422"
+    },
+    {
+      "category": "Input Validation",
+      "test": "Email format validation",
+      "status": "\u2705 PASS",
+      "passed": true,
+      "details": "Status: 422"
+    },
+    {
+      "category": "Rate Limiting",
+      "test": "Health endpoint rate limiting",
+      "status": "\u2705 PASS",
+      "passed": true,
+      "details": "Successful: 60, Rate limited: 10"
+    },
+    {
+      "category": "Rate Limiting",
+      "test": "Auth endpoint rate limiting",
+      "status": "\u2705 PASS",
+      "passed": true,
+      "details": "Rate limited: 1/10 attempts"
+    },
+    {
+      "category": "Security Headers",
+      "test": "X-Content-Type-Options",
+      "status": "\u2705 PASS",
+      "passed": true,
+      "details": "Value: nosniff"
+    },
+    {
+      "category": "Security Headers",
+      "test": "X-Frame-Options",
+      "status": "\u2705 PASS",
+      "passed": true,
+      "details": "Value: DENY"
+    },
+    {
+      "category": "Security Headers",
+      "test": "Content-Security-Policy",
+      "status": "\u2705 PASS",
+      "passed": true,
+      "details": "Present: default-src 'self'"
+    },
+    {
+      "category": "Security Headers",
+      "test": "Strict-Transport-Security",
+      "status": "\u2705 PASS",
+      "passed": true,
+      "details": "Present: max-age=31536000; includeSubDomains"
+    },
+    {
+      "category": "CORS",
+      "test": "OPTIONS request handling",
+      "status": "\u274c FAIL",
+      "passed": false,
+      "details": "Status: 405"
+    },
+    {
+      "category": "CORS",
+      "test": "Header: Access-Control-Allow-Origin",
+      "status": "\u274c FAIL",
+      "passed": false,
+      "details": "Present: False"
+    },
+    {
+      "category": "CORS",
+      "test": "Header: Access-Control-Allow-Methods",
+      "status": "\u274c FAIL",
+      "passed": false,
+      "details": "Present: False"
+    },
+    {
+      "category": "CORS",
+      "test": "Header: Access-Control-Allow-Headers",
+      "status": "\u274c FAIL",
+      "passed": false,
+      "details": "Present: False"
+    },
+    {
+      "category": "Error Handling",
+      "test": "404 error doesn't expose internals",
+      "status": "\u2705 PASS",
+      "passed": true,
+      "details": "Status: 404"
+    },
+    {
+      "category": "Error Handling",
+      "test": "Invalid JSON handling",
+      "status": "\u2705 PASS",
+      "passed": true,
+      "details": "Status: 422"
+    },
+    {
+      "category": "Error Handling",
+      "test": "No stack traces in responses",
+      "status": "\u2705 PASS",
+      "passed": true,
+      "details": "Manual verification recommended"
+    },
+    {
+      "category": "File Upload",
+      "test": "Path traversal prevention",
+      "status": "\u2705 PASS",
+      "passed": true,
+      "details": "Status: 400"
+    },
+    {
+      "category": "File Upload",
+      "test": "Large file rejection",
+      "status": "\u2705 PASS",
+      "passed": true,
+      "details": "Status: 413"
+    }
+  ]
+}
