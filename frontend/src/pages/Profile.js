@@ -189,20 +189,75 @@ const Profile = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" data-testid="profile-page">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-secondary-900">My Profile</h1>
-        <button
-          onClick={handleSaveProfile}
-          disabled={saving}
-          data-testid="save-profile-button"
-          className="btn-primary flex items-center space-x-2 disabled:opacity-50"
-        >
-          <Save size={18} />
-          <span>{saving ? 'Saving...' : 'Save Profile'}</span>
-        </button>
+        <div className="flex items-center space-x-3">
+          <button
+            onClick={triggerFileUpload}
+            disabled={uploading}
+            data-testid="import-resume-button"
+            className="btn-secondary flex items-center space-x-2 disabled:opacity-50"
+          >
+            <Upload size={18} />
+            <span>{uploading ? 'Uploading...' : 'Import from Resume'}</span>
+          </button>
+          <button
+            onClick={handleSaveProfile}
+            disabled={saving}
+            data-testid="save-profile-button"
+            className="btn-primary flex items-center space-x-2 disabled:opacity-50"
+          >
+            <Save size={18} />
+            <span>{saving ? 'Saving...' : 'Save Profile'}</span>
+          </button>
+        </div>
       </div>
+
+      {/* Hidden file input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".pdf,.docx,.doc,.txt"
+        onChange={handleResumeUpload}
+        style={{ display: 'none' }}
+        data-testid="resume-file-input"
+      />
 
       {message && (
         <div className={`mb-4 p-4 rounded-lg ${message.includes('Error') ? 'bg-red-50 text-red-700' : 'bg-green-50 text-green-700'}`}>
           {message}
+        </div>
+      )}
+
+      {/* Upload Status Message */}
+      {uploadMessage && (
+        <div className={`mb-4 p-4 rounded-lg flex items-center space-x-3 ${
+          uploadStatus === 'success' ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'
+        }`}>
+          {uploadStatus === 'success' ? (
+            <CheckCircle className="text-green-600" size={24} />
+          ) : (
+            <XCircle className="text-red-600" size={24} />
+          )}
+          <span className={uploadStatus === 'success' ? 'text-green-700' : 'text-red-700'}>
+            {uploadMessage}
+          </span>
+        </div>
+      )}
+
+      {/* Resume Upload Info Banner */}
+      {!profile?.id && (
+        <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4" data-testid="resume-upload-banner">
+          <div className="flex items-start space-x-3">
+            <FileText className="text-blue-600 mt-0.5" size={24} />
+            <div>
+              <h3 className="text-sm font-semibold text-blue-900 mb-1">Quick Start: Import Your Resume</h3>
+              <p className="text-sm text-blue-800 mb-2">
+                Save time by uploading your existing resume. Our AI will automatically extract and fill in your profile information.
+              </p>
+              <p className="text-xs text-blue-700">
+                Supported formats: PDF, DOCX, TXT (Max 10MB)
+              </p>
+            </div>
+          </div>
         </div>
       )}
 
