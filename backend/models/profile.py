@@ -18,10 +18,12 @@ class Education(BaseModel):
     institution: str
     degree: str
     field: str
-    start_date: date
+    start_date: Optional[date] = None
     end_date: Optional[date] = None
     gpa: Optional[float] = None
     achievements: List[str] = []
+    certificate_url: Optional[str] = None
+    certificate_storage_info: Optional[Dict] = None
 
 class Experience(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
