@@ -24,6 +24,7 @@ def test_profile_flow():
         if response.status_code == 201:
             print("✓ User registered successfully")
             token_data = response.json()
+            print(f"  Token data: {token_data}")
             access_token = token_data.get("access_token")
         else:
             # User might exist, try login
