@@ -106,19 +106,38 @@ async def generate_resume(
 
 @router.get("/")
 async def get_resumes(
+    skip: int = 0,
+    limit: int = 20,
     user_id: str = Depends(get_current_user_id),
     db = Depends(get_database)
 ):
     """
-    Get all resumes for current user
+    Get all resumes for current user with pagination
+    
+    Parameters:
+    - skip: Number of records to skip (default: 0)
+    - limit: Maximum number of records to return (default: 20, max: 100)
     """
-    cursor = db.resumes.find({"user_id": user_id})
-    resumes = await cursor.to_list(length=100)
+    # Validate and cap limit
+    limit = min(limit, 100)
+    
+    # Get total count
+    total_count = await db.resumes.count_documents({"user_id": user_id})
+    
+    # Get paginated resumes
+    cursor = db.resumes.find({"user_id": user_id}).sort("created_at", -1).skip(skip).limit(limit)
+    resumes = await cursor.to_list(length=limit)
     
     for resume in resumes:
         resume.pop("_id", None)
     
-    return resumes
+    return {
+        "items": resumes,
+        "total": total_count,
+        "skip": skip,
+        "limit": limit,
+        "has_more": (skip + limit) < total_count
+    }
 
 @router.get("/{resume_id}")
 async def get_resume(
