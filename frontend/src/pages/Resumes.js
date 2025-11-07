@@ -309,6 +309,159 @@ const Resumes = () => {
           <p className="text-sm">Click "Generate Resume" to create your first resume</p>
         </div>
       )}
+
+      {/* Preview Modal */}
+      {showPreview && previewResume && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6">
+            <div className="flex justify-between items-start mb-6">
+              <h2 className="text-2xl font-bold text-secondary-900">Resume Preview</h2>
+              <button
+                onClick={() => setShowPreview(false)}
+                className="text-secondary-400 hover:text-secondary-600 text-2xl"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              {/* Header */}
+              {previewResume.content.header && (
+                <div className="text-center border-b pb-4">
+                  <h1 className="text-3xl font-bold text-secondary-900 mb-2">
+                    {previewResume.content.header.full_name}
+                  </h1>
+                  <div className="text-secondary-600 space-x-3">
+                    <span>{previewResume.content.header.email}</span>
+                    <span>•</span>
+                    <span>{previewResume.content.header.phone}</span>
+                    <span>•</span>
+                    <span>{previewResume.content.header.location}</span>
+                  </div>
+                  {previewResume.content.header.linkedin && (
+                    <div className="text-primary-600 mt-1">{previewResume.content.header.linkedin}</div>
+                  )}
+                </div>
+              )}
+
+              {/* Summary */}
+              {previewResume.content.summary && (
+                <div>
+                  <h3 className="text-lg font-semibold text-secondary-900 mb-2">Professional Summary</h3>
+                  <p className="text-secondary-700 leading-relaxed">{previewResume.content.summary}</p>
+                </div>
+              )}
+
+              {/* Experience */}
+              {previewResume.content.experience && previewResume.content.experience.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-secondary-900 mb-3">Experience</h3>
+                  {previewResume.content.experience.map((exp, idx) => (
+                    <div key={idx} className="mb-4">
+                      <div className="flex justify-between items-start mb-1">
+                        <div>
+                          <h4 className="font-semibold text-secondary-900">{exp.title}</h4>
+                          <p className="text-secondary-700">{exp.company}</p>
+                        </div>
+                        <span className="text-sm text-secondary-600">
+                          {exp.start_date} - {exp.is_current ? 'Present' : exp.end_date}
+                        </span>
+                      </div>
+                      {exp.location && (
+                        <p className="text-sm text-secondary-600 mb-2">{exp.location}</p>
+                      )}
+                      {exp.responsibilities && exp.responsibilities.length > 0 && (
+                        <ul className="list-disc list-inside text-secondary-700 space-y-1">
+                          {exp.responsibilities.slice(0, 5).map((resp, ridx) => (
+                            <li key={ridx} className="text-sm">{resp}</li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Education */}
+              {previewResume.content.education && previewResume.content.education.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-secondary-900 mb-3">Education</h3>
+                  {previewResume.content.education.map((edu, idx) => (
+                    <div key={idx} className="mb-2">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="font-semibold text-secondary-900">{edu.degree} - {edu.field_of_study}</h4>
+                          <p className="text-secondary-700">{edu.institution}</p>
+                        </div>
+                        <span className="text-sm text-secondary-600">{edu.graduation_year}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Skills */}
+              {previewResume.content.skills && (
+                <div>
+                  <h3 className="text-lg font-semibold text-secondary-900 mb-3">Skills</h3>
+                  {previewResume.content.skills.technical && previewResume.content.skills.technical.length > 0 && (
+                    <div className="mb-2">
+                      <span className="font-medium text-secondary-800">Technical: </span>
+                      <span className="text-secondary-700">
+                        {previewResume.content.skills.technical.join(', ')}
+                      </span>
+                    </div>
+                  )}
+                  {previewResume.content.skills.soft && previewResume.content.skills.soft.length > 0 && (
+                    <div>
+                      <span className="font-medium text-secondary-800">Soft Skills: </span>
+                      <span className="text-secondary-700">
+                        {previewResume.content.skills.soft.join(', ')}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* ATS Score */}
+              {previewResume.ats_score && previewResume.ats_score.overall_score && (
+                <div className="border-t pt-4">
+                  <h3 className="text-lg font-semibold text-secondary-900 mb-3">ATS Score</h3>
+                  <div className="flex items-center space-x-4">
+                    <div className="text-4xl font-bold text-primary-600">
+                      {previewResume.ats_score.overall_score}%
+                    </div>
+                    <div className="flex-1">
+                      <div className="w-full bg-secondary-200 rounded-full h-4">
+                        <div
+                          className="bg-primary-600 h-4 rounded-full transition-all"
+                          style={{ width: `${previewResume.ats_score.overall_score}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-end space-x-3 mt-6 pt-4 border-t">
+              <button
+                onClick={() => handleDownload(previewResume)}
+                className="btn-primary flex items-center space-x-2"
+              >
+                <Download size={18} />
+                <span>Download</span>
+              </button>
+              <button
+                onClick={() => setShowPreview(false)}
+                className="btn-secondary"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
