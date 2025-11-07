@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { profileAPI, resumeAPI, jobAPI, interviewAPI } from '../services/api';
-import { User, FileText, Briefcase, MessageSquare, TrendingUp, Plus } from 'lucide-react';
+import { profileAPI, resumeAPI, jobAPI, interviewAPI, coverLetterAPI } from '../services/api';
+import { User, FileText, Briefcase, MessageSquare, TrendingUp, Plus, Mail } from 'lucide-react';
 
 const Dashboard = () => {
   const { user } = useAuth();
