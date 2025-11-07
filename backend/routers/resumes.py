@@ -203,19 +203,58 @@ async def generate_resume(
         # Fall back to initial content if optimization fails
         ats_score = initial_ats_score
     
+    # Generate descriptive name with date & time stamp
+    now = datetime.utcnow()
+    timestamp_str = now.strftime("%m/%d/%Y %I:%M %p")  # Format: 11/07/2025 03:45 PM
+    
+    # Create resume name
+    if is_reoptimization:
+        # For re-optimized resumes
+        if job_description:
+            resume_name = f"Resume for {job_description.get('title', 'Position')} - {timestamp_str}"
+        else:
+            resume_name = f"Optimized Resume - {timestamp_str}"
+    else:
+        # For new resumes
+        if job_description:
+            resume_name = f"Resume for {job_description.get('title', 'Position')} - {timestamp_str}"
+        else:
+            resume_name = f"Resume - {timestamp_str}"
+    
+    # If re-optimization, compare with source resume score
+    source_score = None
+    score_improvement = None
+    if is_reoptimization and source_resume:
+        source_score = source_resume.get("ats_score", {}).get("overall_score", 0)
+        current_score = ats_score.get("overall_score", 0)
+        score_improvement = current_score - source_score
+        
+        print(f"\n📊 Re-optimization Comparison:")
+        print(f"   Source Resume Score: {source_score}%")
+        print(f"   New Resume Score: {current_score}%")
+        print(f"   Improvement: {'+' if score_improvement >= 0 else ''}{score_improvement:.1f}%")
+        
+        if score_improvement >= 0:
+            print(f"   ✅ Success! Better or equal score achieved.")
+        else:
+            print(f"   ⚠️  Warning: Score decreased. Using new version anyway (may have better job match).")
+    
     resume_dict = {
         "id": resume_id,
         "user_id": user_id,
         "profile_id": profile.get("id"),
         "job_description_id": resume_data.job_description_id,
         "template_id": resume_data.template_id,
+        "name": resume_name,  # Add descriptive name with timestamp
         "status": "draft",
         "content": resume_content,
         "ats_score": ats_score,
         "source_resume_id": resume_data.source_resume_id if is_reoptimization else None,
+        "source_resume_score": source_score,  # Track original score
+        "score_improvement": score_improvement,  # Track improvement
         "is_reoptimized": is_reoptimization,
-        "created_at": datetime.utcnow(),
-        "updated_at": datetime.utcnow()
+        "created_at": now,
+        "updated_at": now
     }
     
     await db.resumes.insert_one(resume_dict)
