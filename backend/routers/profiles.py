@@ -216,12 +216,18 @@ async def parse_resume(
         
         # Transform experience dates (keep as strings for MongoDB)
         for exp in parsed_data.get("experience", []):
-            if "start_date" in exp and exp["start_date"]:
-                date_obj = parse_date_string(exp["start_date"])
-                exp["start_date"] = date_obj.isoformat() if date_obj else None
-            if "end_date" in exp and exp["end_date"]:
-                date_obj = parse_date_string(exp["end_date"])
-                exp["end_date"] = date_obj.isoformat() if date_obj else None
+            if "start_date" in exp:
+                if exp["start_date"] and exp["start_date"] != "":
+                    date_obj = parse_date_string(exp["start_date"])
+                    exp["start_date"] = date_obj.isoformat() if date_obj else None
+                else:
+                    exp["start_date"] = None
+            if "end_date" in exp:
+                if exp["end_date"] and exp["end_date"] != "":
+                    date_obj = parse_date_string(exp["end_date"])
+                    exp["end_date"] = date_obj.isoformat() if date_obj else None
+                else:
+                    exp["end_date"] = None
         
         # Transform skills to proper format
         skills_data = parsed_data.get("skills", {})
