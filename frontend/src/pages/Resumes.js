@@ -70,6 +70,84 @@ const Resumes = () => {
     }
   };
 
+  const handlePreview = (resume) => {
+    setPreviewResume(resume);
+    setShowPreview(true);
+  };
+
+  const handleDownload = (resume) => {
+    try {
+      // Create a simple text version of the resume
+      const content = resume.content;
+      let resumeText = '';
+      
+      // Header
+      if (content.header) {
+        resumeText += `${content.header.full_name || ''}\n`;
+        resumeText += `${content.header.email || ''} | ${content.header.phone || ''}\n`;
+        resumeText += `${content.header.location || ''}\n`;
+        if (content.header.linkedin) resumeText += `LinkedIn: ${content.header.linkedin}\n`;
+        resumeText += '\n';
+      }
+      
+      // Summary
+      if (content.summary) {
+        resumeText += `PROFESSIONAL SUMMARY\n`;
+        resumeText += `${content.summary}\n\n`;
+      }
+      
+      // Experience
+      if (content.experience && content.experience.length > 0) {
+        resumeText += `EXPERIENCE\n`;
+        content.experience.forEach(exp => {
+          resumeText += `\n${exp.title} - ${exp.company}\n`;
+          resumeText += `${exp.location || ''} | ${exp.start_date || ''} - ${exp.is_current ? 'Present' : exp.end_date || ''}\n`;
+          if (exp.responsibilities && exp.responsibilities.length > 0) {
+            exp.responsibilities.forEach(resp => {
+              resumeText += `• ${resp}\n`;
+            });
+          }
+        });
+        resumeText += '\n';
+      }
+      
+      // Education
+      if (content.education && content.education.length > 0) {
+        resumeText += `EDUCATION\n`;
+        content.education.forEach(edu => {
+          resumeText += `\n${edu.degree || ''} - ${edu.field_of_study || ''}\n`;
+          resumeText += `${edu.institution || ''} | ${edu.graduation_year || ''}\n`;
+        });
+        resumeText += '\n';
+      }
+      
+      // Skills
+      if (content.skills) {
+        resumeText += `SKILLS\n`;
+        if (content.skills.technical && content.skills.technical.length > 0) {
+          resumeText += `Technical: ${content.skills.technical.join(', ')}\n`;
+        }
+        if (content.skills.soft && content.skills.soft.length > 0) {
+          resumeText += `Soft Skills: ${content.skills.soft.join(', ')}\n`;
+        }
+      }
+      
+      // Create and download file
+      const blob = new Blob([resumeText], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `resume_${new Date(resume.created_at).toLocaleDateString().replace(/\//g, '-')}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading resume:', error);
+      alert('Error downloading resume. Please try again.');
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
