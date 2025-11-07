@@ -6,6 +6,9 @@ const JobDescriptions = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [showMatchScore, setShowMatchScore] = useState(false);
+  const [matchScoreData, setMatchScoreData] = useState(null);
+  const [loadingMatchScore, setLoadingMatchScore] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     company: '',
