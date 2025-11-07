@@ -416,13 +416,22 @@ const Resumes = () => {
                     <FileText className="text-primary-600" size={24} />
                   </div>
                   <div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-semibold text-secondary-900">
-                        Resume {new Date(resume.created_at).toLocaleDateString()}
+                        {resume.name || `Resume ${new Date(resume.created_at).toLocaleDateString()}`}
                       </h3>
                       {resume.is_reoptimized && (
                         <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-medium">
                           🎯 Re-optimized
+                        </span>
+                      )}
+                      {resume.score_improvement !== undefined && resume.score_improvement !== null && (
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                          resume.score_improvement >= 3 ? 'bg-green-100 text-green-700' :
+                          resume.score_improvement >= 0 ? 'bg-blue-100 text-blue-700' :
+                          'bg-orange-100 text-orange-700'
+                        }`}>
+                          {resume.score_improvement >= 0 ? '+' : ''}{resume.score_improvement.toFixed(1)}%
                         </span>
                       )}
                     </div>
