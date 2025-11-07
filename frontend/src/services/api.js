@@ -110,6 +110,7 @@ export const resumeAPI = {
 export const interviewAPI = {
   generateQuestions: (data) => api.post('/api/interviews/generate-questions', data),
   getQuestions: (params) => api.get('/api/interviews/questions', { params }),
+  getQuestionsGrouped: (params) => api.get('/api/interviews/questions-grouped', { params }),
   getCategories: () => api.get('/api/interviews/categories'),
 };
 
