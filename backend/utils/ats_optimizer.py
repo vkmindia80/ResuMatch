@@ -23,7 +23,8 @@ class ATSOptimizer:
         self,
         initial_content: dict,
         ats_score: dict,
-        job_description: Optional[dict] = None
+        job_description: Optional[dict] = None,
+        min_target_score: Optional[int] = None
     ) -> Tuple[dict, dict, int]:
         """
         Iteratively optimize resume until target ATS score is achieved
