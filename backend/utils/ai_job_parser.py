@@ -40,9 +40,9 @@ class AIJobParser:
                 system_message=system_message
             ).with_model("openai", "gpt-4o-mini").with_params(temperature=0.3, max_tokens=2000)
             
-            # Send message
+            # Send message (async)
             user_msg = UserMessage(text=prompt)
-            response = client.send_message(user_msg)
+            response = await client.send_message(user_msg)
             
             # Parse response
             content = response.strip()
