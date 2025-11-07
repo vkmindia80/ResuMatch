@@ -30,18 +30,22 @@ class AIResumeGenerator:
             Professional summary string
         """
         try:
+            from emergentintegrations.llm.chat import UserMessage
+            
             prompt = self._build_summary_prompt(profile, job_description)
             
             system_message = "You are an expert resume writer. Create compelling, ATS-optimized professional summaries that highlight key achievements and skills."
             
-            response = self.client.chat(
-                messages=[prompt],
-                system_message=system_message,
-                temperature=0.7,
-                max_tokens=300
-            )
+            # Create chat client
+            client = LlmChat(
+                api_key=self.api_key,
+                session_id=f"resume_summary_{hash(profile.get('id', 'unknown'))}",
+                system_message=system_message
+            ).with_model("openai", "gpt-4o-mini").with_params(temperature=0.7, max_tokens=300)
             
-            summary = response.strip()
+            # Send message
+            user_msg = UserMessage(text=prompt)
+            summary = client.send_message(user_msg).strip()
             return summary
             
         except Exception as e:
