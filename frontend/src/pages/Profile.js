@@ -104,6 +104,76 @@ const Profile = () => {
     });
   };
 
+  const handleResumeUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/msword', 'text/plain'];
+    if (!allowedTypes.includes(file.type)) {
+      setUploadStatus('error');
+      setUploadMessage('Invalid file type. Please upload PDF, DOCX, or TXT file.');
+      setTimeout(() => {
+        setUploadMessage('');
+        setUploadStatus('');
+      }, 5000);
+      return;
+    }
+
+    // Validate file size (10MB max)
+    if (file.size > 10 * 1024 * 1024) {
+      setUploadStatus('error');
+      setUploadMessage('File size too large. Maximum size is 10MB.');
+      setTimeout(() => {
+        setUploadMessage('');
+        setUploadStatus('');
+      }, 5000);
+      return;
+    }
+
+    setUploading(true);
+    setUploadMessage('');
+    setUploadStatus('');
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await profileAPI.parseResume(formData);
+      
+      if (response.data.success) {
+        setProfile(response.data.profile);
+        setUploadStatus('success');
+        setUploadMessage('Resume parsed successfully! Your profile has been updated.');
+        
+        // Clear success message after 5 seconds
+        setTimeout(() => {
+          setUploadMessage('');
+          setUploadStatus('');
+        }, 5000);
+      } else {
+        throw new Error(response.data.message || 'Failed to parse resume');
+      }
+    } catch (error) {
+      setUploadStatus('error');
+      setUploadMessage('Error parsing resume: ' + (error.response?.data?.detail || error.message));
+      setTimeout(() => {
+        setUploadMessage('');
+        setUploadStatus('');
+      }, 5000);
+    } finally {
+      setUploading(false);
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const triggerFileUpload = () => {
+    fileInputRef.current?.click();
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
