@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from utils.auth import get_current_user_id
-from server import get_database
+from database import get_database
 
 router = APIRouter()
 
