@@ -62,7 +62,7 @@ class ATSOptimizer:
             overall_score = current_score.get('overall_score', 0)
             
             # Check if we've reached target
-            if overall_score >= self.target_score:
+            if overall_score >= target_score:
                 print(f"✅ Target score achieved: {overall_score}% (iteration {iteration})")
                 return current_content, current_score, iteration
             
