@@ -60,5 +60,5 @@ async def health_check():
     db = get_database()
     return {
         "status": "healthy",
-        "database": "connected" if db else "disconnected"
+        "database": "connected" if db is not None else "disconnected"
     }
