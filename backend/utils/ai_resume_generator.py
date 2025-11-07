@@ -76,18 +76,22 @@ class AIResumeGenerator:
                     optimized_experience.append(exp)
                     continue
                 
+                from emergentintegrations.llm.chat import UserMessage
+                
                 prompt = self._build_experience_optimization_prompt(exp, job_description)
                 
                 system_message = "You are an expert resume writer. Transform experience descriptions into powerful, ATS-optimized bullet points using action verbs, quantifiable achievements, and impact statements."
                 
-                response = self.client.chat(
-                    messages=[prompt],
-                    system_message=system_message,
-                    temperature=0.7,
-                    max_tokens=500
-                )
+                # Create chat client
+                client = LlmChat(
+                    api_key=self.api_key,
+                    session_id=f"exp_opt_{hash(str(exp.get('company', 'unknown')))}",
+                    system_message=system_message
+                ).with_model("openai", "gpt-4o-mini").with_params(temperature=0.7, max_tokens=500)
                 
-                content = response.strip()
+                # Send message
+                user_msg = UserMessage(text=prompt)
+                content = client.send_message(user_msg).strip()
                 
                 # Parse optimized bullets
                 optimized_bullets = [
