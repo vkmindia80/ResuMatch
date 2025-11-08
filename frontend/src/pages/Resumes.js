@@ -79,9 +79,11 @@ const Resumes = () => {
       setGenerationMode('profile');
     } catch (error) {
       console.error('Error generating resume:', error);
+      console.error('Error details:', error.response?.data);
+      const errorDetail = error.response?.data?.detail || error.message;
       const errorMsg = generationMode === 'optimize' 
-        ? 'Error optimizing resume. Please try again.'
-        : 'Error generating resume. Please ensure your profile is complete.';
+        ? `Error optimizing resume: ${errorDetail}`
+        : `Error generating resume: ${errorDetail}. Please ensure your profile is complete.`;
       alert(errorMsg);
     } finally {
       setGenerating(false);
