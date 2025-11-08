@@ -18,8 +18,10 @@ const Navbar = () => {
     { path: '/profile', icon: User, label: 'Profile' },
     { path: '/jobs', icon: Briefcase, label: 'Jobs' },
     { path: '/resumes', icon: FileText, label: 'Resumes' },
+    { path: '/resume-intelligence', icon: TrendingUp, label: 'Intelligence' },
     { path: '/cover-letters', icon: Mail, label: 'Cover Letters' },
     { path: '/interview-prep', icon: MessageSquare, label: 'Interview Prep' },
+    { path: '/practice-sessions', icon: Play, label: 'Practice' },
   ];
 
   return (
