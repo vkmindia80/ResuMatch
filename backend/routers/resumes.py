@@ -359,3 +359,123 @@ async def get_templates():
         {"id": "template_5", "name": "Minimalist", "description": "Simple and focused"}
     ]
     return templates
+
+
+@router.get("/{resume_id}/intelligence/performance")
+async def get_resume_performance_analysis(
+    resume_id: str,
+    user_id: str = Depends(get_current_user_id),
+    db = Depends(get_database)
+):
+    """
+    Get performance analysis for a resume compared to user's other resumes
+    """
+    from utils.resume_intelligence import ResumeIntelligence
+    
+    # Get the specific resume
+    resume = await db.resumes.find_one({"id": resume_id, "user_id": user_id})
+    if not resume:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Resume not found"
+        )
+    
+    # Get all user's resumes
+    cursor = db.resumes.find({"user_id": user_id})
+    all_resumes = await cursor.to_list(length=100)
+    
+    # Analyze performance
+    intelligence = ResumeIntelligence()
+    analysis = intelligence.analyze_resume_performance(resume, all_resumes)
+    
+    return analysis
+
+
+@router.get("/{resume_id}/intelligence/ab-suggestions")
+async def get_ab_testing_suggestions(
+    resume_id: str,
+    user_id: str = Depends(get_current_user_id),
+    db = Depends(get_database)
+):
+    """
+    Get A/B testing suggestions for resume optimization
+    """
+    from utils.resume_intelligence import ResumeIntelligence
+    
+    # Get the resume
+    resume = await db.resumes.find_one({"id": resume_id, "user_id": user_id})
+    if not resume:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Resume not found"
+        )
+    
+    # Generate suggestions
+    intelligence = ResumeIntelligence()
+    suggestions = intelligence.generate_ab_testing_suggestions(resume)
+    
+    return {"suggestions": suggestions}
+
+
+@router.post("/intelligence/compare")
+async def compare_two_resumes(
+    resume_a_id: str,
+    resume_b_id: str,
+    user_id: str = Depends(get_current_user_id),
+    db = Depends(get_database)
+):
+    """
+    Compare two resumes side-by-side
+    
+    Query Parameters:
+    - resume_a_id: ID of first resume
+    - resume_b_id: ID of second resume
+    """
+    from utils.resume_intelligence import ResumeIntelligence
+    
+    # Get both resumes
+    resume_a = await db.resumes.find_one({"id": resume_a_id, "user_id": user_id})
+    resume_b = await db.resumes.find_one({"id": resume_b_id, "user_id": user_id})
+    
+    if not resume_a or not resume_b:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="One or both resumes not found"
+        )
+    
+    # Compare resumes
+    intelligence = ResumeIntelligence()
+    comparison = intelligence.compare_resumes(resume_a, resume_b)
+    
+    return comparison
+
+
+@router.get("/{resume_id}/intelligence/industry-optimization")
+async def get_industry_optimization(
+    resume_id: str,
+    target_industry: str,
+    user_id: str = Depends(get_current_user_id),
+    db = Depends(get_database)
+):
+    """
+    Get industry-specific optimization recommendations
+    
+    Query Parameters:
+    - target_industry: Target industry (tech, finance, healthcare, marketing, general)
+    """
+    from utils.resume_intelligence import ResumeIntelligence
+    
+    # Get the resume
+    resume = await db.resumes.find_one({"id": resume_id, "user_id": user_id})
+    if not resume:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Resume not found"
+        )
+    
+    # Get industry optimization
+    intelligence = ResumeIntelligence()
+    optimization = intelligence.get_industry_optimization(resume, target_industry)
+    
+    return optimization
+
