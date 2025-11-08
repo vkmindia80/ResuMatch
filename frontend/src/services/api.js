@@ -95,6 +95,7 @@ export const jobAPI = {
   getJobs: () => api.get('/api/jobs/'),
   getJob: (id) => api.get(`/api/jobs/${id}`),
   deleteJob: (id) => api.delete(`/api/jobs/${id}`),
+  getMatchScore: (id) => api.get(`/api/jobs/${id}/match-score`),
 };
 
 // Resume API
