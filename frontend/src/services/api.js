@@ -109,6 +109,7 @@ export const resumeAPI = {
   getPerformanceAnalysis: (id) => api.get(`/api/resumes/${id}/intelligence/performance`),
   getABSuggestions: (id) => api.get(`/api/resumes/${id}/intelligence/ab-suggestions`),
   compareResumes: (idA, idB) => api.post(`/api/resumes/intelligence/compare?resume_a_id=${idA}&resume_b_id=${idB}`),
+  compareWithProfile: (id) => api.get(`/api/resumes/intelligence/compare-with-profile/${id}`),
   getIndustryOptimization: (id, industry) => api.get(`/api/resumes/${id}/intelligence/industry-optimization?target_industry=${industry}`),
 };
 
