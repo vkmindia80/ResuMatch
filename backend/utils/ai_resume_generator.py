@@ -257,8 +257,11 @@ Write the perfect professional summary now (3-4 sentences, 90-120 words, keyword
         job_description: Optional[dict]
     ) -> str:
         """Build prompt for experience optimization"""
+        
+        has_job_desc = bool(job_description)
+        
         prompt = f"""
-Transform work experience into powerful, ATS-optimized bullet points that will score high with both ATS systems and recruiters.
+{'RE-OPTIMIZE' if has_job_desc else 'Transform'} work experience into powerful, ATS-optimized bullet points that will score high with both ATS systems and recruiters.
 
 **Position:**
 - Company: {exp.get('company', 'N/A')}
@@ -273,19 +276,29 @@ Transform work experience into powerful, ATS-optimized bullet points that will s
         
         if job_description:
             parsed_data = job_description.get('parsed_data', {})
-            required_skills = parsed_data.get('required_skills', [])[:8]
-            technical_skills = parsed_data.get('technical_skills', [])[:8]
-            tools = parsed_data.get('tools_and_technologies', [])[:8]
+            required_skills = parsed_data.get('required_skills', [])[:12]
+            technical_skills = parsed_data.get('technical_skills', [])[:12]
+            tools = parsed_data.get('tools_and_technologies', [])[:10]
             
             prompt += f"""
-**TARGET JOB REQUIREMENTS (CRITICAL for ATS matching):**
-- Required Skills: {', '.join(required_skills)}
-- Technical Skills: {', '.join(technical_skills)}
-- Tools/Technologies: {', '.join(tools)}
+**🎯 TARGET JOB REQUIREMENTS (MUST INTEGRATE FOR PERFECT MATCH):**
+- Position: {job_description.get('title', 'N/A')}
+- Company: {job_description.get('company', 'N/A')}
+- REQUIRED Skills: {', '.join(required_skills)}
+- CRITICAL Technical Skills: {', '.join(technical_skills)}
+- KEY Tools/Technologies: {', '.join(tools)}
 
-**KEYWORD MATCHING PRIORITY:**
-Match and incorporate these keywords naturally if relevant to the role:
-{', '.join(required_skills[:15] + technical_skills[:15])}
+**⚡ MANDATORY RE-OPTIMIZATION REQUIREMENTS:**
+1. REWRITE bullets to incorporate target job keywords naturally
+2. EMPHASIZE skills/technologies that match job requirements
+3. ADD specific tools/technologies mentioned in job description
+4. QUANTIFY achievements with metrics that matter for this role
+5. Use EXACT terminology from job posting (not synonyms)
+6. Maintain truthfulness - only add keywords if work is relevant
+
+**🔄 TRANSFORMATION EXPECTATION:**
+SUBSTANTIALLY rewrite each bullet to maximize job match while keeping factual accuracy.
+Make CLEAR, VISIBLE changes - not just minor word swaps.
 """
         
         prompt += """
