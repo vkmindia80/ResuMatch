@@ -79,6 +79,21 @@ const ResumeIntelligence = () => {
     }
   };
 
+  const handleProfileComparison = async () => {
+    if (!selectedProfileCompareResume) {
+      alert('Please select a resume to compare with your profile');
+      return;
+    }
+
+    try {
+      const response = await resumeAPI.compareWithProfile(selectedProfileCompareResume);
+      setProfileComparisonData(response.data);
+    } catch (error) {
+      console.error('Error comparing with profile:', error);
+      alert('Failed to compare with profile');
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
