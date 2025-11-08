@@ -567,6 +567,48 @@ const ResumeIntelligence = () => {
           )}
         </div>
       )}
+
+      {/* Profile vs Resume Tab */}
+      {activeTab === 'profile-compare' && (
+        <div className="space-y-6">
+          <div className="card">
+            <h3 className="font-semibold text-secondary-900 mb-4">Compare Resume with Your Profile</h3>
+            <p className="text-sm text-secondary-600 mb-4">
+              See what changed when AI generated your resume from your profile data. 
+              Understand the enhancements, optimizations, and keyword additions.
+            </p>
+            <div className="flex items-end gap-4">
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-secondary-700 mb-2">Select Resume</label>
+                <select
+                  value={selectedProfileCompareResume}
+                  onChange={(e) => setSelectedProfileCompareResume(e.target.value)}
+                  className="input"
+                >
+                  <option value="">-- Select a resume --</option>
+                  {resumes.map((resume) => (
+                    <option key={resume.id} value={resume.id}>
+                      {resume.name || `Resume - ${new Date(resume.generated_at || resume.created_at).toLocaleDateString()}`}
+                      ({resume.ats_score?.overall_score || 0}% ATS)
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <button
+                onClick={handleProfileComparison}
+                className="btn-primary"
+                disabled={!selectedProfileCompareResume}
+              >
+                Compare with Profile
+              </button>
+            </div>
+          </div>
+
+          {profileComparisonData && (
+            <ProfileResumeDiff comparisonData={profileComparisonData} />
+          )}
+        </div>
+      )}
     </div>
   );
 };
