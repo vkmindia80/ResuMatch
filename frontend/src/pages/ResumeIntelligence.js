@@ -450,6 +450,15 @@ const ResumeIntelligence = () => {
                   </div>
                 </div>
               )}
+
+              {/* Visual Side-by-Side Comparison */}
+              {comparisonData.resume_a_full && comparisonData.resume_b_full && (
+                <ResumeDiffViewer 
+                  resumeA={comparisonData.resume_a_full}
+                  resumeB={comparisonData.resume_b_full}
+                  title="Detailed Side-by-Side Comparison"
+                />
+              )}
             </div>
           )}
         </div>
