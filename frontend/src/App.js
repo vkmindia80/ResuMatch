@@ -10,6 +10,8 @@ import JobDescriptions from './pages/JobDescriptions';
 import Resumes from './pages/Resumes';
 import InterviewPrep from './pages/InterviewPrep';
 import CoverLetters from './pages/CoverLetters';
+import PracticeSessions from './pages/PracticeSessions';
+import ResumeIntelligence from './pages/ResumeIntelligence';
 import AdminSettings from './pages/AdminSettings';
 import Navbar from './components/Navbar';
 import Loading from './components/Loading';
