@@ -72,14 +72,21 @@ class AIResumeGenerator:
             optimized_experience = []
             
             for exp in experience:
-                # Skip if no responsibilities
-                if not exp.get("responsibilities"):
+                # Get existing bullets (either optimized or original)
+                existing_bullets = exp.get("optimized_responsibilities") or exp.get("responsibilities", [])
+                
+                # Skip if no bullets at all
+                if not existing_bullets:
                     optimized_experience.append(exp)
                     continue
                 
                 from emergentintegrations.llm.chat import UserMessage
                 
-                prompt = self._build_experience_optimization_prompt(exp, job_description)
+                # Use existing bullets as the baseline for re-optimization
+                exp_for_prompt = exp.copy()
+                exp_for_prompt["responsibilities"] = existing_bullets
+                
+                prompt = self._build_experience_optimization_prompt(exp_for_prompt, job_description)
                 
                 system_message = "You are an expert resume writer. Transform experience descriptions into powerful, ATS-optimized bullet points using action verbs, quantifiable achievements, and impact statements."
                 
