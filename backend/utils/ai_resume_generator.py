@@ -218,11 +218,17 @@ CREATE A PERFECT ATS-OPTIMIZED PROFESSIONAL SUMMARY (TARGET: 95%+ ATS SCORE)
 - Key Tools/Technologies: {', '.join(tools)}
 - Experience Level: {parsed_data.get('job_level', 'N/A')}
 
-**ATS KEYWORD INTEGRATION (HIGHEST PRIORITY):**
-\u26a1 MUST include 10-12 EXACT keywords from required & technical skills
-\u26a1 MUST use EXACT terminology from job description (not synonyms)
-\u26a1 MUST integrate keywords NATURALLY (no keyword stuffing)
-\u26a1 MUST highlight matching technical skills PROMINENTLY
+**\u26a1 ATS KEYWORD INTEGRATION (HIGHEST PRIORITY - NON-NEGOTIABLE):**
+\u2705 MUST include 12-15 EXACT keywords from required & technical skills above
+\u2705 MUST use EXACT terminology from job description (not synonyms)
+\u2705 MUST integrate keywords NATURALLY and PROMINENTLY
+\u2705 MUST mention the specific JOB TITLE or similar role in the summary
+\u2705 CRITICAL: Make this summary CLEARLY different from generic ones - highly targeted!
+
+**\ud83d\udd04 RE-OPTIMIZATION MODE:**
+This summary must be SUBSTANTIALLY REWRITTEN to perfectly match this specific job.
+NOT a generic summary - a LASER-FOCUSED, job-specific summary.
+Every sentence should scream "I'm perfect for THIS role at THIS company."
 """
         
         prompt += """
