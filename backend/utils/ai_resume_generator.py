@@ -210,7 +210,7 @@ CREATE A PERFECT ATS-OPTIMIZED PROFESSIONAL SUMMARY (TARGET: 95%+ ATS SCORE)
             tools = parsed_data.get('tools_and_technologies', [])[:10]
             
             prompt += f"""
-**TARGET ROLE - CRITICAL FOR ATS OPTIMIZATION:**
+**\ud83c\udfaf TARGET ROLE - CRITICAL FOR ATS OPTIMIZATION:**
 - Position: {job_description.get('title', 'N/A')}
 - Company: {job_description.get('company', 'N/A')}
 - MUST-HAVE Required Skills: {', '.join(required_skills)}
