@@ -276,11 +276,14 @@ const Resumes = () => {
               >
                 <div className="flex items-center mb-2">
                   <span className="text-2xl mr-2">🎯</span>
-                  <h3 className="font-semibold text-secondary-900">Optimize Existing Resume</h3>
+                  <h3 className="font-semibold text-secondary-900">Re-Optimize for New Job</h3>
                 </div>
-                <p className="text-sm text-secondary-600">
-                  Re-optimize an existing resume for a specific job (95%+ ATS score)
+                <p className="text-sm text-secondary-600 mb-2">
+                  AI regenerates resume content tailored to a different job description
                 </p>
+                <div className="text-xs text-primary-700 bg-primary-100 rounded px-2 py-1 inline-block">
+                  ✨ Rewrites summary, bullets & keywords for perfect job match
+                </div>
               </button>
             </div>
           </div>
