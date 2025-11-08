@@ -16,6 +16,8 @@ const ResumeIntelligence = () => {
   const [compareResumeA, setCompareResumeA] = useState('');
   const [compareResumeB, setCompareResumeB] = useState('');
   const [comparisonData, setComparisonData] = useState(null);
+  const [profileComparisonData, setProfileComparisonData] = useState(null);
+  const [selectedProfileCompareResume, setSelectedProfileCompareResume] = useState('');
 
   useEffect(() => {
     fetchResumes();
