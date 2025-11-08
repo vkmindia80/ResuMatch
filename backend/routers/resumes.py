@@ -96,21 +96,39 @@ async def generate_resume(
     
     # Generate or extract initial content based on mode
     if is_reoptimization:
-        # Use existing resume content as starting point
-        print("📋 Using existing resume content as base for re-optimization...")
-        resume_content = source_resume.get("content", {})
+        # Use existing resume content as starting point but RE-OPTIMIZE with AI for new job
+        print("📋 Re-optimizing existing resume with AI for new job description...")
+        source_content = source_resume.get("content", {})
         source_ats = source_resume.get("ats_score", {})
         source_score = source_ats.get("overall_score", 0)
         
         print(f"   Source Resume ATS Score: {source_score}%")
         print(f"   Target: Beat or match {source_score}% with better job alignment")
+        print(f"   Optimizing for: {job_description.get('title') if job_description else 'General'}")
         
-        # We'll re-optimize this content with the new job description
-        summary = resume_content.get("summary", "")
-        optimized_experience = resume_content.get("experience", [])
-        optimized_skills = resume_content.get("skills", {})
+        # Initialize AI generator for re-optimization
+        ai_generator = AIResumeGenerator()
         
-        print(f"   Will optimize for: {job_description.get('title') if job_description else 'General'}")
+        # CRITICAL: Regenerate content with AI for the NEW job description
+        print("   🤖 Regenerating summary for new job...")
+        summary = await ai_generator.generate_professional_summary(profile, job_description)
+        
+        print("   🤖 Re-optimizing experience bullets for new job keywords...")
+        # Use existing experience but re-optimize bullets for new job
+        existing_experience = source_content.get("experience", [])
+        optimized_experience = await ai_generator.optimize_experience_bullets(
+            existing_experience,
+            job_description
+        )
+        
+        print("   🤖 Re-prioritizing skills for new job requirements...")
+        existing_skills = source_content.get("skills", {})
+        optimized_skills = await ai_generator.generate_skills_optimization(
+            existing_skills,
+            job_description
+        )
+        
+        print(f"   ✅ AI re-optimization complete - content adapted for new role")
         
     else:
         # Generate fresh content from profile
