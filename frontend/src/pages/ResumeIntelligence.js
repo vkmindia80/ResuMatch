@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { resumeAPI } from '../services/api';
-import { TrendingUp, GitCompare, Lightbulb, Target, Award, BarChart3, ChevronRight } from 'lucide-react';
+import { TrendingUp, GitCompare, Lightbulb, Target, Award, BarChart3, ChevronRight, FileText } from 'lucide-react';
+import ResumeDiffViewer from '../components/ResumeDiffViewer';
+import ProfileResumeDiff from '../components/ProfileResumeDiff';
 
 const ResumeIntelligence = () => {
   const [resumes, setResumes] = useState([]);
