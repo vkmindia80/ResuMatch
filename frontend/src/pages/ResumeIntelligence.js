@@ -196,6 +196,17 @@ const ResumeIntelligence = () => {
             <Target className="inline mr-2" size={18} />
             Industry
           </button>
+          <button
+            onClick={() => setActiveTab('profile-compare')}
+            className={`px-4 py-2 font-medium border-b-2 transition-colors ${
+              activeTab === 'profile-compare'
+                ? 'border-primary-600 text-primary-600'
+                : 'border-transparent text-secondary-600 hover:text-secondary-900'
+            }`}
+          >
+            <FileText className="inline mr-2" size={18} />
+            Profile vs Resume
+          </button>
         </div>
       </div>
 
