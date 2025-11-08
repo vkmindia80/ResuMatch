@@ -104,6 +104,11 @@ export const resumeAPI = {
   getResume: (id) => api.get(`/api/resumes/${id}`),
   deleteResume: (id) => api.delete(`/api/resumes/${id}`),
   getTemplates: () => api.get('/api/resumes/templates/list'),
+  // Resume Intelligence
+  getPerformanceAnalysis: (id) => api.get(`/api/resumes/${id}/intelligence/performance`),
+  getABSuggestions: (id) => api.get(`/api/resumes/${id}/intelligence/ab-suggestions`),
+  compareResumes: (idA, idB) => api.post(`/api/resumes/intelligence/compare?resume_a_id=${idA}&resume_b_id=${idB}`),
+  getIndustryOptimization: (id, industry) => api.get(`/api/resumes/${id}/intelligence/industry-optimization?target_industry=${industry}`),
 };
 
 // Interview API
