@@ -973,7 +973,30 @@ const Profile = () => {
 
                 {/* Technologies */}
                 <div className="border-t pt-4">
-                  <label className="block text-sm font-medium text-secondary-700 mb-3">Technologies Used</label>
+                  <div className="flex justify-between items-center mb-3">
+                    <label className="block text-sm font-medium text-secondary-700">
+                      <Sparkles size={14} className="inline mr-1 text-primary-600" />
+                      Technologies Used
+                    </label>
+                    <button
+                      onClick={() => getTechnologySuggestions(index)}
+                      disabled={loadingTechnologies[index]}
+                      className="btn-secondary text-sm py-1 px-3 flex items-center space-x-2"
+                      data-testid={`ai-suggest-technologies-${index}`}
+                    >
+                      {loadingTechnologies[index] ? (
+                        <>
+                          <Loader2 size={14} className="animate-spin" />
+                          <span>Generating...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles size={14} />
+                          <span>AI Suggest</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                   {(exp.technologies || []).map((tech, techIndex) => (
                     <div key={techIndex} className="flex items-center space-x-2 mb-2">
                       <input
