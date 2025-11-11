@@ -9,6 +9,9 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [generatingData, setGeneratingData] = useState(false);
+  const [dataGenerated, setDataGenerated] = useState(false);
+  const [generationResult, setGenerationResult] = useState(null);
   const { login } = useAuth();
   const navigate = useNavigate();
 
