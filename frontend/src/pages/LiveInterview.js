@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   Mic, MicOff, Play, Pause, Square, Sparkles, 
   MessageSquare, Brain, Clock, Check, AlertCircle,
-  Settings, ChevronDown, ChevronUp, Loader
+  Settings, ChevronDown, ChevronUp, Loader, FileText
 } from 'lucide-react';
 import api from '../services/api';
 
