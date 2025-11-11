@@ -106,6 +106,8 @@ const LiveInterview = () => {
       const response = await api.post('/api/live-interview/sessions/start', {
         title: sessionTitle,
         job_description_id: selectedJob || null,
+        resume_id: resumeSource === 'generated' ? selectedResume : null,
+        resume_source: resumeSource,
         language: language,
         model_preference: modelPreference
       });
