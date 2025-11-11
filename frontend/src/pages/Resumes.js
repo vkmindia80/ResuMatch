@@ -218,6 +218,41 @@ const Resumes = () => {
     }
   };
 
+  const handleCompareSelection = (resumeId) => {
+    setSelectedForComparison(prev => {
+      if (prev.includes(resumeId)) {
+        return prev.filter(id => id !== resumeId);
+      }
+      if (prev.length >= 2) {
+        return [prev[1], resumeId]; // Keep only last 2 selections
+      }
+      return [...prev, resumeId];
+    });
+  };
+
+  const handleCompare = async () => {
+    if (selectedForComparison.length !== 2) {
+      alert('Please select exactly 2 resumes to compare');
+      return;
+    }
+
+    try {
+      const resume1 = resumes.find(r => r.id === selectedForComparison[0]);
+      const resume2 = resumes.find(r => r.id === selectedForComparison[1]);
+      
+      if (!resume1 || !resume2) {
+        alert('Selected resumes not found');
+        return;
+      }
+
+      setComparisonData({ resumeA: resume1, resumeB: resume2 });
+      setShowComparison(true);
+    } catch (error) {
+      console.error('Error comparing resumes:', error);
+      alert('Failed to compare resumes. Please try again.');
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
