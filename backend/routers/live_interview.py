@@ -58,12 +58,26 @@ async def start_live_session(
                 detail="Job description not found"
             )
     
+    # Verify resume if provided
+    if request.resume_id:
+        resume = await db.resumes.find_one({
+            "id": request.resume_id,
+            "user_id": user_id
+        })
+        if not resume:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Resume not found"
+            )
+    
     # Create session
     session_id = str(uuid.uuid4())
     session = {
         "id": session_id,
         "user_id": user_id,
         "job_description_id": request.job_description_id,
+        "resume_id": request.resume_id,
+        "resume_source": request.resume_source,
         "title": request.title,
         "status": SessionStatus.ACTIVE.value,
         "started_at": datetime.utcnow(),
