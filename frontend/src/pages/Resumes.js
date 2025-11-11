@@ -267,15 +267,37 @@ const Resumes = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" data-testid="resumes-page">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-secondary-900">My Resumes</h1>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          data-testid="generate-resume-button"
-          className="btn-primary flex items-center space-x-2"
-        >
-          <Plus size={18} />
-          <span>Generate Resume</span>
-        </button>
+        <div>
+          <h1 className="text-3xl font-bold text-secondary-900">My Resumes</h1>
+          {resumes.length >= 2 && (
+            <p className="text-sm text-secondary-600 mt-1">
+              {selectedForComparison.length === 0 
+                ? 'Select 2 resumes to compare' 
+                : `${selectedForComparison.length} selected for comparison`}
+            </p>
+          )}
+        </div>
+        <div className="flex space-x-3">
+          {resumes.length >= 2 && (
+            <button
+              onClick={handleCompare}
+              disabled={selectedForComparison.length !== 2}
+              data-testid="compare-resumes-button"
+              className="btn-secondary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <GitCompare size={18} />
+              <span>Compare ({selectedForComparison.length}/2)</span>
+            </button>
+          )}
+          <button
+            onClick={() => setShowForm(!showForm)}
+            data-testid="generate-resume-button"
+            className="btn-primary flex items-center space-x-2"
+          >
+            <Plus size={18} />
+            <span>Generate Resume</span>
+          </button>
+        </div>
       </div>
 
       {showForm && (
