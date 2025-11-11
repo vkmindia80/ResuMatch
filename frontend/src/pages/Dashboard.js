@@ -79,6 +79,14 @@ const Dashboard = () => {
       description: 'Prepare with AI-generated questions',
       action: () => navigate('/interview-prep'),
       color: 'primary'
+    },
+    {
+      icon: Sparkles,
+      title: 'Live Interview Assistant',
+      description: 'Real-time AI help during interviews',
+      action: () => navigate('/live-interview'),
+      color: 'primary',
+      featured: true
     }
   ];
 
