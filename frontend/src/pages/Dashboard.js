@@ -171,11 +171,18 @@ const Dashboard = () => {
                 key={index}
                 onClick={action.action}
                 data-testid={`quick-action-${action.title.toLowerCase().replace(/\s+/g, '-')}`}
-                className="card hover:shadow-lg transition-all hover:scale-105 text-left"
+                className={`card hover:shadow-lg transition-all hover:scale-105 text-left ${
+                  action.featured ? 'ring-2 ring-primary-500 bg-gradient-to-br from-primary-50 to-white' : ''
+                }`}
               >
+                {action.featured && (
+                  <span className="inline-block px-2 py-1 bg-gradient-to-r from-primary-500 to-primary-600 text-white text-xs font-bold rounded-full mb-2">
+                    NEW ✨
+                  </span>
+                )}
                 <div className="flex flex-col items-start space-y-3">
-                  <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
-                    <Icon className="text-primary-600" size={24} />
+                  <div className={`w-12 h-12 ${action.featured ? 'bg-gradient-to-br from-primary-500 to-primary-600' : 'bg-primary-100'} rounded-lg flex items-center justify-center`}>
+                    <Icon className={action.featured ? 'text-white' : 'text-primary-600'} size={24} />
                   </div>
                   <div>
                     <h3 className="font-semibold text-secondary-900 mb-1">{action.title}</h3>
