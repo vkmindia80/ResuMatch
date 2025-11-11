@@ -36,6 +36,7 @@ const LiveInterview = () => {
 
   useEffect(() => {
     loadJobs();
+    loadResumes();
     loadProfile();
     
     // Check for Web Speech API support
