@@ -878,6 +878,46 @@ const Resumes = () => {
           </div>
         </div>
       )}
+
+      {/* Comparison Modal */}
+      {showComparison && comparisonData && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white rounded-lg max-w-7xl w-full max-h-[95vh] overflow-y-auto p-6 my-8">
+            <div className="flex justify-between items-center mb-6 sticky top-0 bg-white pb-4 border-b z-10">
+              <h2 className="text-2xl font-bold text-secondary-900">Resume Comparison</h2>
+              <button
+                onClick={() => {
+                  setShowComparison(false);
+                  setComparisonData(null);
+                  setSelectedForComparison([]);
+                }}
+                className="text-secondary-400 hover:text-secondary-600 text-2xl"
+              >
+                ✕
+              </button>
+            </div>
+
+            <ResumeDiffViewer 
+              resumeA={comparisonData.resumeA}
+              resumeB={comparisonData.resumeB}
+              title="Side-by-Side Comparison"
+            />
+
+            <div className="flex justify-end space-x-3 mt-6 pt-4 border-t sticky bottom-0 bg-white">
+              <button
+                onClick={() => {
+                  setShowComparison(false);
+                  setComparisonData(null);
+                  setSelectedForComparison([]);
+                }}
+                className="btn-secondary"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
