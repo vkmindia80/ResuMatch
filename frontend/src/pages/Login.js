@@ -99,6 +99,50 @@ const Login = () => {
           </div>
         </div>
 
+        {/* Generate Sample Data Section */}
+        <div className="mb-6 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg p-4 shadow-sm" data-testid="sample-data-section">
+          <div className="flex items-start space-x-3">
+            <div className="flex-shrink-0">
+              <Database className="h-6 w-6 text-green-600 mt-0.5" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-green-900 mb-2">🚀 Generate Sample Data</h3>
+              <p className="text-sm text-green-800 mb-3">
+                Populate the demo account with sample profiles, resumes, job descriptions, interview prep data, and live interview sessions across diverse roles.
+              </p>
+              
+              {dataGenerated && generationResult && (
+                <div className="mb-3 bg-green-100 border border-green-300 rounded-lg p-3 text-xs text-green-900" data-testid="generation-success">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <CheckCircle size={16} className="text-green-600" />
+                    <span className="font-semibold">Sample Data Generated Successfully!</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div>✓ Profiles: {generationResult.profiles}</div>
+                    <div>✓ Jobs: {generationResult.job_descriptions}</div>
+                    <div>✓ Resumes: {generationResult.resumes}</div>
+                    <div>✓ Questions: {generationResult.interview_questions}</div>
+                    <div>✓ Cover Letters: {generationResult.cover_letters}</div>
+                    <div>✓ Practice: {generationResult.practice_sessions}</div>
+                    <div className="col-span-2">✓ Live Sessions: {generationResult.live_interview_sessions}</div>
+                  </div>
+                </div>
+              )}
+              
+              <button
+                type="button"
+                onClick={generateSampleData}
+                disabled={generatingData}
+                data-testid="generate-sample-data-button"
+                className="w-full bg-green-600 hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
+              >
+                <Database size={16} />
+                <span>{generatingData ? 'Generating Sample Data...' : 'Generate Sample Data'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div className="card">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
