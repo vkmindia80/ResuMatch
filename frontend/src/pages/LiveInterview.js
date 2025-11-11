@@ -606,6 +606,24 @@ const LiveInterview = () => {
 
           {/* Context Panel */}
           <div className="space-y-6">
+            {/* Resume Source Info */}
+            {sessionData && (
+              <div className="card bg-primary-50 border border-primary-200">
+                <h3 className="font-semibold text-primary-900 mb-2">Resume Source</h3>
+                <div className="flex items-center space-x-2">
+                  <FileText size={16} className="text-primary-600" />
+                  <span className="text-sm text-primary-800">
+                    {sessionData.resume_source === 'profile' 
+                      ? 'Using Profile Resume' 
+                      : 'Using Generated Resume'}
+                  </span>
+                </div>
+                <p className="text-xs text-primary-600 mt-2">
+                  AI answers are based on this resume content
+                </p>
+              </div>
+            )}
+
             <div className="card">
               <button
                 onClick={() => setShowContext(!showContext)}
