@@ -29,6 +29,7 @@ const LiveInterview = () => {
   const [showContext, setShowContext] = useState(true);
   const [profile, setProfile] = useState(null);
   const [error, setError] = useState(null);
+  const [sessionData, setSessionData] = useState(null);
   
   const recognitionRef = useRef(null);
   const timerRef = useRef(null);
