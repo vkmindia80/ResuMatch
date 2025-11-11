@@ -73,6 +73,20 @@ const LiveInterview = () => {
     }
   };
 
+  const loadResumes = async () => {
+    try {
+      const response = await api.get('/api/resumes/');
+      // Handle both array and object with items property
+      const resumesData = Array.isArray(response.data) 
+        ? response.data 
+        : (response.data?.items || []);
+      setResumes(resumesData);
+    } catch (error) {
+      console.error('Error loading resumes:', error);
+      setResumes([]); // Ensure resumes is always an array
+    }
+  };
+
   const loadProfile = async () => {
     try {
       const response = await api.get('/api/profiles/me');
