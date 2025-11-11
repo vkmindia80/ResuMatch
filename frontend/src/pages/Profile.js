@@ -237,6 +237,74 @@ const Profile = () => {
     }
   };
 
+  const getResponsibilitySuggestions = async (expIndex) => {
+    const exp = profile.experience[expIndex];
+    if (!exp.title || !exp.company) {
+      alert('Please fill in job title and company name first');
+      return;
+    }
+
+    setLoadingResponsibilities(prev => ({ ...prev, [expIndex]: true }));
+    
+    try {
+      const response = await profileAPI.suggestResponsibilities({
+        job_title: exp.title,
+        company: exp.company,
+        current_responsibilities: exp.responsibilities || [],
+        technologies: exp.technologies || [],
+        job_description: null // Can be enhanced to fetch from saved job descriptions
+      });
+
+      if (response.data.success && response.data.suggestions.length > 0) {
+        const newExp = [...profile.experience];
+        newExp[expIndex].responsibilities = [
+          ...(newExp[expIndex].responsibilities || []),
+          ...response.data.suggestions
+        ];
+        setProfile({ ...profile, experience: newExp });
+      }
+    } catch (error) {
+      console.error('Error getting responsibility suggestions:', error);
+      alert('Failed to get AI suggestions. Please try again.');
+    } finally {
+      setLoadingResponsibilities(prev => ({ ...prev, [expIndex]: false }));
+    }
+  };
+
+  const getTechnologySuggestions = async (expIndex) => {
+    const exp = profile.experience[expIndex];
+    if (!exp.title) {
+      alert('Please fill in job title first');
+      return;
+    }
+
+    setLoadingTechnologies(prev => ({ ...prev, [expIndex]: true }));
+    
+    try {
+      const response = await profileAPI.suggestTechnologies({
+        job_title: exp.title,
+        company: exp.company || null,
+        current_technologies: exp.technologies || [],
+        industry: null, // Can be enhanced to include industry field
+        job_description: null // Can be enhanced to fetch from saved job descriptions
+      });
+
+      if (response.data.success && response.data.suggestions.length > 0) {
+        const newExp = [...profile.experience];
+        newExp[expIndex].technologies = [
+          ...(newExp[expIndex].technologies || []),
+          ...response.data.suggestions
+        ];
+        setProfile({ ...profile, experience: newExp });
+      }
+    } catch (error) {
+      console.error('Error getting technology suggestions:', error);
+      alert('Failed to get AI suggestions. Please try again.');
+    } finally {
+      setLoadingTechnologies(prev => ({ ...prev, [expIndex]: false }));
+    }
+  };
+
   const addEducation = () => {
     setProfile({
       ...profile,
