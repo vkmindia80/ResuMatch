@@ -26,6 +26,8 @@ class LiveInterviewSession(BaseModel):
     id: str
     user_id: str
     job_description_id: Optional[str] = None
+    resume_id: Optional[str] = None  # Selected resume for context
+    resume_source: str = "profile"  # "profile" or "generated"
     title: str
     status: SessionStatus = SessionStatus.ACTIVE
     started_at: datetime
