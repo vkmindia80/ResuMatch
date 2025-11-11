@@ -19,6 +19,9 @@ const LiveInterview = () => {
   const [sessionTime, setSessionTime] = useState(0);
   const [jobs, setJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState('');
+  const [resumes, setResumes] = useState([]);
+  const [selectedResume, setSelectedResume] = useState('');
+  const [resumeSource, setResumeSource] = useState('profile');
   const [sessionTitle, setSessionTitle] = useState('');
   const [showSettings, setShowSettings] = useState(false);
   const [modelPreference, setModelPreference] = useState('gpt-4');
