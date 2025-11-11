@@ -15,6 +15,11 @@ const Resumes = () => {
   const [showPreview, setShowPreview] = useState(false);
   const [previewResume, setPreviewResume] = useState(null);
   
+  // Comparison states
+  const [showComparison, setShowComparison] = useState(false);
+  const [selectedForComparison, setSelectedForComparison] = useState([]);
+  const [comparisonData, setComparisonData] = useState(null);
+  
   // New state for generation mode
   const [generationMode, setGenerationMode] = useState('profile'); // 'profile' or 'optimize'
   const [selectedSourceResume, setSelectedSourceResume] = useState('');
