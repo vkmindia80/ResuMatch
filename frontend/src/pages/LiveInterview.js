@@ -305,6 +305,63 @@ const LiveInterview = () => {
 
               <div>
                 <label className="block text-sm font-medium text-secondary-700 mb-2">
+                  Resume Source *
+                </label>
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-4">
+                    <label className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="resumeSource"
+                        value="profile"
+                        checked={resumeSource === 'profile'}
+                        onChange={(e) => {
+                          setResumeSource(e.target.value);
+                          setSelectedResume('');
+                        }}
+                        className="w-4 h-4 text-primary-600 focus:ring-primary-500"
+                      />
+                      <span className="text-sm text-secondary-700">Use Profile Resume (Default)</span>
+                    </label>
+                    <label className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="resumeSource"
+                        value="generated"
+                        checked={resumeSource === 'generated'}
+                        onChange={(e) => setResumeSource(e.target.value)}
+                        className="w-4 h-4 text-primary-600 focus:ring-primary-500"
+                      />
+                      <span className="text-sm text-secondary-700">Use Generated Resume</span>
+                    </label>
+                  </div>
+                  
+                  {resumeSource === 'generated' && (
+                    <select
+                      value={selectedResume}
+                      data-testid="resume-select"
+                      onChange={(e) => setSelectedResume(e.target.value)}
+                      className="input-field"
+                    >
+                      <option value="">Select a resume...</option>
+                      {Array.isArray(resumes) && resumes.map(resume => (
+                        <option key={resume.id} value={resume.id}>
+                          {resume.title || 'Untitled Resume'} 
+                          {resume.job_title && ` - ${resume.job_title}`}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </div>
+                <p className="mt-1 text-sm text-secondary-500">
+                  {resumeSource === 'profile' 
+                    ? 'AI will use your raw profile data for answers' 
+                    : 'AI will use optimized content from your selected resume'}
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-secondary-700 mb-2">
                   Job Description (Optional)
                 </label>
                 <select
