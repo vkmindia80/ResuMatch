@@ -21,9 +21,13 @@ const LiveInterviewSessions = () => {
     try {
       setLoading(true);
       const response = await api.get('/api/live-interview/sessions');
-      setSessions(response.data.items || []);
+      const sessionsData = Array.isArray(response.data)
+        ? response.data
+        : (response.data?.items || []);
+      setSessions(sessionsData);
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to load sessions');
+      setSessions([]); // Ensure sessions is always an array
     } finally {
       setLoading(false);
     }
