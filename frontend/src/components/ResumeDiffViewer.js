@@ -84,7 +84,7 @@ const ResumeDiffViewer = ({ resumeA, resumeB, title = "Resume Comparison" }) => 
     );
   };
 
-  // Render experience section
+  // Render experience section with detailed highlighting
   const renderExperience = (experiences, label, isLeft = true) => {
     const otherExperiences = isLeft ? resumeB?.content?.experience : resumeA?.content?.experience;
     
@@ -94,12 +94,24 @@ const ResumeDiffViewer = ({ resumeA, resumeB, title = "Resume Comparison" }) => 
         {experiences && experiences.length > 0 ? (
           experiences.map((exp, idx) => {
             const otherExp = otherExperiences?.[idx];
-            const bullets = exp.optimized_responsibilities || exp.responsibilities || [];
-            const otherBullets = otherExp?.optimized_responsibilities || otherExp?.responsibilities || [];
-            const bulletsDifferent = arraysAreDifferent(bullets, otherBullets);
+            
+            // Get responsibilities, achievements, and technologies
+            const responsibilities = exp.responsibilities || [];
+            const achievements = exp.achievements || [];
+            const technologies = exp.technologies || [];
+            
+            const otherResponsibilities = otherExp?.responsibilities || [];
+            const otherAchievements = otherExp?.achievements || [];
+            const otherTechnologies = otherExp?.technologies || [];
+            
+            const respDifferent = arraysAreDifferent(responsibilities, otherResponsibilities);
+            const achDifferent = arraysAreDifferent(achievements, otherAchievements);
+            const techDifferent = arraysAreDifferent(technologies, otherTechnologies);
+            
+            const hasAnyDifference = respDifferent || achDifferent || techDifferent;
             
             return (
-              <div key={idx} className={`border rounded-lg p-4 ${bulletsDifferent ? 'bg-yellow-50 border-yellow-200' : 'bg-white'}`}>
+              <div key={idx} className={`border rounded-lg p-4 ${hasAnyDifference ? 'bg-yellow-50 border-yellow-200' : 'bg-white'}`}>
                 <div className="flex justify-between items-start mb-2">
                   <div>
                     <h5 className="font-semibold text-gray-900">{exp.title}</h5>
@@ -112,28 +124,91 @@ const ResumeDiffViewer = ({ resumeA, resumeB, title = "Resume Comparison" }) => 
                 {exp.location && (
                   <p className="text-xs text-gray-600 mb-2">{exp.location}</p>
                 )}
-                {bullets.length > 0 && (
-                  <ul className="space-y-1 mt-2">
-                    {bullets.map((bullet, bidx) => {
-                      const otherBullet = otherBullets?.[bidx];
-                      const isDiff = normalizeText(bullet) !== normalizeText(otherBullet);
-                      
-                      return (
-                        <li 
-                          key={bidx} 
-                          className={`text-sm flex items-start ${isDiff ? 'text-gray-900 font-medium' : 'text-gray-700'}`}
-                        >
-                          <span className={`mr-2 mt-1 ${isDiff ? 'text-yellow-600' : 'text-gray-400'}`}>•</span>
-                          <span>{bullet}</span>
-                        </li>
-                      );
-                    })}
-                  </ul>
+                
+                {/* Responsibilities Section */}
+                {responsibilities.length > 0 && (
+                  <div className={`mt-3 p-2 rounded ${respDifferent ? 'bg-orange-50 border border-orange-200' : 'bg-gray-50'}`}>
+                    <div className="flex items-center mb-2">
+                      <span className="text-xs font-semibold text-gray-700">Responsibilities</span>
+                      {respDifferent && <AlertCircle size={12} className="ml-2 text-orange-600" />}
+                    </div>
+                    <ul className="space-y-1">
+                      {responsibilities.map((resp, ridx) => {
+                        const otherResp = otherResponsibilities?.[ridx];
+                        const isDiff = normalizeText(resp) !== normalizeText(otherResp);
+                        
+                        return (
+                          <li 
+                            key={ridx} 
+                            className={`text-xs flex items-start ${isDiff ? 'text-gray-900 font-medium' : 'text-gray-700'}`}
+                          >
+                            <span className={`mr-2 mt-0.5 ${isDiff ? 'text-orange-600' : 'text-gray-400'}`}>•</span>
+                            <span className={isDiff ? 'bg-orange-100 px-1 rounded' : ''}>{resp}</span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
                 )}
-                {bulletsDifferent && (
-                  <div className="mt-2 text-xs text-yellow-700 flex items-center">
+                
+                {/* Achievements Section */}
+                {achievements.length > 0 && (
+                  <div className={`mt-3 p-2 rounded ${achDifferent ? 'bg-green-50 border border-green-200' : 'bg-gray-50'}`}>
+                    <div className="flex items-center mb-2">
+                      <span className="text-xs font-semibold text-gray-700">Key Achievements</span>
+                      {achDifferent && <AlertCircle size={12} className="ml-2 text-green-600" />}
+                    </div>
+                    <ul className="space-y-1">
+                      {achievements.map((ach, aidx) => {
+                        const otherAch = otherAchievements?.[aidx];
+                        const isDiff = normalizeText(ach) !== normalizeText(otherAch);
+                        
+                        return (
+                          <li 
+                            key={aidx} 
+                            className={`text-xs flex items-start ${isDiff ? 'text-gray-900 font-medium' : 'text-gray-700'}`}
+                          >
+                            <span className={`mr-2 mt-0.5 ${isDiff ? 'text-green-600' : 'text-gray-400'}`}>•</span>
+                            <span className={isDiff ? 'bg-green-100 px-1 rounded' : ''}>{ach}</span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                )}
+                
+                {/* Technologies Section */}
+                {technologies.length > 0 && (
+                  <div className={`mt-3 p-2 rounded ${techDifferent ? 'bg-blue-50 border border-blue-200' : 'bg-gray-50'}`}>
+                    <div className="flex items-center mb-2">
+                      <span className="text-xs font-semibold text-gray-700">Technologies</span>
+                      {techDifferent && <AlertCircle size={12} className="ml-2 text-blue-600" />}
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {technologies.map((tech, tidx) => {
+                        const isInOther = otherTechnologies?.some(t => normalizeText(t) === normalizeText(tech));
+                        
+                        return (
+                          <span 
+                            key={tidx} 
+                            className={`px-2 py-0.5 text-xs rounded ${
+                              isInOther 
+                                ? 'bg-blue-100 text-blue-700' 
+                                : 'bg-blue-200 text-blue-800 font-medium border border-blue-400'
+                            }`}
+                          >
+                            {tech}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+                
+                {hasAnyDifference && (
+                  <div className="mt-3 text-xs text-yellow-700 flex items-center">
                     <AlertCircle size={14} className="mr-1" />
-                    Responsibilities differ from other resume
+                    Content differs from other resume
                   </div>
                 )}
               </div>
