@@ -77,6 +77,8 @@ export const profileAPI = {
     });
   },
   suggestAchievements: (data) => api.post('/api/profiles/suggest-achievements', null, { params: data }),
+  suggestResponsibilities: (data) => api.post('/api/profiles/suggest-responsibilities', null, { params: data }),
+  suggestTechnologies: (data) => api.post('/api/profiles/suggest-technologies', null, { params: data }),
   suggestSkills: (data) => api.post('/api/profiles/suggest-skills', null, { params: data }),
   categorizeSkills: (skills) => api.post('/api/profiles/categorize-skills', null, { params: { skills } }),
   uploadCertificate: (formData) => {
