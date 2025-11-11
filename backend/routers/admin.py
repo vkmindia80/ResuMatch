@@ -300,6 +300,7 @@ async def generate_sample_data(
                         "issue_date": "2021-03-20"
                     }
                 ],
+                "projects": [],
                 "completeness_score": 95,
                 "created_at": datetime.utcnow(),
                 "updated_at": datetime.utcnow()
