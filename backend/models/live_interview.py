@@ -63,6 +63,8 @@ class InterviewAnalysis(BaseModel):
 class StartSessionRequest(BaseModel):
     title: str
     job_description_id: Optional[str] = None
+    resume_id: Optional[str] = None  # Selected resume for context
+    resume_source: str = "profile"  # "profile" or "generated"
     language: str = "en-US"
     model_preference: str = "gpt-4"
 
