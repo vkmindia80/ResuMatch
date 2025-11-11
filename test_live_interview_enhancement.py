@@ -14,12 +14,12 @@ def test_authentication():
     """Test login and get auth token"""
     print("\n🔐 Testing Authentication...")
     
-    # Login with demo user
+    # Login with test user
     response = requests.post(
         f"{BASE_URL}/api/auth/login",
         json={
-            "email": "demo@resumatch.com",
-            "password": "demo123"
+            "email": "testuser@test.com",
+            "password": "testpass123"
         }
     )
     
