@@ -224,6 +224,146 @@ Return the categorized skills in JSON format."""
         except Exception as e:
             print(f"Error categorizing skills: {str(e)}")
             return {"technical": skills, "soft": []}
+    
+    async def suggest_responsibilities(
+        self,
+        job_title: str,
+        company: str,
+        current_responsibilities: List[str] = None,
+        technologies: List[str] = None,
+        job_description: str = None
+    ) -> List[str]:
+        """
+        Generate responsibility suggestions based on role and context
+        
+        Args:
+            job_title: Job title
+            company: Company name
+            current_responsibilities: Existing responsibilities (optional)
+            technologies: List of technologies used (optional)
+            job_description: Job description for context (optional)
+            
+        Returns:
+            List of suggested responsibilities
+        """
+        system_message = """You are an expert resume writer specializing in crafting impactful responsibility statements.
+
+Guidelines:
+- Start with strong action verbs (Develop, Design, Implement, Manage, Lead, etc.)
+- Be specific and concrete about the work performed
+- Focus on day-to-day activities and core duties
+- Keep each responsibility clear and concise (1 line)
+- Make them relevant to the role and industry
+- Return ONLY a JSON array of strings, no extra text
+
+Example output format:
+["Responsibility 1", "Responsibility 2", "Responsibility 3"]"""
+
+        technologies_text = f"\nTechnologies: {', '.join(technologies)}" if technologies else ""
+        current_resp_text = f"\nCurrent responsibilities: {', '.join(current_responsibilities[:3])}" if current_responsibilities else ""
+        job_desc_text = f"\n\nJob Description Context:\n{job_description[:500]}" if job_description else ""
+        
+        user_prompt = f"""Generate 5 impactful responsibility statements for the following role:
+
+Job Title: {job_title}
+Company: {company}{technologies_text}{current_resp_text}{job_desc_text}
+
+Return a JSON array of 5 responsibility suggestions that complement any existing responsibilities."""
+
+        try:
+            chat = LlmChat(
+                api_key=self.api_key,
+                session_id=f"responsibilities_{hash(job_title + company)}",
+                system_message=system_message
+            ).with_model("openai", "gpt-4o-mini")
+            
+            response = await chat.send_message(UserMessage(text=user_prompt))
+            
+            # Parse JSON response
+            response_text = response.strip()
+            if "```json" in response_text:
+                response_text = response_text.split("```json")[1].split("```")[0].strip()
+            elif "```" in response_text:
+                response_text = response_text.split("```")[1].split("```")[0].strip()
+            
+            responsibilities = json.loads(response_text)
+            return responsibilities if isinstance(responsibilities, list) else []
+            
+        except Exception as e:
+            print(f"Error generating responsibility suggestions: {str(e)}")
+            return []
+    
+    async def suggest_technologies(
+        self,
+        job_title: str,
+        company: str = None,
+        current_technologies: List[str] = None,
+        industry: str = None,
+        job_description: str = None
+    ) -> List[str]:
+        """
+        Generate technology/tool suggestions based on role, industry, and job description
+        
+        Args:
+            job_title: Job title
+            company: Company name (optional)
+            current_technologies: Existing technologies (optional)
+            industry: Industry context (optional)
+            job_description: Job description to extract relevant technologies (optional)
+            
+        Returns:
+            List of suggested technologies
+        """
+        system_message = """You are an expert technical recruiter and resume advisor specializing in technology stacks.
+
+Guidelines:
+- Suggest relevant technologies, tools, frameworks, and platforms for the role
+- Include both current industry standards and emerging technologies
+- Consider the job description requirements if provided
+- Suggest 5-8 technologies that complement existing tech stack
+- Focus on practical, in-demand technologies
+- Return ONLY a JSON array of strings, no extra text
+
+Example output format:
+["Technology 1", "Technology 2", "Technology 3"]"""
+
+        current_tech_text = f"\nCurrent Technologies: {', '.join(current_technologies)}" if current_technologies else ""
+        industry_text = f"\nIndustry: {industry}" if industry else ""
+        company_text = f"\nCompany: {company}" if company else ""
+        
+        # Extract key requirements from job description if provided
+        job_context = ""
+        if job_description:
+            job_context = f"\n\nJob Description Context (extract relevant technologies):\n{job_description[:600]}"
+        
+        user_prompt = f"""Generate technology/tool suggestions for the following role:
+
+Job Title: {job_title}{company_text}{industry_text}{current_tech_text}{job_context}
+
+Return a JSON array of 5-8 technology suggestions that would be valuable for this role."""
+
+        try:
+            chat = LlmChat(
+                api_key=self.api_key,
+                session_id=f"technologies_{hash(job_title + str(industry))}",
+                system_message=system_message
+            ).with_model("openai", "gpt-4o-mini")
+            
+            response = await chat.send_message(UserMessage(text=user_prompt))
+            
+            # Parse JSON response
+            response_text = response.strip()
+            if "```json" in response_text:
+                response_text = response_text.split("```json")[1].split("```")[0].strip()
+            elif "```" in response_text:
+                response_text = response_text.split("```")[1].split("```")[0].strip()
+            
+            technologies = json.loads(response_text)
+            return technologies if isinstance(technologies, list) else []
+            
+        except Exception as e:
+            print(f"Error generating technology suggestions: {str(e)}")
+            return []
 
 
 # Singleton instance
