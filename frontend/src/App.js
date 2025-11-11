@@ -44,6 +44,9 @@ function App() {
           <Route path="/cover-letters" element={isAuthenticated ? <CoverLetters /> : <Navigate to="/login" />} />
           <Route path="/interview-prep" element={isAuthenticated ? <InterviewPrep /> : <Navigate to="/login" />} />
           <Route path="/practice-sessions" element={isAuthenticated ? <PracticeSessions /> : <Navigate to="/login" />} />
+          <Route path="/live-interview" element={isAuthenticated ? <LiveInterview /> : <Navigate to="/login" />} />
+          <Route path="/live-interview/sessions" element={isAuthenticated ? <LiveInterviewSessions /> : <Navigate to="/login" />} />
+          <Route path="/live-interview/session/:sessionId/analysis" element={isAuthenticated ? <LiveInterviewAnalysis /> : <Navigate to="/login" />} />
           <Route path="/admin/settings" element={isAuthenticated ? <AdminSettings /> : <Navigate to="/login" />} />
         </Routes>
       </div>
