@@ -22,6 +22,7 @@ const Navbar = () => {
     { path: '/cover-letters', icon: Mail, label: 'Cover Letters' },
     { path: '/interview-prep', icon: MessageSquare, label: 'Interview Prep' },
     { path: '/practice-sessions', icon: Play, label: 'Practice' },
+    { path: '/live-interview/sessions', icon: Sparkles, label: 'Live Assistant' },
   ];
 
   return (
