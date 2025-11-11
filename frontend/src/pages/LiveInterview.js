@@ -114,6 +114,7 @@ const LiveInterview = () => {
       });
       
       setSessionId(response.data.id);
+      setSessionData(response.data);
       setSessionActive(true);
       setError(null);
       
