@@ -1,7 +1,10 @@
 import os
 from typing import Dict, List, Optional
 from datetime import datetime
-from emergentintegrations import OpenAI, Anthropic
+from emergentintegrations.llm.chat import LlmChat, UserMessage
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class LiveInterviewAI:
     """AI assistant for real-time interview answers"""
@@ -10,10 +13,6 @@ class LiveInterviewAI:
         self.emergent_key = os.getenv("EMERGENT_LLM_KEY")
         if not self.emergent_key:
             raise ValueError("EMERGENT_LLM_KEY not found in environment")
-        
-        # Initialize both clients
-        self.openai_client = OpenAI(api_key=self.emergent_key)
-        self.anthropic_client = Anthropic(api_key=self.emergent_key)
     
     async def generate_instant_answer(
         self,
