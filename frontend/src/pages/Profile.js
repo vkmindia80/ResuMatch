@@ -16,6 +16,8 @@ const Profile = () => {
   const [uploadMessage, setUploadMessage] = useState('');
   const [uploadStatus, setUploadStatus] = useState('');
   const [loadingAchievements, setLoadingAchievements] = useState({});
+  const [loadingResponsibilities, setLoadingResponsibilities] = useState({});
+  const [loadingTechnologies, setLoadingTechnologies] = useState({});
   const [loadingSkills, setLoadingSkills] = useState(false);
   const [uploadingCert, setUploadingCert] = useState({});
   const fileInputRef = useRef(null);
