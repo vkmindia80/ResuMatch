@@ -477,6 +477,74 @@ async def categorize_skills(
         )
 
 
+@router.post("/suggest-responsibilities")
+async def suggest_responsibilities(
+    job_title: str,
+    company: str,
+    current_responsibilities: list[str] = [],
+    technologies: list[str] = [],
+    job_description: str = None,
+    user_id: str = Depends(get_current_user_id)
+):
+    """
+    Generate AI-powered responsibility suggestions for work experience
+    """
+    try:
+        from utils.ai_suggestions import ai_suggestion_engine
+        
+        suggestions = await ai_suggestion_engine.suggest_responsibilities(
+            job_title=job_title,
+            company=company,
+            current_responsibilities=current_responsibilities,
+            technologies=technologies,
+            job_description=job_description
+        )
+        
+        return {
+            "success": True,
+            "suggestions": suggestions
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate responsibility suggestions: {str(e)}"
+        )
+
+
+@router.post("/suggest-technologies")
+async def suggest_technologies(
+    job_title: str,
+    company: str = None,
+    current_technologies: list[str] = [],
+    industry: str = None,
+    job_description: str = None,
+    user_id: str = Depends(get_current_user_id)
+):
+    """
+    Generate AI-powered technology/tool suggestions based on role, industry, and job description
+    """
+    try:
+        from utils.ai_suggestions import ai_suggestion_engine
+        
+        suggestions = await ai_suggestion_engine.suggest_technologies(
+            job_title=job_title,
+            company=company,
+            current_technologies=current_technologies,
+            industry=industry,
+            job_description=job_description
+        )
+        
+        return {
+            "success": True,
+            "suggestions": suggestions
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate technology suggestions: {str(e)}"
+        )
+
+
 @router.post("/upload-certificate")
 async def upload_certificate(
     file: UploadFile = File(...),
