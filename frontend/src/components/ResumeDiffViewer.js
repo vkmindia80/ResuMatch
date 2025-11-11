@@ -334,18 +334,22 @@ const ResumeDiffViewer = ({ resumeA, resumeB, title = "Resume Comparison" }) => 
       {/* Header with color legend */}
       <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
         <h2 className="text-xl font-bold text-gray-900 mb-3">{title}</h2>
-        <div className="flex items-center gap-4 text-sm">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
           <div className="flex items-center">
             <div className="w-4 h-4 bg-yellow-100 border border-yellow-200 rounded mr-2"></div>
             <span className="text-gray-700">Different content</span>
           </div>
           <div className="flex items-center">
-            <div className="w-4 h-4 bg-white border border-gray-200 rounded mr-2"></div>
-            <span className="text-gray-700">Same content</span>
+            <div className="w-4 h-4 bg-orange-100 border border-orange-200 rounded mr-2"></div>
+            <span className="text-gray-700">Responsibilities changed</span>
           </div>
           <div className="flex items-center">
-            <div className="w-4 h-4 bg-green-100 rounded mr-2"></div>
-            <span className="text-gray-700">Unique to this resume</span>
+            <div className="w-4 h-4 bg-green-100 border border-green-200 rounded mr-2"></div>
+            <span className="text-gray-700">Achievements changed</span>
+          </div>
+          <div className="flex items-center">
+            <div className="w-4 h-4 bg-blue-100 border border-blue-200 rounded mr-2"></div>
+            <span className="text-gray-700">Technologies changed</span>
           </div>
         </div>
       </div>
