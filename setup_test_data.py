@@ -102,18 +102,6 @@ def create_profile(token):
                 "technologies": ["Python", "Django", "React", "PostgreSQL"]
             }
         ],
-        "skills": {
-            "technical": [
-                {"name": "Python", "level": "expert"},
-                {"name": "JavaScript", "level": "expert"},
-                {"name": "React", "level": "advanced"},
-                {"name": "FastAPI", "level": "expert"},
-                {"name": "AWS", "level": "intermediate"}
-            ],
-            "soft": ["Leadership", "Communication", "Problem Solving"],
-            "tools": ["Git", "Docker", "Kubernetes", "Jenkins"],
-            "languages": ["English (Native)", "Spanish (Conversational)"]
-        },
         "education": [
             {
                 "institution": "University of California",
@@ -129,22 +117,22 @@ def create_profile(token):
             {
                 "name": "AWS Solutions Architect",
                 "issuer": "Amazon Web Services",
-                "date": "2021-06-15"
+                "issue_date": "2021-06-15"
             }
         ]
     }
     
-    response = requests.post(
+    response = requests.put(
         f"{BASE_URL}/api/profiles/me",
-        json=profile_data,
+        json=profile_update,
         headers=headers
     )
     
     if response.status_code in [200, 201]:
-        print("✅ Profile created successfully")
+        print("✅ Profile created and updated successfully")
         return True
     else:
-        print(f"❌ Failed to create profile: {response.status_code}")
+        print(f"❌ Failed to update profile: {response.status_code}")
         print(response.text)
         return False
 
