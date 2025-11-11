@@ -96,29 +96,28 @@ Provide a strong, concise answer to this interview question:
 Answer naturally and confidently, as if you are the candidate speaking."""
 
         try:
+            # Use emergentintegrations LlmChat
+            import uuid
+            session_id = str(uuid.uuid4())
+            
             if model == "claude-sonnet":
                 # Use Anthropic Claude
-                response = self.anthropic_client.messages.create(
-                    model="claude-sonnet-4-20250514",
-                    max_tokens=500,
-                    system=system_prompt,
-                    messages=[
-                        {"role": "user", "content": user_prompt}
-                    ]
-                )
-                answer = response.content[0].text
+                chat = LlmChat(
+                    api_key=self.emergent_key,
+                    session_id=session_id,
+                    system_message=system_prompt
+                ).with_model("anthropic", "claude-4-sonnet-20250514")
             else:
                 # Use OpenAI GPT-4
-                response = self.openai_client.chat.completions.create(
-                    model="gpt-4o-2024-11-20",
-                    messages=[
-                        {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": user_prompt}
-                    ],
-                    max_tokens=500,
-                    temperature=0.7
-                )
-                answer = response.choices[0].message.content
+                chat = LlmChat(
+                    api_key=self.emergent_key,
+                    session_id=session_id,
+                    system_message=system_prompt
+                ).with_model("openai", "gpt-4o")
+            
+            user_message = UserMessage(text=user_prompt)
+            response = await chat.send_message(user_message)
+            answer = response
             
             return {
                 "question": question,
