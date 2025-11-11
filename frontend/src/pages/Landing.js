@@ -7,14 +7,15 @@ const Landing = () => {
 
   const features = [
     {
+      icon: Sparkles,
+      title: 'Live Interview Assistant',
+      description: 'Real-time AI answers during your actual interviews with speech recognition and instant responses.',
+      featured: true
+    },
+    {
       icon: Target,
       title: 'ATS-Optimized Resumes',
       description: 'Create resumes that pass Applicant Tracking Systems with intelligent keyword optimization.'
-    },
-    {
-      icon: Sparkles,
-      title: 'AI-Powered Content',
-      description: 'Generate professional content tailored to specific job descriptions using advanced AI.'
     },
     {
       icon: Briefcase,
