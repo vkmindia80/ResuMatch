@@ -173,6 +173,14 @@ async def generate_ai_answer(
             detail="Profile not found. Please complete your profile first."
         )
     
+    # Get resume if selected
+    resume = None
+    if session.get("resume_id"):
+        resume = await db.resumes.find_one({
+            "id": session["resume_id"],
+            "user_id": user_id
+        })
+    
     # Get job description if available
     job_description = None
     if session.get("job_description_id"):
@@ -185,8 +193,10 @@ async def generate_ai_answer(
     answer_data = await ai.generate_instant_answer(
         question=request.question,
         user_profile=profile,
+        resume=resume,
         job_description=job_description,
-        model=session.get("model_preference", "gpt-4")
+        model=session.get("model_preference", "gpt-4"),
+        resume_source=session.get("resume_source", "profile")
     )
     
     # Store answer in transcript
