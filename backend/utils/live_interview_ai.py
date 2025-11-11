@@ -195,18 +195,21 @@ Provide a JSON response with:
 - detailed_feedback (string, 2-3 paragraphs)"""
 
         try:
-            response = self.openai_client.chat.completions.create(
-                model="gpt-4o-2024-11-20",
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt}
-                ],
-                response_format={"type": "json_object"},
-                temperature=0.7
-            )
-            
+            import uuid
             import json
-            analysis = json.loads(response.choices[0].message.content)
+            
+            session_id = str(uuid.uuid4())
+            chat = LlmChat(
+                api_key=self.emergent_key,
+                session_id=session_id,
+                system_message=system_prompt
+            ).with_model("openai", "gpt-4o")
+            
+            user_message = UserMessage(text=user_prompt)
+            response = await chat.send_message(user_message)
+            
+            # Parse JSON from response
+            analysis = json.loads(response)
             analysis["question_count"] = question_count
             analysis["answer_quality_avg"] = 75.0  # Default good score
             
