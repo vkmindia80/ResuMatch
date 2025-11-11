@@ -75,4 +75,3 @@ class TranscriptRequest(BaseModel):
 
 class GenerateAnswerRequest(BaseModel):
     question: str
-    session_id: str
