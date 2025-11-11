@@ -4,11 +4,13 @@ Manage application settings including storage configuration
 """
 from fastapi import APIRouter, HTTPException, status, Depends
 from models.settings import StorageSettings, StorageSettingsUpdate, AppSettings
-from utils.auth import get_current_user_id
+from utils.auth import get_current_user_id, get_password_hash
 from database import get_database
 from datetime import datetime
 import os
 from dotenv import load_dotenv, set_key, find_dotenv
+import uuid
+from typing import Optional
 
 load_dotenv()
 
