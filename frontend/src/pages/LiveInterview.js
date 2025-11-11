@@ -58,9 +58,14 @@ const LiveInterview = () => {
   const loadJobs = async () => {
     try {
       const response = await api.get('/api/jobs/');
-      setJobs(response.data || []);
+      // Handle both array and object with items property
+      const jobsData = Array.isArray(response.data) 
+        ? response.data 
+        : (response.data?.items || []);
+      setJobs(jobsData);
     } catch (error) {
       console.error('Error loading jobs:', error);
+      setJobs([]); // Ensure jobs is always an array
     }
   };
 
