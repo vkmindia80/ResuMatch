@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { resumeAPI, jobAPI } from '../services/api';
-import { Plus, FileText, Download, Trash2, Eye } from 'lucide-react';
+import { Plus, FileText, Download, Trash2, Eye, GitCompare } from 'lucide-react';
+import ResumeDiffViewer from '../components/ResumeDiffViewer';
 
 const Resumes = () => {
   const [resumes, setResumes] = useState([]);
