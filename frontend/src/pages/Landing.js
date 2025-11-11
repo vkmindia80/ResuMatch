@@ -30,11 +30,12 @@ const Landing = () => {
   ];
 
   const benefits = [
+    'Real-time AI assistance during live interviews',
     'Save hours of resume writing time',
     'Increase interview callbacks by 3x',
     'Practice with AI-generated interview questions',
-    'Track multiple job applications',
-    'Get instant ATS compatibility scores'
+    'Get instant ATS compatibility scores',
+    'Post-interview performance analysis'
   ];
 
   return (
