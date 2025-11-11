@@ -75,8 +75,15 @@ const Landing = () => {
             return (
               <div
                 key={index}
-                className="card hover:shadow-lg transition-shadow duration-300 text-center"
+                className={`card hover:shadow-lg transition-shadow duration-300 text-center ${
+                  feature.featured ? 'ring-2 ring-primary-500 bg-gradient-to-br from-primary-50 to-white' : ''
+                }`}
               >
+                {feature.featured && (
+                  <span className="inline-block px-3 py-1 bg-primary-500 text-white text-xs font-bold rounded-full mb-3">
+                    NEW
+                  </span>
+                )}
                 <div className="inline-flex items-center justify-center w-12 h-12 bg-primary-100 rounded-lg mb-4">
                   <Icon className="text-primary-600" size={24} />
                 </div>
