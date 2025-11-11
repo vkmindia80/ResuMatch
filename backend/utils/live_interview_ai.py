@@ -18,8 +18,10 @@ class LiveInterviewAI:
         self,
         question: str,
         user_profile: Dict,
+        resume: Optional[Dict] = None,
         job_description: Optional[Dict] = None,
-        model: str = "gpt-4"
+        model: str = "gpt-4",
+        resume_source: str = "profile"
     ) -> Dict:
         """
         Generate instant AI answer to interview question
@@ -27,42 +29,110 @@ class LiveInterviewAI:
         Args:
             question: The interview question
             user_profile: User's profile data
+            resume: Optional generated resume with optimized content
             job_description: Optional job description for context
             model: "gpt-4" or "claude-sonnet"
+            resume_source: "profile" or "generated"
         
         Returns:
             Dict with answer, context_used, and metadata
         """
-        # Build context from profile
+        # Build context from profile or resume
         context_parts = []
         context_used = []
         
-        # Add professional summary
-        if user_profile.get("professional_summary"):
-            context_parts.append(f"Professional Summary: {user_profile['professional_summary']}")
-            context_used.append("Professional Summary")
+        # Use resume content if available (generated resume)
+        if resume and resume_source == "generated":
+            resume_content = resume.get("content", {})
+            
+            # Add resume summary
+            if resume_content.get("summary"):
+                context_parts.append(f"Professional Summary: {resume_content['summary']}")
+                context_used.append("Resume Summary")
+            
+            # Add resume experience
+            if resume_content.get("experience"):
+                exp_text = "Work Experience:\n"
+                for exp in resume_content["experience"][:3]:
+                    exp_text += f"- {exp.get('title')} at {exp.get('company')}\n"
+                    if exp.get("responsibilities"):
+                        for resp in exp["responsibilities"][:3]:
+                            exp_text += f"  • {resp}\n"
+                context_parts.append(exp_text)
+                context_used.append("Resume Experience")
+            
+            # Add resume skills
+            if resume_content.get("skills"):
+                skills_list = []
+                for skill_category in resume_content["skills"]:
+                    if isinstance(skill_category, dict) and skill_category.get("skills"):
+                        skills_list.extend(skill_category["skills"][:10])
+                    elif isinstance(skill_category, str):
+                        skills_list.append(skill_category)
+                if skills_list:
+                    skills_text = f"Skills: {', '.join(skills_list[:15])}"
+                    context_parts.append(skills_text)
+                    context_used.append("Resume Skills")
+            
+            # Add resume education
+            if resume_content.get("education"):
+                edu_text = "Education:\n"
+                for edu in resume_content["education"][:2]:
+                    edu_text += f"- {edu.get('degree')} in {edu.get('field')} from {edu.get('institution')}\n"
+                context_parts.append(edu_text)
+                context_used.append("Resume Education")
+            
+            context_used.insert(0, f"Generated Resume (Optimized)")
         
-        # Add experience
-        if user_profile.get("experience"):
-            exp_text = "Work Experience:\n"
-            for exp in user_profile["experience"][:3]:  # Top 3 experiences
-                exp_text += f"- {exp.get('title')} at {exp.get('company')}: {exp.get('description', '')}\n"
-            context_parts.append(exp_text)
-            context_used.append("Work Experience")
-        
-        # Add skills
-        if user_profile.get("skills"):
-            skills_text = f"Skills: {', '.join(user_profile['skills'][:15])}"
-            context_parts.append(skills_text)
-            context_used.append("Skills")
-        
-        # Add education
-        if user_profile.get("education"):
-            edu_text = "Education:\n"
-            for edu in user_profile["education"][:2]:
-                edu_text += f"- {edu.get('degree')} in {edu.get('field')} from {edu.get('institution')}\n"
-            context_parts.append(edu_text)
-            context_used.append("Education")
+        # Fall back to profile if no resume or using profile mode
+        else:
+            # Add professional summary
+            if user_profile.get("professional_summary"):
+                context_parts.append(f"Professional Summary: {user_profile['professional_summary']}")
+                context_used.append("Profile Summary")
+            
+            # Add experience
+            if user_profile.get("experience"):
+                exp_text = "Work Experience:\n"
+                for exp in user_profile["experience"][:3]:  # Top 3 experiences
+                    exp_text += f"- {exp.get('title')} at {exp.get('company')}: {exp.get('description', '')}\n"
+                context_parts.append(exp_text)
+                context_used.append("Profile Experience")
+            
+            # Add skills
+            if user_profile.get("skills"):
+                # Handle different skill formats
+                skills_list = []
+                skills_data = user_profile["skills"]
+                if isinstance(skills_data, dict):
+                    # New format with technical, soft, etc.
+                    for category in ["technical", "soft", "tools", "languages"]:
+                        if category in skills_data and skills_data[category]:
+                            category_skills = skills_data[category]
+                            if isinstance(category_skills, list):
+                                for skill in category_skills:
+                                    if isinstance(skill, dict) and "name" in skill:
+                                        skills_list.append(skill["name"])
+                                    elif isinstance(skill, str):
+                                        skills_list.append(skill)
+                elif isinstance(skills_data, list):
+                    # Old format - simple list
+                    skills_list = skills_data
+                
+                if skills_list:
+                    skills_text = f"Skills: {', '.join(skills_list[:15])}"
+                    context_parts.append(skills_text)
+                    context_used.append("Profile Skills")
+            
+            # Add education
+            if user_profile.get("education"):
+                edu_text = "Education:\n"
+                for edu in user_profile["education"][:2]:
+                    edu_text += f"- {edu.get('degree')} in {edu.get('field')} from {edu.get('institution')}\n"
+                context_parts.append(edu_text)
+                context_used.append("Profile Education")
+            
+            context_used.insert(0, "Profile Resume")
         
         # Add job context if available
         job_context = ""
