@@ -294,7 +294,7 @@ const LiveInterview = () => {
                   className="input-field"
                 >
                   <option value="">Select a job...</option>
-                  {jobs.map(job => (
+                  {Array.isArray(jobs) && jobs.map(job => (
                     <option key={job.id} value={job.id}>
                       {job.title} at {job.company}
                     </option>
