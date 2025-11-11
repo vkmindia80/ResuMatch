@@ -921,7 +921,30 @@ const Profile = () => {
 
                 {/* Responsibilities */}
                 <div className="border-t pt-4">
-                  <label className="block text-sm font-medium text-secondary-700 mb-3">Responsibilities</label>
+                  <div className="flex justify-between items-center mb-3">
+                    <label className="block text-sm font-medium text-secondary-700">
+                      <Sparkles size={14} className="inline mr-1 text-primary-600" />
+                      Responsibilities
+                    </label>
+                    <button
+                      onClick={() => getResponsibilitySuggestions(index)}
+                      disabled={loadingResponsibilities[index]}
+                      className="btn-secondary text-sm py-1 px-3 flex items-center space-x-2"
+                      data-testid={`ai-suggest-responsibilities-${index}`}
+                    >
+                      {loadingResponsibilities[index] ? (
+                        <>
+                          <Loader2 size={14} className="animate-spin" />
+                          <span>Generating...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles size={14} />
+                          <span>AI Suggest</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                   {(exp.responsibilities || []).map((resp, respIndex) => (
                     <div key={respIndex} className="flex items-start space-x-2 mb-2">
                       <input
