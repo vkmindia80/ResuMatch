@@ -158,6 +158,9 @@ const LiveInterviewSessions = () => {
                       <span className="text-xs bg-secondary-100 px-2 py-1 rounded">
                         {session.model_preference === 'gpt-4' ? 'GPT-4' : 'Claude Sonnet'}
                       </span>
+                      <span className="text-xs bg-primary-100 text-primary-700 px-2 py-1 rounded">
+                        {session.resume_source === 'profile' ? 'Profile Resume' : 'Generated Resume'}
+                      </span>
                     </div>
 
                     <div className="flex items-center space-x-3">
