@@ -41,6 +41,31 @@ const Login = () => {
     setError('');
   };
 
+  const generateSampleData = async () => {
+    setGeneratingData(true);
+    setError('');
+    setDataGenerated(false);
+    
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+      const response = await axios.post(`${backendUrl}/api/admin/generate-sample-data`, {
+        target_user_email: DEMO_EMAIL
+      });
+      
+      if (response.data.success) {
+        setDataGenerated(true);
+        setGenerationResult(response.data.created);
+        // Auto-fill demo credentials
+        setEmail(DEMO_EMAIL);
+        setPassword(DEMO_PASSWORD);
+      }
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Failed to generate sample data. Please try again.');
+    } finally {
+      setGeneratingData(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-secondary-50 px-4">
       <div className="max-w-md w-full">
