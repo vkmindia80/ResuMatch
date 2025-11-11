@@ -183,13 +183,15 @@ async def generate_sample_data(
             profile_data = {
                 "id": str(uuid.uuid4()),
                 "user_id": user_id,
-                "full_name": user.get("full_name", "Demo User"),
-                "email": user.get("email"),
-                "phone": "+1-555-0100",
-                "location": "New York, NY",
-                "title": "Senior Product Manager",
-                "linkedin": "https://linkedin.com/in/demoprofile",
-                "portfolio": "https://demoportfolio.com",
+                "personal_info": {
+                    "full_name": user.get("full_name", "Demo User"),
+                    "email": user.get("email"),
+                    "phone": "+1-555-0100",
+                    "location": "New York, NY",
+                    "title": "Senior Product Manager",
+                    "linkedin": "https://linkedin.com/in/demoprofile",
+                    "portfolio": "https://demoportfolio.com"
+                },
                 "summary": "Experienced professional with 8+ years across technology, healthcare, and marketing sectors. Proven track record of leading cross-functional teams and delivering impactful results.",
                 "skills": {
                     "technical": [
