@@ -25,17 +25,45 @@ def create_profile(token):
     """Create a test profile"""
     headers = {"Authorization": f"Bearer {token}"}
     
-    profile_data = {
-        "personal_info": {
-            "full_name": "Test User",
-            "email": "testuser@test.com",
-            "phone": "+1-555-0123",
-            "location": "San Francisco, CA",
-            "title": "Senior Software Engineer",
-            "linkedin": "https://linkedin.com/in/testuser",
-            "portfolio": "https://testuser.dev"
+    # First create profile with personal info
+    personal_info = {
+        "full_name": "Test User",
+        "email": "testuser@test.com",
+        "phone": "+1-555-0123",
+        "location": "San Francisco, CA",
+        "title": "Senior Software Engineer",
+        "linkedin": "https://linkedin.com/in/testuser",
+        "portfolio": "https://testuser.dev"
+    }
+    
+    response = requests.post(
+        f"{BASE_URL}/api/profiles/me",
+        json=personal_info,
+        headers=headers
+    )
+    
+    if response.status_code not in [200, 201]:
+        print(f"❌ Failed to create profile: {response.status_code}")
+        print(response.text)
+        return False
+    
+    # Now update with full profile data
+    profile_update = {
+        "skills": {
+            "technical": [
+                {"name": "Python", "level": "expert"},
+                {"name": "JavaScript", "level": "expert"},
+                {"name": "React", "level": "advanced"},
+                {"name": "FastAPI", "level": "expert"},
+                {"name": "AWS", "level": "intermediate"}
+            ],
+            "soft": ["Leadership", "Communication", "Problem Solving"],
+            "tools": ["Git", "Docker", "Kubernetes", "Jenkins"],
+            "languages": [
+                {"name": "English", "fluency": "Native"},
+                {"name": "Spanish", "fluency": "Intermediate"}
+            ]
         },
-        "professional_summary": "Experienced software engineer with 5+ years of expertise in full-stack development, specializing in Python, React, and cloud technologies. Proven track record of delivering scalable applications and leading technical teams.",
         "experience": [
             {
                 "title": "Senior Software Engineer",
