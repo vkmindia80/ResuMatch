@@ -477,9 +477,27 @@ const Resumes = () => {
       {resumes.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {resumes.map((resume) => (
-            <div key={resume.id} className="card hover:shadow-lg transition-shadow">
+            <div 
+              key={resume.id} 
+              className={`card hover:shadow-lg transition-shadow relative ${
+                selectedForComparison.includes(resume.id) ? 'ring-2 ring-primary-500' : ''
+              }`}
+            >
+              {/* Comparison Checkbox */}
+              {resumes.length >= 2 && (
+                <div className="absolute top-4 left-4 z-10">
+                  <input
+                    type="checkbox"
+                    checked={selectedForComparison.includes(resume.id)}
+                    onChange={() => handleCompareSelection(resume.id)}
+                    className="w-5 h-5 text-primary-600 rounded focus:ring-2 focus:ring-primary-500 cursor-pointer"
+                    data-testid={`compare-checkbox-${resume.id}`}
+                  />
+                </div>
+              )}
+              
               <div className="flex justify-between items-start mb-4">
-                <div className="flex items-center space-x-3">
+                <div className={`flex items-center space-x-3 ${resumes.length >= 2 ? 'ml-8' : ''}`}>
                   <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
                     <FileText className="text-primary-600" size={24} />
                   </div>
