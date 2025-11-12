@@ -691,5 +691,255 @@ Sincerely,
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+
+
+# ============================================
+# AI CONFIGURATION ENDPOINTS
+# ============================================
+
+@router.get("/ai-settings")
+async def get_ai_settings(
+    user_id: str = Depends(get_current_user_id),
+    db = Depends(get_database)
+):
+    """
+    Get admin AI configuration settings (defaults for all users)
+    """
+    settings_doc = await db.settings.find_one({"type": "ai"})
+    
+    if settings_doc:
+        settings_doc.pop("_id", None)
+        return settings_doc
+    
+    # Return default settings
+    default_settings = AISettings()
+    return {
+        "type": "ai",
+        **default_settings.model_dump()
+    }
+
+
+@router.put("/ai-settings")
+async def update_ai_settings(
+    settings: AISettingsUpdate,
+    user_id: str = Depends(get_current_user_id),
+    db = Depends(get_database)
+):
+    """
+    Update admin AI configuration settings
+    Note: In production, add admin check here
+    """
+    try:
+        # Get existing settings or create new
+        existing = await db.settings.find_one({"type": "ai"})
+        
+        if existing:
+            # Update existing
+            update_data = settings.model_dump(exclude_unset=True)
+            update_data["updated_at"] = datetime.utcnow()
+            update_data["updated_by"] = user_id
+            
+            # Merge with existing data
+            for key, value in update_data.items():
+                if value is not None:
+                    existing[key] = value
+            
+            await db.settings.update_one(
+                {"type": "ai"},
+                {"$set": existing}
+            )
+            
+            existing.pop("_id", None)
+            return {
+                "success": True,
+                "message": "AI settings updated successfully",
+                "settings": existing
+            }
+        else:
+            # Create new
+            settings_doc = {
+                "type": "ai",
+                **settings.model_dump(exclude_unset=True),
+                "created_at": datetime.utcnow(),
+                "updated_at": datetime.utcnow(),
+                "updated_by": user_id
+            }
+            
+            await db.settings.insert_one(settings_doc)
+            settings_doc.pop("_id", None)
+            
+            return {
+                "success": True,
+                "message": "AI settings created successfully",
+                "settings": settings_doc
+            }
+            
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to update AI settings: {str(e)}"
+        )
+
+
+@router.get("/ai-settings/user")
+async def get_user_ai_settings(
+    user_id: str = Depends(get_current_user_id),
+    db = Depends(get_database)
+):
+    """
+    Get user-specific AI settings (overrides admin defaults)
+    """
+    settings_doc = await db.user_ai_settings.find_one({"user_id": user_id})
+    
+    if settings_doc:
+        settings_doc.pop("_id", None)
+        return settings_doc
+    
+    # Return empty user settings (means using admin defaults)
+    return {
+        "user_id": user_id,
+        "use_custom_keys": False,
+        "openai": None,
+        "anthropic": None,
+        "google": None,
+        "custom": None,
+        "resume_generation": None,
+        "interview_prep": None,
+        "cover_letter": None,
+        "live_interview": None,
+        "ats_optimization": None
+    }
+
+
+@router.put("/ai-settings/user")
+async def update_user_ai_settings(
+    settings: UserAISettingsUpdate,
+    user_id: str = Depends(get_current_user_id),
+    db = Depends(get_database)
+):
+    """
+    Update user-specific AI settings
+    """
+    try:
+        # Get existing settings or create new
+        existing = await db.user_ai_settings.find_one({"user_id": user_id})
+        
+        if existing:
+            # Update existing
+            update_data = settings.model_dump(exclude_unset=True)
+            update_data["updated_at"] = datetime.utcnow()
+            
+            # Merge with existing data
+            for key, value in update_data.items():
+                if value is not None:
+                    existing[key] = value
+            
+            await db.user_ai_settings.update_one(
+                {"user_id": user_id},
+                {"$set": existing}
+            )
+            
+            existing.pop("_id", None)
+            return {
+                "success": True,
+                "message": "Your AI settings updated successfully",
+                "settings": existing
+            }
+        else:
+            # Create new
+            settings_doc = {
+                "user_id": user_id,
+                **settings.model_dump(exclude_unset=True),
+                "created_at": datetime.utcnow(),
+                "updated_at": datetime.utcnow()
+            }
+            
+            await db.user_ai_settings.insert_one(settings_doc)
+            settings_doc.pop("_id", None)
+            
+            return {
+                "success": True,
+                "message": "Your AI settings created successfully",
+                "settings": settings_doc
+            }
+            
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to update user AI settings: {str(e)}"
+        )
+
+
+@router.delete("/ai-settings/user")
+async def reset_user_ai_settings(
+    user_id: str = Depends(get_current_user_id),
+    db = Depends(get_database)
+):
+    """
+    Reset user AI settings to admin defaults
+    """
+    try:
+        result = await db.user_ai_settings.delete_one({"user_id": user_id})
+        
+        if result.deleted_count > 0:
+            return {
+                "success": True,
+                "message": "AI settings reset to defaults"
+            }
+        else:
+            return {
+                "success": True,
+                "message": "No custom settings found, using defaults"
+            }
+            
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to reset AI settings: {str(e)}"
+        )
+
+
+@router.get("/ai-settings/effective")
+async def get_effective_ai_settings(
+    user_id: str = Depends(get_current_user_id),
+    db = Depends(get_database)
+):
+    """
+    Get effective AI settings (user overrides merged with admin defaults)
+    """
+    try:
+        # Get admin defaults
+        admin_settings = await db.settings.find_one({"type": "ai"})
+        if not admin_settings:
+            admin_settings = {"type": "ai", **AISettings().model_dump()}
+        
+        # Get user settings
+        user_settings = await db.user_ai_settings.find_one({"user_id": user_id})
+        
+        # Merge settings (user overrides admin)
+        effective = dict(admin_settings)
+        effective.pop("_id", None)
+        
+        if user_settings:
+            user_settings.pop("_id", None)
+            # Override with user settings where they exist
+            for key, value in user_settings.items():
+                if value is not None and key != "user_id":
+                    effective[key] = value
+        
+        effective["is_using_custom_settings"] = bool(user_settings and user_settings.get("use_custom_keys"))
+        
+        return {
+            "success": True,
+            "settings": effective,
+            "has_user_overrides": bool(user_settings)
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get effective AI settings: {str(e)}"
+        )
+
             detail=f"Failed to generate sample data: {str(e)}"
         )
