@@ -2,7 +2,7 @@
 Application Settings Models
 """
 from pydantic import BaseModel
-from typing import Optional, Literal
+from typing import Optional, Literal, Dict
 from datetime import datetime
 import uuid
 
