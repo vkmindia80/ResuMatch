@@ -106,10 +106,10 @@ const AdminSettings = () => {
 
       {/* Tabs */}
       <div className="mb-6 border-b border-secondary-200">
-        <div className="flex space-x-8">
+        <div className="flex space-x-8 overflow-x-auto">
           <button
             onClick={() => setActiveTab('storage')}
-            className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+            className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors whitespace-nowrap ${
               activeTab === 'storage'
                 ? 'border-primary-600 text-primary-600'
                 : 'border-transparent text-secondary-600 hover:text-secondary-900 hover:border-secondary-300'
@@ -117,12 +117,12 @@ const AdminSettings = () => {
           >
             <div className="flex items-center space-x-2">
               <HardDrive size={18} />
-              <span>Storage Configuration</span>
+              <span>Storage</span>
             </div>
           </button>
           <button
             onClick={() => setActiveTab('ai')}
-            className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+            className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors whitespace-nowrap ${
               activeTab === 'ai'
                 ? 'border-primary-600 text-primary-600'
                 : 'border-transparent text-secondary-600 hover:text-secondary-900 hover:border-secondary-300'
@@ -131,6 +131,19 @@ const AdminSettings = () => {
             <div className="flex items-center space-x-2">
               <Bot size={18} />
               <span>AI Integrations</span>
+            </div>
+          </button>
+          <button
+            onClick={() => setActiveTab('data')}
+            className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors whitespace-nowrap ${
+              activeTab === 'data'
+                ? 'border-primary-600 text-primary-600'
+                : 'border-transparent text-secondary-600 hover:text-secondary-900 hover:border-secondary-300'
+            }`}
+          >
+            <div className="flex items-center space-x-2">
+              <Database size={18} />
+              <span>Data Management</span>
             </div>
           </button>
         </div>
