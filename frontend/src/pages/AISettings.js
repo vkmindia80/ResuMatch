@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { adminAPI } from '../services/api';
 import { 
-  Settings, Save, Bot, Key, CheckCircle, XCircle, 
+  Save, Bot, CheckCircle, XCircle, 
   AlertCircle, Zap, Eye, EyeOff, ToggleLeft, ToggleRight 
 } from 'lucide-react';
 
@@ -12,7 +12,6 @@ const AISettings = () => {
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
   const [showKeys, setShowKeys] = useState({});
-  const [isAdmin, setIsAdmin] = useState(true); // For now, assume admin
 
   useEffect(() => {
     fetchSettings();
