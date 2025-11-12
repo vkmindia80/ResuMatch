@@ -153,6 +153,13 @@ export const adminAPI = {
   getStorageSettings: () => api.get('/api/admin/storage-settings'),
   updateStorageSettings: (data) => api.put('/api/admin/storage-settings', data),
   getStorageConfig: () => api.get('/api/admin/storage-config'),
+  // AI Configuration
+  getAISettings: () => api.get('/api/admin/ai-settings'),
+  updateAISettings: (data) => api.put('/api/admin/ai-settings', data),
+  getUserAISettings: () => api.get('/api/admin/ai-settings/user'),
+  updateUserAISettings: (data) => api.put('/api/admin/ai-settings/user', data),
+  resetUserAISettings: () => api.delete('/api/admin/ai-settings/user'),
+  getEffectiveAISettings: () => api.get('/api/admin/ai-settings/effective'),
 };
 
 export default api;
