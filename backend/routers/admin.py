@@ -695,6 +695,96 @@ Sincerely,
         )
 
 
+@router.post("/clear-sample-data")
+async def clear_sample_data(
+    target_user_email: Optional[str] = None,
+    user_id: str = Depends(get_current_user_id),
+    db = Depends(get_database)
+):
+    """
+    Clear all sample data for a specific user
+    Deletes profiles, job descriptions, resumes, interview questions, 
+    cover letters, practice sessions, and live interview sessions
+    """
+    try:
+        # Determine target user
+        if target_user_email:
+            user = await db.users.find_one({"email": target_user_email})
+        else:
+            # Use currently authenticated user
+            user = await db.users.find_one({"id": user_id})
+        
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        target_user_id = user["id"]
+        
+        # Track what was deleted
+        deleted = {
+            "profiles": 0,
+            "job_descriptions": 0,
+            "resumes": 0,
+            "interview_questions": 0,
+            "cover_letters": 0,
+            "practice_sessions": 0,
+            "live_interview_sessions": 0,
+            "interview_transcripts": 0
+        }
+        
+        # Delete all data for the user
+        # 1. Delete profiles
+        profile_result = await db.profiles.delete_many({"user_id": target_user_id})
+        deleted["profiles"] = profile_result.deleted_count
+        
+        # 2. Delete job descriptions
+        job_result = await db.job_descriptions.delete_many({"user_id": target_user_id})
+        deleted["job_descriptions"] = job_result.deleted_count
+        
+        # 3. Delete resumes
+        resume_result = await db.resumes.delete_many({"user_id": target_user_id})
+        deleted["resumes"] = resume_result.deleted_count
+        
+        # 4. Delete interview questions
+        questions_result = await db.interview_questions.delete_many({"user_id": target_user_id})
+        deleted["interview_questions"] = questions_result.deleted_count
+        
+        # 5. Delete cover letters
+        letters_result = await db.cover_letters.delete_many({"user_id": target_user_id})
+        deleted["cover_letters"] = letters_result.deleted_count
+        
+        # 6. Delete practice sessions
+        practice_result = await db.practice_sessions.delete_many({"user_id": target_user_id})
+        deleted["practice_sessions"] = practice_result.deleted_count
+        
+        # 7. Delete live interview sessions
+        live_sessions = await db.live_interview_sessions.find({"user_id": target_user_id}).to_list(length=None)
+        session_ids = [session["id"] for session in live_sessions]
+        
+        live_result = await db.live_interview_sessions.delete_many({"user_id": target_user_id})
+        deleted["live_interview_sessions"] = live_result.deleted_count
+        
+        # 8. Delete interview transcripts for those sessions
+        if session_ids:
+            transcript_result = await db.interview_transcripts.delete_many({"session_id": {"$in": session_ids}})
+            deleted["interview_transcripts"] = transcript_result.deleted_count
+        
+        # Return summary
+        return {
+            "success": True,
+            "message": "Sample data cleared successfully",
+            "user_email": user.get("email"),
+            "deleted": deleted,
+            "total_items": sum(deleted.values())
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to clear sample data: {str(e)}"
+        )
+
+
+
 # ============================================
 # AI CONFIGURATION ENDPOINTS
 # ============================================
