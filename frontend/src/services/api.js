@@ -160,6 +160,9 @@ export const adminAPI = {
   updateUserAISettings: (data) => api.put('/api/admin/ai-settings/user', data),
   resetUserAISettings: () => api.delete('/api/admin/ai-settings/user'),
   getEffectiveAISettings: () => api.get('/api/admin/ai-settings/effective'),
+  // Data Management
+  generateSampleData: (data) => api.post('/api/admin/generate-sample-data', data),
+  clearSampleData: (data) => api.post('/api/admin/clear-sample-data', data),
 };
 
 export default api;
