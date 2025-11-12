@@ -147,6 +147,8 @@ const LiveInterview = () => {
         if (event.results[i].isFinal) {
           finalTranscript += transcript + ' ';
           
+          console.log('[LiveInterview] Final transcript received:', transcript);
+          
           // Add to transcript
           const entry = {
             timestamp: new Date(),
@@ -160,16 +162,19 @@ const LiveInterview = () => {
           
           // Save to backend
           try {
+            console.log('[LiveInterview] Saving transcript to backend...');
             await api.post(`/api/live-interview/sessions/${sessionId}/transcript`, {
               text: transcript,
               type: 'question',
               confidence: event.results[i][0].confidence
             });
+            console.log('[LiveInterview] Transcript saved successfully');
             
             // Auto-generate AI answer
-            generateAIAnswer(transcript);
+            console.log('[LiveInterview] Calling generateAIAnswer from onresult');
+            await generateAIAnswer(transcript);
           } catch (error) {
-            console.error('Error saving transcript:', error);
+            console.error('[LiveInterview] Error saving transcript:', error);
           }
         } else {
           interimTranscript += transcript;
