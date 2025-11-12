@@ -136,7 +136,7 @@ const LiveInterview = () => {
     }
   };
 
-  const initializeSpeechRecognition = () => {
+  const initializeSpeechRecognition = (currentSessionId) => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
     
@@ -154,6 +154,7 @@ const LiveInterview = () => {
           finalTranscript += transcript + ' ';
           
           console.log('[LiveInterview] Final transcript received:', transcript);
+          console.log('[LiveInterview] Using sessionId:', currentSessionId);
           
           // Add to transcript
           const entry = {
@@ -169,16 +170,29 @@ const LiveInterview = () => {
           // Save to backend
           try {
             console.log('[LiveInterview] Saving transcript to backend...');
-            await api.post(`/api/live-interview/sessions/${sessionId}/transcript`, {
+            await api.post(`/api/live-interview/sessions/${currentSessionId}/transcript`, {
               text: transcript,
               type: 'question',
               confidence: event.results[i][0].confidence
             });
             console.log('[LiveInterview] Transcript saved successfully');
             
-            // Auto-generate AI answer
-            console.log('[LiveInterview] Calling generateAIAnswer from onresult');
-            await generateAIAnswer(transcript);
+            // Auto-generate AI answer - call directly with API since we have the sessionId
+            console.log('[LiveInterview] Generating AI answer...');
+            setIsGeneratingAnswer(true);
+            try {
+              const response = await api.post(
+                `/api/live-interview/sessions/${currentSessionId}/generate-answer`,
+                { question: transcript, session_id: currentSessionId }
+              );
+              console.log('[LiveInterview] AI answer received:', response.data);
+              setAiAnswer(response.data);
+            } catch (answerError) {
+              console.error('[LiveInterview] Error generating answer:', answerError);
+              setError('Failed to generate AI answer: ' + (answerError.response?.data?.detail || answerError.message));
+            } finally {
+              setIsGeneratingAnswer(false);
+            }
           } catch (error) {
             console.error('[LiveInterview] Error saving transcript:', error);
           }
@@ -193,7 +207,7 @@ const LiveInterview = () => {
     };
     
     recognition.onerror = (event) => {
-      console.error('Speech recognition error:', event.error);
+      console.error('[LiveInterview] Speech recognition error:', event.error);
       if (event.error === 'no-speech') {
         // Silently ignore no-speech errors
         return;
