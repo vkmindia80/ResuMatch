@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { adminAPI } from '../services/api';
 import { Settings, Save, Database, HardDrive, Cloud, CheckCircle, XCircle, Bot } from 'lucide-react';
 import AISettings from './AISettings';
+import DataManagement from './DataManagement';
 
 const AdminSettings = () => {
   const [activeTab, setActiveTab] = useState('storage');
