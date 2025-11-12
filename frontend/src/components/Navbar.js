@@ -23,6 +23,7 @@ const Navbar = () => {
     { path: '/interview-prep', icon: MessageSquare, label: 'Interview Prep' },
     { path: '/practice-sessions', icon: Play, label: 'Practice' },
     { path: '/live-interview/sessions', icon: Sparkles, label: 'Live Assistant' },
+    { path: '/admin/settings', icon: Settings, label: 'Settings' },
   ];
 
   return (
