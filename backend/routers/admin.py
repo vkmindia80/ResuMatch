@@ -942,6 +942,3 @@ async def get_effective_ai_settings(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to get effective AI settings: {str(e)}"
         )
-
-            detail=f"Failed to generate sample data: {str(e)}"
-        )
