@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { adminAPI } from '../services/api';
-import { Settings, Save, Database, HardDrive, Cloud, CheckCircle, XCircle } from 'lucide-react';
+import { Settings, Save, Database, HardDrive, Cloud, CheckCircle, XCircle, Bot } from 'lucide-react';
+import AISettings from './AISettings';
 
 const AdminSettings = () => {
+  const [activeTab, setActiveTab] = useState('storage');
   const [settings, setSettings] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -10,8 +12,10 @@ const AdminSettings = () => {
   const [messageType, setMessageType] = useState('');
 
   useEffect(() => {
-    fetchSettings();
-  }, []);
+    if (activeTab === 'storage') {
+      fetchSettings();
+    }
+  }, [activeTab]);
 
   const fetchSettings = async () => {
     try {
