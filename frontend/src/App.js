@@ -31,24 +31,28 @@ function App() {
     <Router>
       <div className="min-h-screen bg-secondary-50">
         {isAuthenticated && <Navbar />}
-        <Routes>
-          <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Landing />} />
-          <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
-          <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Register />} />
-          
-          <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} />
-          <Route path="/profile" element={isAuthenticated ? <Profile /> : <Navigate to="/login" />} />
-          <Route path="/jobs" element={isAuthenticated ? <JobDescriptions /> : <Navigate to="/login" />} />
-          <Route path="/resumes" element={isAuthenticated ? <Resumes /> : <Navigate to="/login" />} />
-          <Route path="/resume-intelligence" element={isAuthenticated ? <ResumeIntelligence /> : <Navigate to="/login" />} />
-          <Route path="/cover-letters" element={isAuthenticated ? <CoverLetters /> : <Navigate to="/login" />} />
-          <Route path="/interview-prep" element={isAuthenticated ? <InterviewPrep /> : <Navigate to="/login" />} />
-          <Route path="/practice-sessions" element={isAuthenticated ? <PracticeSessions /> : <Navigate to="/login" />} />
-          <Route path="/live-interview" element={isAuthenticated ? <LiveInterview /> : <Navigate to="/login" />} />
-          <Route path="/live-interview/sessions" element={isAuthenticated ? <LiveInterviewSessions /> : <Navigate to="/login" />} />
-          <Route path="/live-interview/session/:sessionId/analysis" element={isAuthenticated ? <LiveInterviewAnalysis /> : <Navigate to="/login" />} />
-          <Route path="/admin/settings" element={isAuthenticated ? <AdminSettings /> : <Navigate to="/login" />} />
-        </Routes>
+        
+        {/* Main Content Area - with sidebar offset when authenticated */}
+        <div className={isAuthenticated ? "lg:ml-64 pt-16 lg:pt-0" : ""}>
+          <Routes>
+            <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Landing />} />
+            <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
+            <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Register />} />
+            
+            <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} />
+            <Route path="/profile" element={isAuthenticated ? <Profile /> : <Navigate to="/login" />} />
+            <Route path="/jobs" element={isAuthenticated ? <JobDescriptions /> : <Navigate to="/login" />} />
+            <Route path="/resumes" element={isAuthenticated ? <Resumes /> : <Navigate to="/login" />} />
+            <Route path="/resume-intelligence" element={isAuthenticated ? <ResumeIntelligence /> : <Navigate to="/login" />} />
+            <Route path="/cover-letters" element={isAuthenticated ? <CoverLetters /> : <Navigate to="/login" />} />
+            <Route path="/interview-prep" element={isAuthenticated ? <InterviewPrep /> : <Navigate to="/login" />} />
+            <Route path="/practice-sessions" element={isAuthenticated ? <PracticeSessions /> : <Navigate to="/login" />} />
+            <Route path="/live-interview" element={isAuthenticated ? <LiveInterview /> : <Navigate to="/login" />} />
+            <Route path="/live-interview/sessions" element={isAuthenticated ? <LiveInterviewSessions /> : <Navigate to="/login" />} />
+            <Route path="/live-interview/session/:sessionId/analysis" element={isAuthenticated ? <LiveInterviewAnalysis /> : <Navigate to="/login" />} />
+            <Route path="/admin/settings" element={isAuthenticated ? <AdminSettings /> : <Navigate to="/login" />} />
+          </Routes>
+        </div>
       </div>
     </Router>
   );
