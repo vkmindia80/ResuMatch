@@ -117,7 +117,8 @@ const LiveInterview = () => {
       console.log('[LiveInterview] Session started:', response.data);
       console.log('[LiveInterview] Session ID:', response.data.id);
       
-      setSessionId(response.data.id);
+      const newSessionId = response.data.id;
+      setSessionId(newSessionId);
       setSessionData(response.data);
       setSessionActive(true);
       setError(null);
@@ -127,8 +128,8 @@ const LiveInterview = () => {
         setSessionTime(prev => prev + 1);
       }, 1000);
       
-      // Initialize speech recognition
-      initializeSpeechRecognition();
+      // Initialize speech recognition with the session ID
+      initializeSpeechRecognition(newSessionId);
     } catch (error) {
       console.error('[LiveInterview] Error starting session:', error);
       setError(error.response?.data?.detail || 'Failed to start session');
