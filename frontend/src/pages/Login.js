@@ -1,17 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Mail, Lock, AlertCircle, Play, Database, CheckCircle } from 'lucide-react';
-import axios from 'axios';
+import { Mail, Lock, AlertCircle, Play } from 'lucide-react';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [generatingData, setGeneratingData] = useState(false);
-  const [dataGenerated, setDataGenerated] = useState(false);
-  const [generationResult, setGenerationResult] = useState(null);
   const { login } = useAuth();
   const navigate = useNavigate();
 
