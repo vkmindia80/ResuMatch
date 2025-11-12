@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Home, User, FileText, Briefcase, MessageSquare, LogOut, Mail, TrendingUp, Play, Sparkles, Settings, Menu, X } from 'lucide-react';
@@ -8,6 +8,24 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Prevent body scroll when mobile sidebar is open
+  useEffect(() => {
+    if (isSidebarOpen) {
+      document.body.classList.add('sidebar-open');
+    } else {
+      document.body.classList.remove('sidebar-open');
+    }
+    
+    return () => {
+      document.body.classList.remove('sidebar-open');
+    };
+  }, [isSidebarOpen]);
+
+  // Close sidebar on route change
+  useEffect(() => {
+    closeSidebar();
+  }, [location.pathname]);
 
   const handleLogout = () => {
     logout();
