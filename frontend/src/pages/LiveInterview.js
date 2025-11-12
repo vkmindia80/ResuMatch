@@ -104,6 +104,7 @@ const LiveInterview = () => {
     }
 
     try {
+      console.log('[LiveInterview] Starting session...');
       const response = await api.post('/api/live-interview/sessions/start', {
         title: sessionTitle,
         job_description_id: selectedJob || null,
@@ -112,6 +113,9 @@ const LiveInterview = () => {
         language: language,
         model_preference: modelPreference
       });
+      
+      console.log('[LiveInterview] Session started:', response.data);
+      console.log('[LiveInterview] Session ID:', response.data.id);
       
       setSessionId(response.data.id);
       setSessionData(response.data);
@@ -126,6 +130,7 @@ const LiveInterview = () => {
       // Initialize speech recognition
       initializeSpeechRecognition();
     } catch (error) {
+      console.error('[LiveInterview] Error starting session:', error);
       setError(error.response?.data?.detail || 'Failed to start session');
     }
   };
