@@ -214,20 +214,33 @@ const LiveInterview = () => {
   };
 
   const generateAIAnswer = async (question) => {
-    if (!sessionId) return;
+    console.log('[LiveInterview] generateAIAnswer called with question:', question);
+    console.log('[LiveInterview] sessionId:', sessionId);
     
+    if (!sessionId) {
+      console.error('[LiveInterview] No sessionId - cannot generate answer');
+      return;
+    }
+    
+    console.log('[LiveInterview] Setting isGeneratingAnswer to true');
     setIsGeneratingAnswer(true);
+    
     try {
+      console.log('[LiveInterview] Calling API to generate answer...');
       const response = await api.post(
         `/api/live-interview/sessions/${sessionId}/generate-answer`,
         { question: question, session_id: sessionId }
       );
       
+      console.log('[LiveInterview] API response received:', response.data);
       setAiAnswer(response.data);
+      console.log('[LiveInterview] aiAnswer state updated');
     } catch (error) {
-      console.error('Error generating answer:', error);
-      setError('Failed to generate AI answer');
+      console.error('[LiveInterview] Error generating answer:', error);
+      console.error('[LiveInterview] Error details:', error.response?.data);
+      setError('Failed to generate AI answer: ' + (error.response?.data?.detail || error.message));
     } finally {
+      console.log('[LiveInterview] Setting isGeneratingAnswer to false');
       setIsGeneratingAnswer(false);
     }
   };
