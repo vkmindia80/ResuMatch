@@ -72,6 +72,11 @@ const AdminSettings = () => {
     );
   }
 
+  // If AI tab is active, render AISettings component
+  if (activeTab === 'ai') {
+    return <AISettings />;
+  }
+
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
@@ -81,7 +86,7 @@ const AdminSettings = () => {
             <Settings size={32} />
             <span>Admin Settings</span>
           </h1>
-          <p className="text-secondary-600 mt-1">Configure application storage and system settings</p>
+          <p className="text-secondary-600 mt-1">Configure application settings and integrations</p>
         </div>
         <button
           onClick={handleSave}
@@ -91,6 +96,38 @@ const AdminSettings = () => {
           <Save size={18} />
           <span>{saving ? 'Saving...' : 'Save Changes'}</span>
         </button>
+      </div>
+
+      {/* Tabs */}
+      <div className="mb-6 border-b border-secondary-200">
+        <div className="flex space-x-8">
+          <button
+            onClick={() => setActiveTab('storage')}
+            className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+              activeTab === 'storage'
+                ? 'border-primary-600 text-primary-600'
+                : 'border-transparent text-secondary-600 hover:text-secondary-900 hover:border-secondary-300'
+            }`}
+          >
+            <div className="flex items-center space-x-2">
+              <HardDrive size={18} />
+              <span>Storage Configuration</span>
+            </div>
+          </button>
+          <button
+            onClick={() => setActiveTab('ai')}
+            className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+              activeTab === 'ai'
+                ? 'border-primary-600 text-primary-600'
+                : 'border-transparent text-secondary-600 hover:text-secondary-900 hover:border-secondary-300'
+            }`}
+          >
+            <div className="flex items-center space-x-2">
+              <Bot size={18} />
+              <span>AI Integrations</span>
+            </div>
+          </button>
+        </div>
       </div>
 
       {/* Message */}
