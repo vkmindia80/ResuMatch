@@ -1,9 +1,12 @@
 """
 Admin API Routes
-Manage application settings including storage configuration
+Manage application settings including storage configuration and AI integrations
 """
 from fastapi import APIRouter, HTTPException, status, Depends
-from models.settings import StorageSettings, StorageSettingsUpdate, AppSettings
+from models.settings import (
+    StorageSettings, StorageSettingsUpdate, AppSettings,
+    AISettings, AISettingsUpdate, UserAISettings, UserAISettingsUpdate
+)
 from utils.auth import get_current_user_id, get_password_hash
 from database import get_database
 from datetime import datetime
